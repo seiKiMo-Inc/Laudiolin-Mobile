@@ -1,4 +1,87 @@
+import type { UserSettings, SearchSettings, AudioSettings, UISettings } from "@backend/types";
+
 import EncryptedStorage from "react-native-encrypted-storage";
+
+let settings: UserSettings | null = null;
+const defaultSettings: UserSettings = {
+    search: {
+        accuracy: true,
+        engine: "All"
+    },
+    audio: {
+
+    },
+    ui: {
+        background_color: "",
+        background_url: ""
+    },
+    token: ""
+};
+
+/**
+ * Loads settings from the settings file.
+ */
+export async function reloadSettings(from?: UserSettings | null) {
+    if (!from) {
+        settings = !(await exists("settings")) ? defaultSettings :
+            JSON.parse(await EncryptedStorage.getItem("settings") as string);
+    } else settings = from;
+
+    // Save the user's authentication token.
+    await save("user_token", settings?.token ?? "");
+}
+
+/*
+ * Settings utilities.
+ */
+
+
+/**
+ * Returns the cached user settings.
+ * Use {@link #reloadSettings} to update the settings.
+ */
+export function getSettings(): UserSettings | null {
+    return settings;
+}
+
+/**
+ * Saves the specified settings to the settings file.
+ * @param newSettings The settings to save.
+ */
+export async function saveSettings(newSettings: UserSettings): Promise<void> {
+    await save("settings", JSON.stringify(newSettings));
+    await reloadSettings(newSettings);
+}
+
+/**
+ * Returns the cached user settings.
+ */
+export function search(): SearchSettings {
+    return (
+        settings?.search || {
+            accuracy: false,
+            engine: "All"
+        }
+    );
+}
+
+/**
+ * Returns the cached user settings.
+ */
+export function audio(): AudioSettings {
+    return settings?.audio || {};
+}
+
+/**
+ * Returns the cached user settings.
+ */
+export function ui(): UISettings {
+    return settings?.ui || <UISettings> {};
+}
+
+/*
+ * Local storage utilities.
+ */
 
 /**
  * Returns the value of the specified key in local storage.

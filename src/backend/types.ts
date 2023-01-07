@@ -41,7 +41,6 @@ export type User = {
 export type UserSettings = {
     search: SearchSettings;
     audio: AudioSettings;
-    gateway: GatewaySettings;
     ui: UISettings;
     token: string;
 };
@@ -50,13 +49,7 @@ export type SearchSettings = {
     engine: SearchEngine;
 };
 export type AudioSettings = {
-    download_path: string;
-};
-export type GatewaySettings = {
-    encrypted: boolean;
-    address: string;
-    port: number;
-    gateway_port: number;
+
 };
 export type UISettings = {
     background_color: string;
