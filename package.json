@@ -16,6 +16,7 @@
     "react-native": "0.70.6",
     "react-native-fs": "^2.20.0",
     "react-native-track-player": "^3.2.0",
+    "react-native-encrypted-storage": "^4.0.3",
 
     "events": "^3.3.0"
   },
