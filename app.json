@@ -1,4 +1,8 @@
 {
   "name": "laudiolin",
-  "displayName": "Laudiolin"
+  "displayName": "Laudiolin",
+
+  "encrypted": false,
+  "address": "10.0.2.2",
+  "port": 3000
 }
