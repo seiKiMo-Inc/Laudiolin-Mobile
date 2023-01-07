@@ -3,7 +3,7 @@ import type { UserSettings, SearchSettings, AudioSettings, UISettings } from "@b
 import EncryptedStorage from "react-native-encrypted-storage";
 
 let settings: UserSettings | null = null;
-const defaultSettings: UserSettings = {
+export const defaultSettings: UserSettings = {
     search: {
         accuracy: true,
         engine: "All"

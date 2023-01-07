@@ -5,8 +5,9 @@ import { StyleSheet, SafeAreaView } from "react-native";
 
 import { registerListener } from "@backend/navigation";
 
-import Home from "@app/ui/pages/Home";
-import SearchPage from "@app/ui/pages/SearchPage";
+import Home from "@pages/Home";
+import SearchPage from "@pages/SearchPage";
+import LoginPage from "@pages/LoginPage";
 
 const styles = StyleSheet.create({
     container: {
@@ -17,7 +18,8 @@ const styles = StyleSheet.create({
 
 const pages: any = {
     Home: <Home />,
-    Search: <SearchPage />
+    Search: <SearchPage />,
+    Login: <LoginPage />
 };
 
 interface IState {
