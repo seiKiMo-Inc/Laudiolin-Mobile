@@ -4,9 +4,21 @@ import type { TrackData } from "@backend/types";
 import React from "react";
 import { Button, Text, TextInput } from "react-native";
 
-import { test, playTrack } from "@backend/audio";
+import SearchTrack from "@components/search/SearchTrack";
+import Controls from "@components/player/Controls";
+
+import { playTrack } from "@backend/audio";
 import { navigate } from "@backend/navigation";
 import { doSearch } from "@backend/search";
+
+const track: TrackData = {
+    title: "Travelogue (Global Acappella Ver.)",
+    artist: "",
+    icon: "https://app.seikimo.moe/proxy/dgfzSddP2IOxN_oOzGkytSjYkeKnbapvioYWp9oC_7vPudR3Ln2gF5Pw7SL3IMWNYyWIsDVp3d3nGqw4=w120-h120-l90-rj?from=cart",
+    url: "http://10.0.2.2:3000/download?id=n-HypaOLx_s&engine=YouTube",
+    id: "n-HypaOLx_s",
+    duration: 186
+};
 
 interface IState {
     info: string;
@@ -24,10 +36,6 @@ class Home extends React.Component<any, IState> {
             top: null
         };
     }
-
-    dev = async() => {
-        await test();
-    };
 
     updateQuery = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
         this.setState({ query: event.nativeEvent.text });
@@ -50,12 +58,15 @@ class Home extends React.Component<any, IState> {
         return (
             <>
                 <Text>{this.state.info}</Text>
-                <Button title={"Play Audio"} onPress={this.dev} />
                 <Button title={"Search Page"} onPress={() => navigate("Search")} />
 
                 <TextInput onChange={this.updateQuery}>{this.state.query}</TextInput>
                 <Button title={"Search"} onPress={this.search} />
                 <Button title={"Play Top Result"} onPress={this.playTop} />
+
+                <SearchTrack result={track} onClick={() => {}} />
+
+                <Controls />
             </>
         );
     }

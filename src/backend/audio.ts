@@ -57,18 +57,3 @@ export async function playTrack(track: TrackData, play = true): Promise<void> {
 export async function playbackService(): Promise<void> {
     TrackPlayer.addEventListener(Event.PlaybackState, console.log);
 }
-
-export async function test(): Promise<void> {
-    const track: TrackData = {
-        title: "Travelogue (Global Acappella Ver.)",
-        artist: "",
-        icon: "https://app.seikimo.moe/proxy/dgfzSddP2IOxN_oOzGkytSjYkeKnbapvioYWp9oC_7vPudR3Ln2gF5Pw7SL3IMWNYyWIsDVp3d3nGqw4=w120-h120-l90-rj?from=cart",
-        url: "http://10.0.2.2:3000/download?id=n-HypaOLx_s&engine=YouTube",
-        id: "n-HypaOLx_s",
-        duration: 186
-    };
-
-    // await download(track);
-    await TrackPlayer.add([asTrack(track)]);
-    await TrackPlayer.play();
-}
