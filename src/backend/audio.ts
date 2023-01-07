@@ -44,8 +44,6 @@ export async function download(track: TrackData): Promise<void> {
  * @param play Should the track be played?
  */
 export async function playTrack(track: TrackData, play = true): Promise<void> {
-    console.log(getStreamingUrl(track))
-
     // Add the track to the player.
     await TrackPlayer.add(asTrack(track));
     // Play the track if specified.
