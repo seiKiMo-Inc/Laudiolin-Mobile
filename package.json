@@ -40,6 +40,10 @@
     "@typescript-eslint/parser": "^5.37.0",
     "babel-plugin-module-resolver": "^4.1.0",
     "eslint": "^7.32.0",
-    "metro-react-native-babel-preset": "0.72.3"
+    "metro-react-native-babel-preset": "0.72.3",
+
+    "@fortawesome/fontawesome-svg-core":  "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/react-native-fontawesome": "^0.3.0"
   }
 }
