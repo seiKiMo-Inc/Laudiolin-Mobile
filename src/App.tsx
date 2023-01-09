@@ -1,7 +1,5 @@
-import type { ReactNode } from "react";
-
-import { Component } from "react";
-import { StyleSheet, SafeAreaView } from "react-native";
+import { Component, ReactNode } from "react";
+import { SafeAreaView } from "react-native";
 
 import { registerListener } from "@backend/navigation";
 
@@ -9,12 +7,7 @@ import Home from "@pages/Home";
 import SearchPage from "@pages/SearchPage";
 import LoginPage from "@pages/LoginPage";
 
-const styles = StyleSheet.create({
-    container: {
-        marginTop: 20,
-        alignItems: "center"
-    }
-});
+import { styles } from "@styles/AppStyle"
 
 const pages: any = {
     Home: <Home />,

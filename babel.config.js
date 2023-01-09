@@ -9,6 +9,7 @@ module.exports = {
                     "@backend": "./src/backend",
                     "@pages": "./src/ui/pages",
                     "@components": "./src/ui/components",
+                    "@styles": "./src/ui/styles"
                 }
             }
         ]
