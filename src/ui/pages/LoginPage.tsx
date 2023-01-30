@@ -1,7 +1,10 @@
 import React from "react";
-import { Button, Text } from "react-native";
+import { View, ImageBackground } from "react-native";
 
-import { navigate } from "@backend/navigation";
+import BasicButton from "@components/common/BasicButton";
+import BasicText from "@components/common/BasicText";
+
+import { LoginPageStyle } from "@styles/PageStyles";
 
 class SearchPage extends React.Component<any, any> {
     constructor(props: any) {
@@ -11,8 +14,30 @@ class SearchPage extends React.Component<any, any> {
     render() {
         return (
             <>
-                <Text>this is the login page</Text>
-                <Button title={"Go Back"} onPress={() => navigate("Home")} />
+                <View style={LoginPageStyle.top}>
+                    <BasicButton text={"Log in with Discord"}
+                                 color={"#5b67af"} bold={true}
+                                 width={300} height={40} radius={10}
+                                 transform={"uppercase"}
+                    />
+                </View>
+
+                <View style={LoginPageStyle.bottom}>
+                    <BasicButton text={"Continue as Guest"}
+                                 color={"#FFFFFF"} outline={"#5b67af"}
+                                 width={300} height={40} radius={10}
+                                 transform={"uppercase"} bold={true}
+                    />
+                    <View style={{ paddingTop: 17 }}>
+                        <BasicText text={"Logging in with discord lets you create playlists, like \n" +
+                            "songs, connect with friends and more!"} style={{ textAlign: "center" }} />
+                    </View>
+                </View>
+
+                <ImageBackground
+                    source={require("../../../resources/images/icon-transparent.png")}
+                    style={LoginPageStyle.image}
+                />
             </>
         );
     }

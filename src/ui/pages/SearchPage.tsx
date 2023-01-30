@@ -1,7 +1,12 @@
 import React from "react";
-import { Button, Text } from "react-native";
+import { View } from "react-native";
 
-import { navigate } from "@backend/navigation";
+import TextTicker from "react-native-text-ticker";
+import BasicText from "@components/common/BasicText";
+import BasicTextInput from "@components/common/BasicTextInput";
+
+import { SearchPageStyle } from "@styles/PageStyles";
+import { Icon, Image } from "@rneui/base";
 
 class SearchPage extends React.Component<any, any> {
     constructor(props: any) {
@@ -10,10 +15,45 @@ class SearchPage extends React.Component<any, any> {
 
     render() {
         return (
-            <>
-                <Text>this is the search page</Text>
-                <Button title={"Go Back"} onPress={() => navigate("Home")} />
-            </>
+            <View style={SearchPageStyle.container}>
+                <View style={{ alignItems: "center" }}>
+                    <BasicTextInput
+                        default={"Search"}
+                        textStyle={SearchPageStyle.searchText}
+                        containerStyle={SearchPageStyle.searchContainer}
+                        icon={<Icon
+                            type="material" name={"search"}
+                            iconStyle={{ color: "white" }}
+                        />}
+                    />
+                </View>
+
+                <View style={SearchPageStyle.results}>
+                    <>
+                        <Image
+                            style={SearchPageStyle.resultImage}
+                            source={{uri: "https://app.magix.lol/proxy/OSic91btFq36NI-XacUzV73Wa_LqfRtvBgGoOhLuIRemZ4YJs3xhbE1nrVqPaTpvo3g83dyaqo2HX2g=w544-h544-l90-rj?from=cart"}}
+                        />
+                        <View style={SearchPageStyle.resultText}>
+                            <TextTicker
+                                style={SearchPageStyle.resultTitle}
+                                loop duration={5000}
+                            >
+                                {"Right Here I Stand"}
+                            </TextTicker>
+                            <BasicText
+                                text={"Project Mons"}
+                                style={SearchPageStyle.resultArtist}
+                            />
+                        </View>
+                        <Icon
+                            color={"white"}
+                            type="material" name={"more-vert"}
+                            containerStyle={SearchPageStyle.resultsMore}
+                        />
+                    </>
+                </View>
+            </View>
         );
     }
 }
