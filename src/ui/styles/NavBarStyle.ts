@@ -6,6 +6,11 @@ export const NavBarStyle = StyleSheet.create({
         zIndex: 10000,
         bottom: 0,
         width: "100%",
-        backgroundColor: "#1F305E"
+    },
+    tab: {
+        fontSize: 12,
+        color: "#6c7071",
+        fontWeight: "bold",
+        fontFamily: "Poppins"
     }
-})
+});
