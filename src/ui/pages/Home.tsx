@@ -2,10 +2,12 @@ import type { NativeSyntheticEvent, TextInputChangeEventData } from "react-nativ
 import type { TrackData } from "@backend/types";
 
 import React from "react";
-import { Button, Text, TextInput } from "react-native";
+import { Button, View } from "react-native";
 
+import BasicText from "@components/common/BasicText";
 import SearchTrack from "@components/search/SearchTrack";
 import Controls from "@components/player/Controls";
+import BasicTextInput from "@components/common/BasicTextInput";
 
 import { playTrack } from "@backend/audio";
 import { navigate } from "@backend/navigation";
@@ -56,18 +58,18 @@ class Home extends React.Component<any, IState> {
 
     render() {
         return (
-            <>
-                <Text>{this.state.info}</Text>
+            <View>
+                <BasicText text={this.state.info} />
                 <Button title={"Search Page"} onPress={() => navigate("Search")} />
 
-                <TextInput onChange={this.updateQuery}>{this.state.query}</TextInput>
+                <BasicTextInput default={this.state.query} />
                 <Button title={"Search"} onPress={this.search} />
                 <Button title={"Play Top Result"} onPress={this.playTop} />
 
-                <SearchTrack result={track} onClick={() => {}} />
+                <SearchTrack result={this.state.top} onClick={() => {}} />
 
                 <Controls />
-            </>
+            </View>
         );
     }
 }
