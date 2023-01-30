@@ -10,6 +10,7 @@ import NavBar from "@components/NavBar";
 
 interface IState {
     pageIndex: number;
+    loggedIn: boolean;
 }
 
 class App extends Component<any, IState> {
@@ -17,19 +18,21 @@ class App extends Component<any, IState> {
         super(props);
 
         this.state = {
-            pageIndex: 0
+            pageIndex: 0,
+            loggedIn: false
         };
     }
 
     render() {
-        return (
+        return this.state.loggedIn ? (
             <>
                 <TabView
                     value={this.state.pageIndex}
                     onChange={(i) => this.setState({ pageIndex: i })}
                     animationType="spring"
                     disableSwipe={true}
-                    tabItemContainerStyle={{ alignItems: "center", justifyContent: "center" }}>
+                    containerStyle={{ backgroundColor: "#0c0f17" }}
+                >
                     <TabView.Item>
                         <Home />
                     </TabView.Item>
@@ -43,7 +46,11 @@ class App extends Component<any, IState> {
 
                 <NavBar pageIndex={this.state.pageIndex} setPageIndex={(i) => this.setState({ pageIndex: i })} />
             </>
-        );
+        ) : (
+            <>
+                <LoginPage />
+            </>
+        )
     }
 }
 
