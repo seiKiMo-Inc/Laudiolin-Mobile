@@ -25,7 +25,7 @@ class SearchPage extends React.Component<any, any> {
 
     render() {
         return (
-            <ScrollView contentContainerStyle={SearchPageStyle.text}>
+            <ScrollView style={{ paddingTop: 40 }}>
                 <View style={{ alignItems: "center" }}>
                     <BasicTextInput
                         default={"Search"}
