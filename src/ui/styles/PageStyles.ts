@@ -143,3 +143,17 @@ export const SearchPageStyle = StyleSheet.create({
         flexDirection: "row"
     }
 });
+
+export const PlayingTrackPageStyle = StyleSheet.create({
+   view: {
+       width: "100%",
+       height: "100%",
+       backgroundColor: "#000000",
+       zIndex: 99999,
+       position: "absolute",
+       top: 0,
+       left: 0,
+       alignItems: "center",
+       justifyContent: "center"
+   }
+});

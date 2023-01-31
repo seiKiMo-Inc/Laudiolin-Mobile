@@ -5,12 +5,14 @@ import Home from "@pages/Home";
 import SearchPage from "@pages/SearchPage";
 import LoginPage from "@pages/LoginPage";
 import SettingsPage from "@pages/SettingsPage";
+import PlayingTrackPage from "@pages/PlayingTrackPage";
 
 import NavBar from "@components/NavBar";
 
 interface IState {
     pageIndex: number;
     loggedIn: boolean;
+    showPlayingTrackPage: boolean;
 }
 
 class App extends Component<any, IState> {
@@ -19,7 +21,8 @@ class App extends Component<any, IState> {
 
         this.state = {
             pageIndex: 0,
-            loggedIn: false
+            loggedIn: true,
+            showPlayingTrackPage: true
         };
     }
 
@@ -30,6 +33,7 @@ class App extends Component<any, IState> {
                     value={this.state.pageIndex}
                     onChange={(i) => this.setState({ pageIndex: i })}
                     animationType="spring"
+                    animationConfig={{ useNativeDriver: true, speed: 100 }}
                     disableSwipe={true}
                     containerStyle={{ backgroundColor: "#0c0f17" }}
                 >
@@ -45,6 +49,8 @@ class App extends Component<any, IState> {
                 </TabView>
 
                 <NavBar pageIndex={this.state.pageIndex} setPageIndex={(i) => this.setState({ pageIndex: i })} />
+
+                <PlayingTrackPage showPage={this.state.showPlayingTrackPage} />
             </>
         ) : (
             <>

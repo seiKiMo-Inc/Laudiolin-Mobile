@@ -9,7 +9,6 @@ export const NavBarStyle = StyleSheet.create({
     },
     tab: {
         fontSize: 12,
-        color: "#6c7071",
         fontWeight: "bold",
         fontFamily: "Poppins"
     }
