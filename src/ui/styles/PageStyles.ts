@@ -98,7 +98,7 @@ export const SettingsPageStyle = StyleSheet.create({
         fontSize: 13,
         textDecorationLine: "underline",
         textAlign: "right",
-        paddingLeft: "48%"
+        paddingLeft: "45%"
     },
     settingsContainer: {
         paddingTop: 30
@@ -144,11 +144,50 @@ export const SearchPageStyle = StyleSheet.create({
     }
 });
 
+export const PlaylistsPageStyle = StyleSheet.create({
+    container: {
+        paddingTop: 40,
+        paddingLeft: 20,
+        backgroundColor: "#0c0f17"
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: "bold",
+        paddingBottom: 20,
+    },
+    list: {
+        paddingBottom: 80
+    },
+    playlist: {
+        paddingBottom: 20,
+        flexDirection: "row"
+    },
+    playlistImage: {
+        width: 96, height: 96,
+        borderRadius: 20
+    },
+    playlistContent: {
+        flexDirection: "row",
+        borderRadius: 21
+    },
+    playlistTitle: {
+        fontSize: 17,
+        fontWeight: "bold",
+    },
+    playlistAuthor: {
+        fontSize: 16
+    },
+    playlistMore: {
+        paddingLeft: 20,
+        justifyContent: "center"
+    }
+});
+
 export const PlayingTrackPageStyle = StyleSheet.create({
    view: {
        width: "100%",
        height: "100%",
-       backgroundColor: "#000000",
+       backgroundColor: "#0c0f17",
        zIndex: 99999,
        position: "absolute",
        top: 0,
