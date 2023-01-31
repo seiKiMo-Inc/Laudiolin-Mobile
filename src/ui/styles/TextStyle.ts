@@ -1,8 +1,9 @@
 import { StyleSheet } from "react-native";
 
 export const BasicTextStyle = StyleSheet.create({
-    container: {
-        color: "white"
+    text: {
+        color: "white",
+        fontFamily: "Poppins"
     }
 });
 

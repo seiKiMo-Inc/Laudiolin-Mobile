@@ -15,7 +15,7 @@ class SearchPage extends React.Component<any, any> {
 
     render() {
         return (
-            <ScrollView contentContainerStyle={SettingsPageStyle.container}>
+            <ScrollView contentContainerStyle={SettingsPageStyle.text}>
                 <BasicText
                     text={"Settings"}
                     style={SettingsPageStyle.title}

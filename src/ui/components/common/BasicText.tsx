@@ -16,7 +16,7 @@ class BasicText extends React.Component<IProps, any> {
     render() {
         return (
             <Text style={{
-                ...BasicTextStyle.container,
+                ...BasicTextStyle.text,
                 ...(this.props.style as object)
             }}>
                 {this.props.text}

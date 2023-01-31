@@ -19,14 +19,14 @@ class MixedText extends React.Component<IProps, any> {
     render() {
         return (
             <Text style={{
-                ...BasicTextStyle.container,
+                ...BasicTextStyle.text,
                 ...(this.props.style as object)
             }}>
                 <Text style={{
-                    ...BasicTextStyle.container,
+                    ...BasicTextStyle.text,
                     ...(this.props.firstStyle as object)
                 }}>{this.props.first}</Text><Text style={{
-                    ...BasicTextStyle.container,
+                    ...BasicTextStyle.text,
                     ...(this.props.secondStyle as object)
                 }}>{this.props.second}</Text>
             </Text>
