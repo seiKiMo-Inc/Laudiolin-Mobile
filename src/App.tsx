@@ -19,7 +19,7 @@ class App extends Component<any, IState> {
 
         this.state = {
             pageIndex: 0,
-            loggedIn: false
+            loggedIn: true
         };
     }
 
@@ -30,6 +30,7 @@ class App extends Component<any, IState> {
                     value={this.state.pageIndex}
                     onChange={(i) => this.setState({ pageIndex: i })}
                     animationType="spring"
+                    animationConfig={{ useNativeDriver: true, speed: 100 }}
                     disableSwipe={true}
                     containerStyle={{ backgroundColor: "#0c0f17" }}
                 >
