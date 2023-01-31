@@ -11,7 +11,8 @@ interface IProps {
     height?: string | number;
     radius?: number;
     transform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase';
-    onPress?: () => void;
+
+    press?: () => void;
 }
 
 class BasicButton extends React.Component<IProps, any> {
@@ -38,7 +39,7 @@ class BasicButton extends React.Component<IProps, any> {
                     textTransform: this.props.transform,
                     fontFamily: "Poppins"
                 }}
-                onPress={this.props.onPress}
+                onPress={this.props.press}
             />
         );
     }
