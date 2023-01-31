@@ -36,9 +36,14 @@ class Home extends React.Component<any, any> {
 
     render() {
         return (
-            <ScrollView contentContainerStyle={HomePageStyle.container}>
+            <ScrollView contentContainerStyle={HomePageStyle.text}>
                 <View style={{ paddingBottom: 20 }}>
-                    <BasicText text={"Playlists"} style={HomePageStyle.header} />
+                    <View style={{ flexDirection: "row" }}>
+                        <BasicText text={"Playlists"} style={HomePageStyle.header} />
+                        <View style={{ justifyContent: "center" }}>
+                            <BasicText text={"More"} style={HomePageStyle.morePlaylists} />
+                        </View>
+                    </View>
                     <FlatList
                         style={HomePageStyle.playlists}
                         data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}

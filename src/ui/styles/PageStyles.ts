@@ -30,7 +30,7 @@ export const LoginPageStyle = StyleSheet.create({
 });
 
 export const HomePageStyle = StyleSheet.create({
-    container: {
+    text: {
         paddingLeft: 20,
         paddingTop: 40,
         width: Dimensions.get("window").width,
@@ -39,6 +39,12 @@ export const HomePageStyle = StyleSheet.create({
         fontSize: 28,
         fontWeight: "bold",
         paddingBottom: 20
+    },
+    morePlaylists: {
+        textDecorationLine: "underline",
+        textAlign: "right",
+        paddingRight: 20,
+        paddingLeft: "58%"
     },
     moreDownloads: {
         textDecorationLine: "underline",
@@ -65,7 +71,7 @@ export const HomePageStyle = StyleSheet.create({
 });
 
 export const SettingsPageStyle = StyleSheet.create({
-    container: {
+    text: {
         paddingLeft: 20,
         width: Dimensions.get("window").width,
     },
@@ -116,7 +122,7 @@ export const SettingsPageStyle = StyleSheet.create({
 });
 
 export const SearchPageStyle = StyleSheet.create({
-    container: {
+    text: {
         paddingTop: 40,
         width: Dimensions.get("window").width,
     },
