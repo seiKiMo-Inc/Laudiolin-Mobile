@@ -28,6 +28,4 @@ async function initialize() {
 
     // Initialize the track player.
     await TrackPlayer.setupPlayer();
-
-    console.log("Finished initialization!");
 }

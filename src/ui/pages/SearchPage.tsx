@@ -1,12 +1,22 @@
 import React from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
-import TextTicker from "react-native-text-ticker";
-import BasicText from "@components/common/BasicText";
 import BasicTextInput from "@components/common/BasicTextInput";
+import Track from "@components/Track";
 
 import { SearchPageStyle } from "@styles/PageStyles";
-import { Icon, Image } from "@rneui/base";
+import { Icon } from "@rneui/base";
+
+import { TrackData } from "@backend/types";
+
+const track: TrackData = {
+    title: "Right Here I Stand",
+    artist: "Project Mons",
+    icon: "https://i.scdn.co/image/ab67616d0000b27348e08afae141c0d4068ed8f6",
+    url: "https://open.spotify.com/track/332kSnfRDixW3QWogulBd2",
+    id: "usl4q2126614",
+    duration: 225
+};
 
 class SearchPage extends React.Component<any, any> {
     constructor(props: any) {
@@ -15,7 +25,7 @@ class SearchPage extends React.Component<any, any> {
 
     render() {
         return (
-            <View style={SearchPageStyle.container}>
+            <ScrollView contentContainerStyle={SearchPageStyle.container}>
                 <View style={{ alignItems: "center" }}>
                     <BasicTextInput
                         default={"Search"}
@@ -29,31 +39,9 @@ class SearchPage extends React.Component<any, any> {
                 </View>
 
                 <View style={SearchPageStyle.results}>
-                    <>
-                        <Image
-                            style={SearchPageStyle.resultImage}
-                            source={{uri: "https://app.magix.lol/proxy/OSic91btFq36NI-XacUzV73Wa_LqfRtvBgGoOhLuIRemZ4YJs3xhbE1nrVqPaTpvo3g83dyaqo2HX2g=w544-h544-l90-rj?from=cart"}}
-                        />
-                        <View style={SearchPageStyle.resultText}>
-                            <TextTicker
-                                style={SearchPageStyle.resultTitle}
-                                loop duration={5000}
-                            >
-                                {"Right Here I Stand"}
-                            </TextTicker>
-                            <BasicText
-                                text={"Project Mons"}
-                                style={SearchPageStyle.resultArtist}
-                            />
-                        </View>
-                        <Icon
-                            color={"white"}
-                            type="material" name={"more-vert"}
-                            containerStyle={SearchPageStyle.resultsMore}
-                        />
-                    </>
+                    <Track track={track} />
                 </View>
-            </View>
+            </ScrollView>
         );
     }
 }

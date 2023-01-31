@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import BasicText from "@components/common/BasicText";
 import MixedText from "@components/common/MixedText";
@@ -15,7 +15,7 @@ class SearchPage extends React.Component<any, any> {
 
     render() {
         return (
-            <View style={SettingsPageStyle.container}>
+            <ScrollView contentContainerStyle={SettingsPageStyle.container}>
                 <BasicText
                     text={"Settings"}
                     style={SettingsPageStyle.title}
@@ -69,7 +69,7 @@ class SearchPage extends React.Component<any, any> {
                         />
                     </View>
                 </View>
-            </View>
+            </ScrollView>
         );
     }
 }

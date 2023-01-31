@@ -29,9 +29,45 @@ export const LoginPageStyle = StyleSheet.create({
     }
 });
 
+export const HomePageStyle = StyleSheet.create({
+    container: {
+        paddingLeft: 20,
+        paddingTop: 40,
+        width: Dimensions.get("window").width,
+    },
+    header: {
+        fontSize: 28,
+        fontWeight: "bold",
+        paddingBottom: 20
+    },
+    moreDownloads: {
+        textDecorationLine: "underline",
+        textAlign: "right",
+        paddingRight: 20,
+        paddingLeft: "50%"
+    },
+    morePlays: {
+        textDecorationLine: "underline",
+        textAlign: "right",
+        paddingRight: 20,
+        paddingLeft: "44%"
+    },
+    playlists: {
+        flexDirection: "row"
+    },
+    playlist: {
+        paddingRight: 20,
+    },
+    playlistImage: {
+        width: 136, height: 136,
+        borderRadius: 20
+    }
+});
+
 export const SettingsPageStyle = StyleSheet.create({
     container: {
-        paddingLeft: 20
+        paddingLeft: 20,
+        width: Dimensions.get("window").width,
     },
     title: {
         color: "white",
@@ -55,6 +91,7 @@ export const SettingsPageStyle = StyleSheet.create({
     logOut: {
         fontSize: 13,
         textDecorationLine: "underline",
+        textAlign: "right",
         paddingLeft: "48%"
     },
     settingsContainer: {
@@ -98,26 +135,6 @@ export const SearchPageStyle = StyleSheet.create({
         paddingTop: 30,
         paddingLeft: 20,
         flexDirection: "row"
-    },
-    resultImage: {
-        width: 64, height: 64,
-        borderRadius: 12
-    },
-    resultText: {
-        paddingLeft: 15,
-        justifyContent: "center"
-    },
-    resultTitle: {
-        color: "white",
-        fontFamily: "Poppins",
-        fontSize: 16,
-        width: 270
-    },
-    resultArtist: {
-        fontSize: 12
-    },
-    resultsMore: {
-        justifyContent: "center"
     }
 });
 
