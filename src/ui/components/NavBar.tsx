@@ -22,9 +22,9 @@ class NavBar extends React.Component<IProps, never> {
                  indicatorStyle={{ height: 0 }}
                  style={NavBarStyle.container}
              >
-                 <Tab.Item title="Home" titleStyle={NavBarStyle.tab} />
-                 <Tab.Item title="Search" titleStyle={NavBarStyle.tab} />
-                 <Tab.Item title="Settings" titleStyle={NavBarStyle.tab} />
+                 <Tab.Item title="Home" titleStyle={(active) => ({...NavBarStyle.tab, color: active ? "#FFFFFF" : "#6c7071"})} />
+                 <Tab.Item title="Search" titleStyle={(active) => ({...NavBarStyle.tab, color: active ? "#FFFFFF" : "#6c7071"})} />
+                 <Tab.Item title="Settings" titleStyle={(active) => ({...NavBarStyle.tab, color: active ? "#FFFFFF" : "#6c7071"})} />
              </Tab>
         );
     }
