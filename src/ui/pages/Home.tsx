@@ -1,11 +1,12 @@
 import React from "react";
 import { FlatList, ScrollView, View } from "react-native";
 
+import Track from "@components/Track";
 import BasicText from "@components/common/BasicText";
 
-import { HomePageStyle } from "@styles/PageStyles";
 import { Image } from "@rneui/base";
-import Track from "@components/Track";
+
+import { HomePageStyle } from "@styles/PageStyles";
 
 const testTrack = {
     title: "Hikaru Nara (Your Lie In April)",
