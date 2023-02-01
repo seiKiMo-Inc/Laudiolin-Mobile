@@ -60,6 +60,13 @@ export async function playTrack(
 }
 
 /**
+ * Gets the currently playing track from the player.
+ */
+export async function getCurrentTrack(): Promise<Track|null> {
+    return (await TrackPlayer.getQueue())[(await TrackPlayer.getCurrentTrack()) ?? 0];
+}
+
+/**
  * Define service workers for the application.
  * Called on application registration.
  */
