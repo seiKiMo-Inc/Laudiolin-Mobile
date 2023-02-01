@@ -60,6 +60,20 @@ export async function playTrack(
 }
 
 /**
+ * Shuffles the player queue.
+ */
+export async function shuffleQueue(): Promise<void> {
+    // Pull the current queue and reset it.
+    let queue = await TrackPlayer.getQueue();
+    await TrackPlayer.removeUpcomingTracks();
+    
+    // Shuffle the pulled queue.
+    queue.sort(() => Math.random () - 0.5);
+    // Re-queue the tracks.
+    await TrackPlayer.add(queue);
+}
+
+/**
  * Gets the currently playing track from the player.
  */
 export async function getCurrentTrack(): Promise<Track|null> {
