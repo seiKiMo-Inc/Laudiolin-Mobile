@@ -14,6 +14,8 @@ import PlaylistPage from "@pages/PlaylistPage";
 import NavBar from "@components/NavBar";
 import QuickControl from "@components/player/QuickControl";
 
+import { registerListener } from "@backend/navigation";
+
 class Hide extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
@@ -47,13 +49,42 @@ class App extends React.Component<any, IState> {
 
         this.state = {
             pageIndex: 0,
-            loggedIn: true,
+            loggedIn: false,
 
             showTabs: true,
             showPlayingTrackPage: false,
             showPlaylistsPage: false,
             showPlaylistPage: false
         };
+    }
+
+    componentDidMount() {
+        registerListener(page => {
+            switch (page) {
+                default:
+                    return;
+                case "Home":
+                    this.setState({
+                        pageIndex: 0,
+                        loggedIn: true,
+                        showTabs: true,
+                        showPlayingTrackPage: false,
+                        showPlaylistsPage: false,
+                        showPlaylistPage: false
+                    });
+                    return;
+                case "Login":
+                    this.setState({
+                        pageIndex: 0,
+                        loggedIn: false,
+                        showTabs: false,
+                        showPlayingTrackPage: false,
+                        showPlaylistsPage: false,
+                        showPlaylistPage: false
+                    });
+                    return;
+            }
+        });
     }
 
     render() {

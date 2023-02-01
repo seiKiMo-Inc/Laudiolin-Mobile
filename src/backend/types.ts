@@ -34,6 +34,8 @@ export type User = {
     playlists?: string[];
     likedSongs?: string[];
 
+    username?: string;
+    discriminator?: string;
     userId?: string;
     avatar?: string;
 };

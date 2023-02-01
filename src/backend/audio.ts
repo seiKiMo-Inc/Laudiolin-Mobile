@@ -3,7 +3,8 @@ import type { TrackData } from "@backend/types";
 
 import * as fs from "@backend/fs";
 import { getStreamingUrl } from "@backend/gateway";
-import TrackPlayer, { Event } from "react-native-track-player";
+
+import TrackPlayer, { Event, State } from "react-native-track-player";
 
 /**
  * Converts a local track data object to a track player object.
@@ -42,12 +43,20 @@ export async function download(track: TrackData): Promise<void> {
  * Plays the track if specified.
  * @param track The track to add.
  * @param play Should the track be played?
+ * @param force Should this track be played now?
  */
-export async function playTrack(track: TrackData, play = true): Promise<void> {
+export async function playTrack(
+    track: TrackData,
+    play = true,
+    force = false
+): Promise<void> {
     // Add the track to the player.
     await TrackPlayer.add(asTrack(track));
     // Play the track if specified.
     play && await TrackPlayer.play();
+    // Skip to the track if specified.
+    force && await TrackPlayer.skip((
+        await TrackPlayer.getQueue()).length - 1);
 }
 
 /**
@@ -55,5 +64,8 @@ export async function playTrack(track: TrackData, play = true): Promise<void> {
  * Called on application registration.
  */
 export async function playbackService(): Promise<void> {
-    TrackPlayer.addEventListener(Event.PlaybackState, console.log);
+    TrackPlayer.addEventListener(Event.PlaybackState, ({ state }) => {
+        if (state == State.Stopped)
+            TrackPlayer.reset();
+    });
 }

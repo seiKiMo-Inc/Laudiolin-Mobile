@@ -9,6 +9,8 @@ interface IProps {
     icon?: IconNode;
     textStyle?: StyleProp<TextStyle>;
     containerStyle?: StyleProp<ViewStyle>;
+
+    onChange?: (text: string) => void;
 }
 
 class BasicTextInput extends React.Component<IProps, any> {
@@ -29,6 +31,7 @@ class BasicTextInput extends React.Component<IProps, any> {
                 containerStyle={{
                     ...(this.props.containerStyle as object)
                 }}
+                onChangeText={this.props.onChange}
             />
         );
     }

@@ -4,7 +4,9 @@ import emitter from "@backend/events";
 import { navigate } from "@backend/navigation";
 import * as settings from "@backend/settings";
 
-export let targetRoute = ``; // The base address for the backend.
+import { Gateway } from "@app/constants";
+
+export let targetRoute = Gateway.url; // The base address for the backend.
 export let userData: User | null = null; // The loaded user data.
 export let playlists: Playlist[] = []; // The loaded playlist data.
 export let favorites: TrackData[] = []; // The loaded favorite tracks.
@@ -12,6 +14,13 @@ export let favorites: TrackData[] = []; // The loaded favorite tracks.
 /*
  * HTTP request utilities.
  */
+
+/**
+ * Returns the URL for logging in.
+ */
+export function getLoginUrl(): string {
+    return `${targetRoute}/discord`
+}
 
 /**
  * Gets the authorization token from the local storage.
