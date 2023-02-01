@@ -17,7 +17,6 @@ export async function doSearch(query: string): Promise<SearchResults> {
 
     try {
         // Perform a request to the backend.
-        console.log(`${Gateway.url}/search/${query}?query=${engine}`)
         const response = await fetch(`${Gateway.url}/search/${query}?query=${engine}`);
         // Return the response as a search results object.
         return await response.json() as SearchResults;

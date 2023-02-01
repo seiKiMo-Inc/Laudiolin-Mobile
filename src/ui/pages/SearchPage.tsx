@@ -8,27 +8,74 @@ import { SearchPageStyle } from "@styles/PageStyles";
 import { Icon } from "@rneui/base";
 
 import { TrackData } from "@backend/types";
+import { playTrack } from "@backend/audio";
+import { doSearch } from "@backend/search";
 
-const track: TrackData = {
-    title: "Right Here I Stand",
-    artist: "Project Mons",
-    icon: "https://i.scdn.co/image/ab67616d0000b27348e08afae141c0d4068ed8f6",
-    url: "https://open.spotify.com/track/332kSnfRDixW3QWogulBd2",
-    id: "usl4q2126614",
-    duration: 225
-};
+interface IState {
+    results: TrackData[];
+}
 
-class SearchPage extends React.Component<any, any> {
+class SearchPage extends React.Component<any, IState> {
+    timeout: any|null = null;
+
     constructor(props: any) {
         super(props);
+
+        this.state = {
+            results: []
+        };
+    }
+
+    /**
+     * Called when the search query is updated.
+     * @param query The new search query.
+     */
+    updateQuery(query: string): void {
+        // Check if the query is empty.
+        if (query.trim().length == 0) {
+            // Clear the state.
+            this.setState({ results: [] });
+            // Clear the timeout.
+            if (this.timeout) {
+                clearTimeout(this.timeout);
+                this.timeout = null;
+            }
+
+            return;
+        }
+
+        // Check if there is an existing timeout.
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+            this.timeout = null;
+        }
+
+        this.timeout = setTimeout(async () => {
+            // Perform a search.
+            const { results } = await doSearch(query);
+            // Update the state.
+            this.setState({ results });
+
+            // Clear the timeout.
+            this.timeout = null;
+        }, 100);
+    }
+
+    /**
+     * Called when a track is clicked.
+     * @param track The track that was clicked.
+     */
+    async playTrack(track: TrackData): Promise<void> {
+        await playTrack(track, true, true);
     }
 
     render() {
         return (
-            <ScrollView style={{ paddingTop: 40 }}>
+            <ScrollView contentContainerStyle={SearchPageStyle.container}>
                 <View style={{ alignItems: "center" }}>
                     <BasicTextInput
                         default={"Search"}
+                        onChange={text => this.updateQuery(text)}
                         textStyle={SearchPageStyle.searchText}
                         containerStyle={SearchPageStyle.searchContainer}
                         icon={<Icon
@@ -39,7 +86,14 @@ class SearchPage extends React.Component<any, any> {
                 </View>
 
                 <View style={SearchPageStyle.results}>
-                    <Track track={track} />
+                    {
+                        this.state.results.map((track, index) => (
+                            <Track
+                                key={index} track={track} padding={10}
+                                onClick={() => this.playTrack(track)}
+                            />
+                        ))
+                    }
                 </View>
             </ScrollView>
         );
