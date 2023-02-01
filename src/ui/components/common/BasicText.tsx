@@ -1,10 +1,12 @@
 import React from "react";
-import { Text, StyleProp, TextStyle } from "react-native";
+import { View, Text, StyleProp, TextStyle } from "react-native";
 
 import { BasicTextStyle } from "@styles/TextStyle";
 
 interface IProps {
     text: string;
+    numberOfLines?: number;
+    width?: number;
     style?: StyleProp<TextStyle>;
 }
 
@@ -15,12 +17,18 @@ class BasicText extends React.Component<IProps, any> {
 
     render() {
         return (
-            <Text style={{
-                ...BasicTextStyle.text,
-                ...(this.props.style as object)
-            }}>
-                {this.props.text}
-            </Text>
+            <View style={{ width: this.props.width }}>
+                <Text
+                    style={{
+                        ...BasicTextStyle.text,
+                        ...(this.props.style as object)
+
+                    }}
+                    numberOfLines={this.props.numberOfLines}
+                >
+                    {this.props.text}
+                </Text>
+            </View>
         );
     }
 }
