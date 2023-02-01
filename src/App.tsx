@@ -1,4 +1,6 @@
 import React from "react";
+import { StyleSheet, View } from "react-native";
+
 import { TabView } from "@rneui/themed";
 
 import Home from "@pages/Home";
@@ -10,6 +12,7 @@ import PlayingTrackPage from "@pages/PlayingTrackPage";
 
 import NavBar from "@components/NavBar";
 import PlaylistPage from "@pages/PlaylistPage";
+import QuickControl from "@components/player/QuickControl";
 
 class Hide extends React.Component<any, any> {
     constructor(props: any) {
@@ -30,6 +33,13 @@ interface IState {
     showPlaylistsPage: boolean;
     showPlaylistPage: boolean;
 }
+
+const style = StyleSheet.create({
+    control: {
+        position: "absolute",
+        bottom: "8%",
+    }
+});
 
 class App extends React.Component<any, IState> {
     constructor(props: any) {
@@ -75,6 +85,12 @@ class App extends React.Component<any, IState> {
                 <PlayingTrackPage showPage={this.state.showPlayingTrackPage} />
                 <PlaylistsPage showPage={this.state.showPlaylistsPage} />
                 <PlaylistPage showPage={this.state.showPlaylistPage} />
+
+                <Hide show={true}>
+                    <View style={style.control}>
+                        <QuickControl />
+                    </View>
+                </Hide>
             </>
         ) : (
             <>
