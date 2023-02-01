@@ -49,7 +49,10 @@ class Track extends React.Component<IProps, any> {
         const { track } = this.props;
 
         return (
-            <View style={{ flexDirection: "row", paddingBottom: this.props.padding ?? 0 }}>
+            <View style={{
+                flexDirection: "row",
+                paddingBottom: this.props.padding ?? 0
+            }}>
                 <Image
                     style={TrackStyle.image}
                     source={{ uri: getIconUrl(track) }}
