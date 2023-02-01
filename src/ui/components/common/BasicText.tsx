@@ -15,7 +15,7 @@ class BasicText extends React.Component<IProps, any> {
     }
 
     render() {
-        return (
+        return this.props.press ? (
             <TouchableHighlight
                 onPress={this.props.press}
             >
@@ -26,6 +26,13 @@ class BasicText extends React.Component<IProps, any> {
                     {this.props.text}
                 </Text>
             </TouchableHighlight>
+        ) : (
+            <Text style={{
+                ...BasicTextStyle.text,
+                ...(this.props.style as object)
+            }}>
+                {this.props.text}
+            </Text>
         );
     }
 }
