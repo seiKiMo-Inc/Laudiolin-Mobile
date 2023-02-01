@@ -8,12 +8,30 @@ import { Image } from "@rneui/base";
 
 import { SettingsPageStyle } from "@styles/PageStyles";
 
-class SearchPage extends React.Component<any, any> {
+import { User } from "@backend/types";
+import { logout, userData } from "@backend/user";
+
+interface IState {
+    user: User|null;
+}
+
+class SearchPage extends React.Component<any, IState> {
     constructor(props: any) {
         super(props);
+
+        this.state = {
+            user: userData
+        };
     }
 
     render() {
+        // Check if the user is valid.
+        if (this.state.user == null)
+            return null;
+
+        // Pull the user.
+        const { user } = this.state;
+
         return (
             <ScrollView contentContainerStyle={{ paddingLeft: 20 }}>
                 <BasicText
@@ -25,21 +43,22 @@ class SearchPage extends React.Component<any, any> {
                     <View style={{ paddingRight: 10 }}>
                         <Image
                             style={SettingsPageStyle.userImage}
-                            source={{uri: "https://cdn.discordapp.com/avatars/692733693827088454/53f6f209e03bf7f912e70b90b56fa039.webp?size=48"}}
+                            source={{ uri: user?.avatar ?? "" }}
                         />
                     </View>
                     <View style={{ justifyContent: "center" }}>
                         <BasicText text={"Logged in as"} style={{ fontSize: 13 }} />
                         <MixedText
-                            first={"natsu"} second={"#4700"}
+                            first={user?.username ?? ""} second={"#" + (user?.discriminator ?? "0000")}
                             firstStyle={{ ...SettingsPageStyle.userText, color: "white" }}
                             secondStyle={{ ...SettingsPageStyle.userText, color: "#888787" }}
                         />
                     </View>
                     <View style={{ alignItems: "flex-end", justifyContent: "center" }}>
-                        {/* TODO: Move this to center with the above text. */}
-                        {/* TODO: Change this to a clickable text object. */}
-                        <BasicText text={"Log out"} style={SettingsPageStyle.logOut} />
+                        <BasicText
+                            text={"Log out"} style={SettingsPageStyle.logOut}
+                            press={async () => await logout()}
+                        />
                     </View>
                 </View>
 
