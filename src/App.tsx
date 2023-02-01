@@ -9,6 +9,7 @@ import LoginPage from "@pages/LoginPage";
 import SettingsPage from "@pages/SettingsPage";
 import PlaylistsPage from "@pages/PlaylistsPage";
 import PlayingTrackPage from "@pages/PlayingTrackPage";
+import PlaylistPage from "@pages/PlaylistPage";
 
 import NavBar from "@components/NavBar";
 import PlaylistPage from "@pages/PlaylistPage";
