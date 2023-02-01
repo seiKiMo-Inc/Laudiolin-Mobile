@@ -81,14 +81,14 @@ class QuickControl extends React.Component<any, IState> {
                             color={"white"}
                             type={"material"} name={toggle}
                             iconStyle={ControlStyle.button}
-                            onPress={this.togglePlayback}
+                            onPress={() => this.togglePlayback()}
                         />
 
                         <Icon
                             color={"white"}
                             type={"material"} name={"skip-next"}
                             iconStyle={ControlStyle.button}
-                            onPress={this.skip}
+                            onPress={() => this.skip()}
                         />
                     </View>
 
