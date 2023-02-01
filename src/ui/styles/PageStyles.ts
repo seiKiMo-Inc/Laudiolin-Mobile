@@ -8,7 +8,8 @@ export const LoginPageStyle = StyleSheet.create({
         alignItems: "center",
         justifyContent: "flex-end",
 
-        flex: 4
+        flex: 4,
+        zIndex: 1
     },
     bottom: {
         backgroundColor: "#0c0f17",
@@ -25,7 +26,8 @@ export const LoginPageStyle = StyleSheet.create({
         width: 448, height: 448,
         position: "absolute",
         alignSelf: "center",
-        opacity: 0.3
+        opacity: 0.3,
+        zIndex: 0
     }
 });
 
@@ -122,7 +124,7 @@ export const SettingsPageStyle = StyleSheet.create({
 });
 
 export const SearchPageStyle = StyleSheet.create({
-    text: {
+    container: {
         paddingTop: 40,
         width: Dimensions.get("window").width,
     },
@@ -140,7 +142,6 @@ export const SearchPageStyle = StyleSheet.create({
     results: {
         paddingTop: 30,
         paddingLeft: 20,
-        flexDirection: "row"
     }
 });
 
