@@ -24,21 +24,22 @@ class QuickControl extends React.Component<any, IState> {
 
         return (
             <View style={ControlStyle.container}>
-                <View>
+                <View style={{ justifyContent: "center" }}>
                     <View style={{
-                        height: 62,
-                        width: Dimensions.get("window").width - 40 - 100,
-
+                        height: 65,
+                        width: Dimensions.get("window").width - 33 - 100,
                         position: "absolute",
-                        borderColor: "white",
+                        borderColor: "#1e85ad",
                         borderRadius: 20,
-                        borderWidth: 1
+                        borderWidth: 5
                     }} />
 
                     <Image
                         source={require("../../../../resources/images/icon.png")}
                         style={ControlStyle.image}
-                    />
+                    >
+                        <View style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", height: "100%", width: "100%", borderRadius: 20 }} />
+                    </Image>
                 </View>
 
                 <View style={{ justifyContent: "center" }}>
@@ -58,12 +59,16 @@ class QuickControl extends React.Component<any, IState> {
 
                     <View style={ControlStyle.info}>
                         <BasicText
-                            text={"Laudiolin"}
-                            style={{ fontSize: 20, paddingTop: 30 }}
+                            text={"Laudiolin aaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+                            numberOfLines={1}
+                            style={{ fontSize: 17 }}
+                            width={Dimensions.get("window").width - 220}
                         />
                         <BasicText
                             text={"Magix"}
-                            style={{ fontSize: 14, paddingBottom: 20 }}
+                            style={{ fontSize: 14 }}
+                            numberOfLines={1}
+                            width={Dimensions.get("window").width - 220}
                         />
                     </View>
                 </View>

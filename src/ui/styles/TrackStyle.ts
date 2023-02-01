@@ -32,10 +32,9 @@ export const ControlStyle = StyleSheet.create({
         height: 60,
         width: Dimensions.get("window").width - 38,
         borderRadius: 20,
-
         justifyContent: "center",
         alignItems: "center",
-        opacity: 0.5,
+        marginLeft: 2.5
     },
     controls: {
         flexDirection: "row",
@@ -50,5 +49,6 @@ export const ControlStyle = StyleSheet.create({
         width: Dimensions.get("window").width - 40,
         position: "absolute",
         right: -20,
+        justifyContent: "center",
     }
 });
