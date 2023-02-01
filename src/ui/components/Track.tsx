@@ -7,37 +7,11 @@ import BasicText from "@components/common/BasicText";
 
 import { TrackStyle } from "@styles/TrackStyle";
 import { TrackData } from "@backend/types";
-
-import { Gateway } from "@app/constants";
+import { getIconUrl } from "@app/utils";
 
 interface IProps {
     track: TrackData;
     padding?: number;
-}
-
-/**
- * Matches the icon URL to the correct proxy URL.
- * @param track The track to get the icon URL for.
- */
-function getIconUrl(track: TrackData): string {
-    let url = `${Gateway.url}/proxy/{ico}?from={src}`;
-
-    // Match the icon URL to the correct proxy URL.
-    const iconUrl = track.icon;
-    let split = iconUrl.split("/");
-
-    if (iconUrl.includes("i.ytimg.com")) {
-        return url
-            .replace("{ico}", split[4])
-            .replace("{src}", "yt");
-    }
-    if (iconUrl.includes("i.scdn.co")) {
-        return url
-            .replace("{ico}", split[4])
-            .replace("{src}", "spot");
-    }
-
-    return url;
 }
 
 class Track extends React.Component<IProps, any> {
