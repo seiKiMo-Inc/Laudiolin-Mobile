@@ -8,6 +8,7 @@ interface IProps {
     width?: number;
     numberOfLines?: number;
     style?: StyleProp<TextStyle>;
+    
     press?: () => void;
 }
 

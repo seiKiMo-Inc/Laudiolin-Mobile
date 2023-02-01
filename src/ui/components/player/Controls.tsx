@@ -28,6 +28,7 @@ class Controls extends React.Component<IProps, any> {
                     underlayColor={"#FFFFFF"}
                     onPress={this.props.shuffleRepeatControl}
                 />
+                
                 <Icon
                     name={"skip-previous"}
                     type={"material"}
@@ -36,6 +37,7 @@ class Controls extends React.Component<IProps, any> {
                     underlayColor={"#FFFFFF"}
                     onPress={this.props.skipToPreviousControl}
                 />
+                
                 <Icon
                     name={"play-arrow"}
                     type={"material"}
@@ -44,6 +46,7 @@ class Controls extends React.Component<IProps, any> {
                     underlayColor={"#FFFFFF"}
                     onPress={this.props.playControl}
                 />
+                
                 <Icon
                     name={"skip-next"}
                     type={"material"}
@@ -52,6 +55,7 @@ class Controls extends React.Component<IProps, any> {
                     underlayColor={"#FFFFFF"}
                     onPress={this.props.skipToNextControl}
                 />
+                
                 <Icon
                     name={"favorite"}
                     type={"material"}
