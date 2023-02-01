@@ -9,6 +9,7 @@ import PlaylistsPage from "@pages/PlaylistsPage";
 import PlayingTrackPage from "@pages/PlayingTrackPage";
 
 import NavBar from "@components/NavBar";
+import PlaylistPage from "@pages/PlaylistPage";
 
 class Hide extends React.Component<any, any> {
     constructor(props: any) {
@@ -27,6 +28,7 @@ interface IState {
     showTabs: boolean;
     showPlayingTrackPage: boolean;
     showPlaylistsPage: boolean;
+    showPlaylistPage: boolean;
 }
 
 class App extends React.Component<any, IState> {
@@ -39,7 +41,8 @@ class App extends React.Component<any, IState> {
 
             showTabs: true,
             showPlayingTrackPage: false,
-            showPlaylistsPage: false
+            showPlaylistsPage: false,
+            showPlaylistPage: false
         };
     }
 
@@ -71,6 +74,7 @@ class App extends React.Component<any, IState> {
 
                 <PlayingTrackPage showPage={this.state.showPlayingTrackPage} />
                 <PlaylistsPage showPage={this.state.showPlaylistsPage} />
+                <PlaylistPage showPage={this.state.showPlaylistPage} />
             </>
         ) : (
             <>
