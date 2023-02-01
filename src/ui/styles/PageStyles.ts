@@ -196,3 +196,61 @@ export const PlayingTrackPageStyle = StyleSheet.create({
        justifyContent: "center"
    }
 });
+
+export const PlaylistPageStyle = StyleSheet.create({
+    container: {
+        paddingTop: 40,
+        paddingLeft: 20,
+        backgroundColor: "#0c0f17",
+        height: Dimensions.get("window").height
+    },
+    tracks: {
+
+    },
+    playlistIcon: {
+        width: 135, height: 135,
+        borderRadius: 20
+    },
+    info: {
+        paddingBottom: 20,
+        flexDirection: "row",
+    },
+    actions: {
+        paddingBottom: 20,
+        flexDirection: "row",
+        width: Dimensions.get("window").width
+    },
+    text: {
+        paddingLeft: 20,
+        justifyContent: "center",
+
+        flex: 1
+    },
+    playlistName: {
+        fontSize: 28,
+        fontWeight: "bold",
+        flexWrap: "wrap"
+    },
+    playlistAuthor: {
+        fontSize: 16
+    },
+    favoriteIcon: {
+        color: "#d21d4f",
+        fontSize: 35,
+        paddingTop: 1
+    },
+    editButton: {
+        width: 90, height: 40,
+        borderRadius: 10,
+    },
+    editText: {
+        fontWeight: "bold",
+    },
+    shuffleButton: {
+        width: 100, height: 40,
+        borderRadius: 10,
+    },
+    shuffleText: {
+        fontWeight: "bold",
+    }
+});
