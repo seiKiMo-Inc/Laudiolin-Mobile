@@ -184,17 +184,44 @@ export const PlaylistsPageStyle = StyleSheet.create({
 });
 
 export const PlayingTrackPageStyle = StyleSheet.create({
-   view: {
-       width: "100%",
-       height: "100%",
-       backgroundColor: "#0c0f17",
-       zIndex: 99999,
-       position: "absolute",
-       top: 0,
-       left: 0,
-       alignItems: "center",
-       justifyContent: "center"
-   }
+    background: {
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+        zIndex: 0,
+    },
+    view: {
+        width: "100%",
+        height: "100%",
+        backgroundColor: "#0c0f17",
+        zIndex: 99999,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        flexDirection: "column",
+    },
+    topBar: {
+        width: "100%",
+        height: 70,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        padding: 20
+    },
+    topBarText: {
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    trackInfo: {
+        alignSelf: "center",
+        marginTop: 20,
+    },
+    trackImage: {
+        width: Dimensions.get("window").width,
+        height: Dimensions.get("window").width,
+        maxHeight: 400,
+        maxWidth: 400,
+    },
 });
 
 export const PlaylistPageStyle = StyleSheet.create({

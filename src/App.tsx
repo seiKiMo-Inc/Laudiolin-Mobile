@@ -12,7 +12,6 @@ import PlayingTrackPage from "@pages/PlayingTrackPage";
 import PlaylistPage from "@pages/PlaylistPage";
 
 import NavBar from "@components/NavBar";
-import PlaylistPage from "@pages/PlaylistPage";
 import QuickControl from "@components/player/QuickControl";
 
 class Hide extends React.Component<any, any> {
@@ -83,7 +82,10 @@ class App extends React.Component<any, IState> {
                     <NavBar pageIndex={this.state.pageIndex} setPageIndex={(i) => this.setState({ pageIndex: i })} />
                 </Hide>
 
-                <PlayingTrackPage showPage={this.state.showPlayingTrackPage} />
+                <PlayingTrackPage
+                    showPage={this.state.showPlayingTrackPage}
+                    showPageFn={(show) => this.setState({ showPlayingTrackPage: show })}
+                />
                 <PlaylistsPage showPage={this.state.showPlaylistsPage} />
                 <PlaylistPage showPage={this.state.showPlaylistPage} />
 
