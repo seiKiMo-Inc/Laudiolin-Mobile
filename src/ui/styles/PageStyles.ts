@@ -147,14 +147,15 @@ export const SearchPageStyle = StyleSheet.create({
 
 export const PlaylistsPageStyle = StyleSheet.create({
     container: {
-        paddingTop: 40,
-        paddingLeft: 20,
-        backgroundColor: "#0c0f17"
+        padding: 10,
+        paddingTop: 0,
+        backgroundColor: "#0c0f17",
+        zIndex: 99999,
     },
-    title: {
-        fontSize: 28,
-        fontWeight: "bold",
-        paddingBottom: 20,
+    header: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 20
     },
     list: {
         paddingBottom: 80
