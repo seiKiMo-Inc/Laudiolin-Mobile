@@ -26,7 +26,8 @@ export const TrackStyle = StyleSheet.create({
 export const ControlStyle = StyleSheet.create({
     container: {
         flexDirection: "row",
-        paddingLeft: 20
+        paddingLeft: 20,
+        zIndex: 10000,
     },
     image: {
         height: 60,
@@ -40,10 +41,12 @@ export const ControlStyle = StyleSheet.create({
         flexDirection: "row",
         position: "absolute",
         right: "5%",
+        zIndex: 10,
+        marginRight: 10,
+        gap: 10
     },
     button: {
         fontSize: 45,
-        paddingRight: 20
     },
     info: {
         width: Dimensions.get("window").width - 40,

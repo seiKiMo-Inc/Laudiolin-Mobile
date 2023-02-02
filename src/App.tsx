@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { TabView } from "@rneui/themed";
+import LinearGradient from "react-native-linear-gradient";
 
 import Home from "@pages/Home";
 import SearchPage from "@pages/SearchPage";
@@ -11,13 +12,13 @@ import PlaylistsPage from "@pages/PlaylistsPage";
 import PlayingTrackPage from "@pages/PlayingTrackPage";
 import PlaylistPage from "@pages/PlaylistPage";
 
-import Hide from "@components/Hide";
 import NavBar from "@components/NavBar";
 import QuickControl from "@components/player/QuickControl";
+import Hide from "@components/common/Hide";
 
+import { registerListener } from "@backend/navigation";
 import * as user from "@backend/user";
 import emitter from "@backend/events";
-import { registerListener } from "@backend/navigation";
 
 interface IState {
     pageIndex: number;
@@ -27,6 +28,7 @@ interface IState {
     showPlayingTrackPage: boolean;
     showPlaylistsPage: boolean;
     showPlaylistPage: boolean;
+    isQuickControlVisible: boolean;
 }
 
 const style = StyleSheet.create({
@@ -47,7 +49,8 @@ class App extends React.Component<any, IState> {
             showTabs: true,
             showPlayingTrackPage: false,
             showPlaylistsPage: false,
-            showPlaylistPage: false
+            showPlaylistPage: false,
+            isQuickControlVisible: false
         };
 
         emitter.on("login", () =>
@@ -118,6 +121,12 @@ class App extends React.Component<any, IState> {
                         </TabView.Item>
                     </TabView>
 
+                    <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 40, backgroundColor: "#0c0f17", zIndex: 0 }} />
+                    <LinearGradient
+                        colors={["transparent", "#0c0f17"]}
+                        style={{ position: "absolute", bottom: this.state.isQuickControlVisible ? 110 : 20, width: "100%", height: 40 }}
+                        locations={[0, 0.4]}
+                    />
                     <NavBar pageIndex={this.state.pageIndex} setPageIndex={(i) => this.setState({ pageIndex: i })} />
                 </Hide>
 
@@ -129,7 +138,10 @@ class App extends React.Component<any, IState> {
                 <PlaylistPage showPage={this.state.showPlaylistPage} />
 
                 <View style={style.control}>
-                    <QuickControl />
+                    <QuickControl
+                        showPlayingTrackPage={() => this.setState({ showPlayingTrackPage: true })}
+                        isQuickControlVisible={(visible) => this.setState({ isQuickControlVisible: visible })}
+                    />
                 </View>
             </>
         ) : (

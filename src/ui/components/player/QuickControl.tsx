@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, View } from "react-native";
+import { Dimensions, View, TouchableWithoutFeedback } from "react-native";
 
 import { Icon, Image } from "@rneui/base";
 import BasicText from "@components/common/BasicText";
@@ -9,12 +9,17 @@ import { ControlStyle } from "@styles/TrackStyle";
 import { getCurrentTrack } from "@app/backend/audio";
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 
+interface IProps {
+    showPlayingTrackPage: () => void;
+    isQuickControlVisible: (visible: boolean) => void;
+}
+
 interface IState {
     paused: boolean;
     track: Track|null;
 }
 
-class QuickControl extends React.Component<any, IState> {
+class QuickControl extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props);
 
@@ -65,6 +70,16 @@ class QuickControl extends React.Component<any, IState> {
 
     async componentDidMount(): Promise<void> {
         this.setState({ track: await getCurrentTrack() });
+
+        if (this.state.track != null)
+            this.props.isQuickControlVisible(true);
+    }
+
+    componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
+        if (this.state.track != null && prevState.track == null)
+            this.props.isQuickControlVisible(true);
+        else if (this.state.track == null && prevState.track != null)
+            this.props.isQuickControlVisible(false);
     }
 
     render() {
@@ -72,58 +87,60 @@ class QuickControl extends React.Component<any, IState> {
         const toggle = this.state.paused ? "play-arrow" : "pause";
 
         return track != null ? (
-            <View style={ControlStyle.container}>
-                <View style={{ justifyContent: "center" }}>
-                    <View style={{
-                        height: 65,
-                        width: Dimensions.get("window").width - 33 - 100,
-                        position: "absolute",
-                        borderColor: "#1e85ad",
-                        borderRadius: 20,
-                        borderWidth: 5
-                    }} />
+            <TouchableWithoutFeedback onPress={this.props.showPlayingTrackPage}>
+                <View style={ControlStyle.container}>
+                    <View style={{ justifyContent: "center" }}>
+                        <View style={{
+                            height: 65,
+                            width: Dimensions.get("window").width - 33 - 100,
+                            position: "absolute",
+                            borderColor: "#1e85ad",
+                            borderRadius: 20,
+                            borderWidth: 5
+                        }} />
 
-                    <Image
-                        source={{ uri: (track?.artwork as string ?? "") }}
-                        style={ControlStyle.image}
-                    >
-                        <View style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", height: "100%", width: "100%", borderRadius: 20 }} />
-                    </Image>
-                </View>
-
-                <View style={{ justifyContent: "center" }}>
-                    <View style={ControlStyle.controls}>
-                        <Icon
-                            color={"white"}
-                            type={"material"} name={toggle}
-                            iconStyle={ControlStyle.button}
-                            onPress={() => this.togglePlayback()}
-                        />
-
-                        <Icon
-                            color={"white"}
-                            type={"material"} name={"skip-next"}
-                            iconStyle={ControlStyle.button}
-                            onPress={() => this.skip()}
-                        />
+                        <Image
+                            source={{ uri: (track?.artwork as string ?? "") }}
+                            style={ControlStyle.image}
+                        >
+                            <View style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", height: "100%", width: "100%", borderRadius: 20 }} />
+                        </Image>
                     </View>
 
-                    <View style={ControlStyle.info}>
-                        <BasicText
-                            text={track?.title ?? ""}
-                            numberOfLines={1}
-                            style={{ fontSize: 17 }}
-                            width={Dimensions.get("window").width - 220}
-                        />
-                        <BasicText
-                            text={track?.artist ?? ""}
-                            style={{ fontSize: 14 }}
-                            numberOfLines={1}
-                            width={Dimensions.get("window").width - 220}
-                        />
+                    <View style={{ justifyContent: "center" }}>
+                        <View style={ControlStyle.controls}>
+                            <Icon
+                                color={"white"}
+                                type={"material"} name={toggle}
+                                iconStyle={ControlStyle.button}
+                                onPress={() => this.togglePlayback()}
+                            />
+
+                            <Icon
+                                color={"white"}
+                                type={"material"} name={"skip-next"}
+                                iconStyle={ControlStyle.button}
+                                onPress={() => this.skip()}
+                            />
+                        </View>
+
+                        <View style={ControlStyle.info}>
+                            <BasicText
+                                text={track?.title ?? ""}
+                                numberOfLines={1}
+                                style={{ fontSize: 17 }}
+                                width={Dimensions.get("window").width - 220}
+                            />
+                            <BasicText
+                                text={track?.artist ?? ""}
+                                style={{ fontSize: 14 }}
+                                numberOfLines={1}
+                                width={Dimensions.get("window").width - 220}
+                            />
+                        </View>
                     </View>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
         ) : null;
     }
 }
