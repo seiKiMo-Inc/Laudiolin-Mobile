@@ -55,6 +55,15 @@ class HomePlaylist extends React.Component<any, any> {
 class Home extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
+
+        emitter.on("login", () => this.forceUpdate());
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            // Update the component.
+            this.forceUpdate();
+        }, 1000);
     }
 
     /**
