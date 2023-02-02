@@ -22,13 +22,26 @@ class QuickControl extends React.Component<any, IState> {
             paused: false,
             track: null
         };
-        
+
         // Register track player listeners.
-        TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => this.forceUpdate());
-        TrackPlayer.addEventListener(Event.PlaybackTrackChanged, () => this.forceUpdate());
-        TrackPlayer.addEventListener(Event.PlaybackQueueEnded, () => this.forceUpdate());
+        TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => this.update());
+        TrackPlayer.addEventListener(Event.PlaybackTrackChanged, () => this.update());
+        TrackPlayer.addEventListener(Event.PlaybackQueueEnded, () => this.update());
     }
-    
+
+    /**
+     * Updates the quick control center.
+     */
+    async update(): Promise<void> {
+        // Update the state.
+        this.setState({
+            track: await getCurrentTrack(),
+            paused: await TrackPlayer.getState() == State.Paused
+        });
+
+        this.forceUpdate(); // Update the component.
+    }
+
     /**
      * Toggles the playback state of the audio player.
      */
@@ -36,17 +49,20 @@ class QuickControl extends React.Component<any, IState> {
         // Check if the player is paused.
         if (await TrackPlayer.getState() == State.Paused)
             await TrackPlayer.play();
-        else 
+        else
             await TrackPlayer.pause();
+
+        // Update the component.
+        this.forceUpdate();
     }
-    
+
     /**
      * Skips to the next track in queue.
      */
     async skip(): Promise<void> {
         await TrackPlayer.skipToNext();
     }
-    
+
     async componentDidMount(): Promise<void> {
         this.setState({ track: await getCurrentTrack() });
     }
@@ -55,7 +71,7 @@ class QuickControl extends React.Component<any, IState> {
         const track = this.state.track;
         const toggle = this.state.paused ? "play-arrow" : "pause";
 
-        return (
+        return track != null ? (
             <View style={ControlStyle.container}>
                 <View style={{ justifyContent: "center" }}>
                     <View style={{
@@ -108,7 +124,7 @@ class QuickControl extends React.Component<any, IState> {
                     </View>
                 </View>
             </View>
-        );
+        ) : null;
     }
 }
 

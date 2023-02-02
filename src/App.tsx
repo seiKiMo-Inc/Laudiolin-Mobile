@@ -83,6 +83,15 @@ class App extends React.Component<any, IState> {
                         showPlaylistPage: false
                     });
                     return;
+                case "Playlist":
+                    this.setState({
+                        pageIndex: 0,
+                        showTabs: false,
+                        showPlayingTrackPage: false,
+                        showPlaylistsPage: false,
+                        showPlaylistPage: true
+                    });
+                    return;
             }
         });
     }
@@ -120,11 +129,9 @@ class App extends React.Component<any, IState> {
                 <PlaylistsPage showPage={this.state.showPlaylistsPage} />
                 <PlaylistPage showPage={this.state.showPlaylistPage} />
 
-                <Hide show={true}>
-                    <View style={style.control}>
-                        <QuickControl />
-                    </View>
-                </Hide>
+                <View style={style.control}>
+                    <QuickControl />
+                </View>
             </>
         ) : (
             <>
