@@ -228,10 +228,11 @@ export const PlayingTrackPageStyle = StyleSheet.create({
 
 export const PlaylistPageStyle = StyleSheet.create({
     container: {
-        paddingTop: 40,
-        paddingLeft: 20,
+        padding: 20,
+        paddingTop: 0,
         backgroundColor: "#0c0f17",
-        height: Dimensions.get("window").height
+        height: Dimensions.get("window").height,
+        zIndex: 99999,
     },
     tracks: {
 
