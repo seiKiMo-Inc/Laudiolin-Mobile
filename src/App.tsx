@@ -16,9 +16,9 @@ import NavBar from "@components/NavBar";
 import QuickControl from "@components/player/QuickControl";
 import Hide from "@components/common/Hide";
 
-import { registerListener } from "@backend/navigation";
 import * as user from "@backend/user";
 import emitter from "@backend/events";
+import { navigate, registerListener } from "@backend/navigation";
 
 interface IState {
     pageIndex: number;
@@ -94,6 +94,15 @@ class App extends React.Component<any, IState> {
                         showPlaylistPage: true
                     });
                     return;
+                case "Playing":
+                    this.setState({
+                        pageIndex: 0,
+                        showTabs: false,
+                        showPlayingTrackPage: true,
+                        showPlaylistsPage: false,
+                        showPlaylistPage: false
+                    });
+                    return;
             }
         });
     }
@@ -132,7 +141,7 @@ class App extends React.Component<any, IState> {
 
                 <PlayingTrackPage
                     showPage={this.state.showPlayingTrackPage}
-                    showPageFn={(show) => this.setState({ showPlayingTrackPage: show })}
+                    showPageFn={() => navigate("Home")}
                 />
                 <PlaylistsPage showPage={this.state.showPlaylistsPage} />
                 <PlaylistPage showPage={this.state.showPlaylistPage} />
