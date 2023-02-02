@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, View, TouchableWithoutFeedback } from "react-native";
+import { Dimensions, TouchableWithoutFeedback, View } from "react-native";
 
 import { Icon, Image } from "@rneui/base";
 import BasicText from "@components/common/BasicText";
@@ -58,7 +58,7 @@ class QuickControl extends React.Component<IProps, IState> {
             await TrackPlayer.pause();
 
         // Update the component.
-        this.forceUpdate();
+        await this.update();
     }
 
     /**
@@ -87,7 +87,7 @@ class QuickControl extends React.Component<IProps, IState> {
         const toggle = this.state.paused ? "play-arrow" : "pause";
 
         return track != null ? (
-            <TouchableWithoutFeedback onPress={this.props.showPlayingTrackPage}>
+            <TouchableWithoutFeedback onPress={() => this.props.showPlayingTrackPage()}>
                 <View style={ControlStyle.container}>
                     <View style={{ justifyContent: "center" }}>
                         <View style={{
