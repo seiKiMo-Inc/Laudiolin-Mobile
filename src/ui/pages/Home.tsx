@@ -1,10 +1,8 @@
 import React from "react";
-import { FlatList, ListRenderItemInfo, ScrollView, View } from "react-native";
+import { FlatList, ImageBackground, ListRenderItemInfo, ScrollView, TouchableHighlight, View } from "react-native";
 
 import Track from "@components/Track";
 import BasicText from "@components/common/BasicText";
-
-import { Image } from "@rneui/base";
 
 import { HomePageStyle } from "@styles/PageStyles";
 
@@ -42,21 +40,34 @@ class HomePlaylist extends React.Component<any, any> {
 
         return (
             <View style={HomePageStyle.playlist}>
-                <Image
-                    source={{ uri: playlist.icon }}
-                    style={HomePageStyle.playlistImage}
+                <TouchableHighlight
+                    style={{ borderRadius: 20 }}
                     onPress={() => this.openPlaylist()}
-                />
+                >
+                    <ImageBackground
+                        source={{ uri: playlist.icon }}
+                        style={{ width: 136, height: 136 }}
+                        imageStyle={HomePageStyle.playlistImage}
+                    >
+                        <BasicText
+                            text={playlist.name}
+                            style={HomePageStyle.playlistName}
+                        />
+                    </ImageBackground>
+                </TouchableHighlight>
             </View>
         );
     }
 }
 
 class Home extends React.Component<any, any> {
+    /**
+     * Force update listener.
+     */
+    update = () => this.forceUpdate();
+
     constructor(props: any) {
         super(props);
-
-        emitter.on("login", () => this.forceUpdate());
     }
 
     componentDidMount() {
@@ -64,6 +75,12 @@ class Home extends React.Component<any, any> {
             // Update the component.
             this.forceUpdate();
         }, 1000);
+
+        emitter.on("login", this.update);
+    }
+
+    componentWillUnmount() {
+        emitter.removeListener("login", this.update);
     }
 
     /**

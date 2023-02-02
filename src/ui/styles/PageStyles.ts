@@ -67,8 +67,13 @@ export const HomePageStyle = StyleSheet.create({
         paddingRight: 20,
     },
     playlistImage: {
-        width: 136, height: 136,
-        borderRadius: 20
+        borderRadius: 20,
+        opacity: 0.9
+    },
+    playlistName: {
+        fontSize: 20,
+        paddingLeft: 10,
+        alignSelf: "flex-end"
     }
 });
 
@@ -219,7 +224,7 @@ export const PlayingTrackPageStyle = StyleSheet.create({
     },
     trackImage: {
         width: Dimensions.get("window").width,
-        height: Dimensions.get("window").width,
+        height: Dimensions.get("window").height,
         maxHeight: 400,
         maxWidth: 400,
     },
