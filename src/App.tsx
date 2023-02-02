@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 import { TabView } from "@rneui/themed";
+import LinearGradient from "react-native-linear-gradient";
 
 import Home from "@pages/Home";
 import SearchPage from "@pages/SearchPage";
@@ -19,16 +20,6 @@ import { registerListener } from "@backend/navigation";
 import * as user from "@backend/user";
 import emitter from "@backend/events";
 
-class Hide extends React.Component<any, any> {
-    constructor(props: any) {
-        super(props);
-    }
-
-    render() {
-        return this.props.show ? this.props.children : null;
-    }
-}
-
 interface IState {
     pageIndex: number;
     loggedIn: boolean;
@@ -37,6 +28,7 @@ interface IState {
     showPlayingTrackPage: boolean;
     showPlaylistsPage: boolean;
     showPlaylistPage: boolean;
+    isQuickControlVisible: boolean;
 }
 
 const style = StyleSheet.create({
@@ -57,7 +49,8 @@ class App extends React.Component<any, IState> {
             showTabs: true,
             showPlayingTrackPage: false,
             showPlaylistsPage: false,
-            showPlaylistPage: false
+            showPlaylistPage: false,
+            isQuickControlVisible: false
         };
 
         emitter.on("login", () =>
@@ -145,7 +138,10 @@ class App extends React.Component<any, IState> {
                 <PlaylistPage showPage={this.state.showPlaylistPage} />
 
                 <View style={style.control}>
-                    <QuickControl />
+                    <QuickControl
+                        showPlayingTrackPage={() => this.setState({ showPlayingTrackPage: true })}
+                        isQuickControlVisible={(visible) => this.setState({ isQuickControlVisible: visible })}
+                    />
                 </View>
             </>
         ) : (
