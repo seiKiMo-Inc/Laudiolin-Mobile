@@ -13,6 +13,7 @@ import PlaylistPage from "@pages/PlaylistPage";
 
 import NavBar from "@components/NavBar";
 import QuickControl from "@components/player/QuickControl";
+import Hide from "@components/common/Hide";
 
 import { registerListener } from "@backend/navigation";
 import * as user from "@backend/user";
