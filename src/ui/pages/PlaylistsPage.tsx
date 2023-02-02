@@ -7,6 +7,8 @@ import LinearGradient from "react-native-linear-gradient";
 
 import { PlaylistsPageStyle } from "@styles/PageStyles";
 
+import { navigate } from "@backend/navigation";
+
 class Playlist extends React.Component<any, any> {
     render() {
         return (
@@ -57,8 +59,10 @@ class PlaylistsPage extends React.Component<IProps, any> {
     render() {
         return this.props.showPage ? (
             <View style={PlaylistsPageStyle.container}>
-                {/* TODO: Change '<' to an icon. */}
-                <BasicText text={"< Playlists"} style={PlaylistsPageStyle.title} />
+                <View style={PlaylistsPageStyle.header}>
+                    <Icon name={"chevron-left"} type={"material"} color={"white"} size={35} onPress={() => navigate("Home")} underlayColor={"#FFF"} />
+                    <BasicText text={"Playlists"} style={{ fontSize: 25, fontWeight: "bold", marginLeft: 10 }} />
+                </View>
 
                 <FlatList
                     contentContainerStyle={PlaylistsPageStyle.list}
