@@ -153,9 +153,14 @@ export const SearchPageStyle = StyleSheet.create({
 export const PlaylistsPageStyle = StyleSheet.create({
     container: {
         padding: 10,
-        paddingTop: 0,
+        paddingBottom: 0,
         backgroundColor: "#0c0f17",
+        height: "100%",
+        width: "100%",
         zIndex: 99999,
+        position: "absolute",
+        top: 0,
+        left: 0,
     },
     header: {
         flexDirection: "row",
@@ -234,13 +239,16 @@ export const PlayingTrackPageStyle = StyleSheet.create({
 export const PlaylistPageStyle = StyleSheet.create({
     container: {
         padding: 20,
-        paddingTop: 0,
+        paddingBottom: 0,
         backgroundColor: "#0c0f17",
-        height: Dimensions.get("window").height,
+        height: "100%",
+        width: "100%",
         zIndex: 99999,
+        position: "absolute",
+        top: 0,
+        left: 0,
     },
     tracks: {
-
     },
     playlistIcon: {
         width: 135, height: 135,
