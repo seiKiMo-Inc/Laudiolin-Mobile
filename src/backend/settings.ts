@@ -35,13 +35,25 @@ export async function reloadSettings(from?: UserSettings | null) {
  * Settings utilities.
  */
 
-
 /**
  * Returns the cached user settings.
  * Use {@link #reloadSettings} to update the settings.
  */
 export function getSettings(): UserSettings | null {
     return settings;
+}
+
+/**
+ * Sets the user's token.
+ * @param token The token.
+ */
+export async function setToken(token: string): Promise<void> {
+    if (!settings) return;
+
+    // Set the token in the settings.
+    settings.token = token;
+    await saveSettings(settings);
+    await reloadSettings(settings);
 }
 
 /**
@@ -101,7 +113,7 @@ export async function get(key: string, fallback: string | null = null): Promise<
  * @param key The key to set the value of.
  * @param value The value to set.
  */
-export async function save(key: string, value: string): Promise<void> {
+export async function save(key: string, value: string = ""): Promise<void> {
     try {
         return await EncryptedStorage.setItem(key, value);
     } catch {

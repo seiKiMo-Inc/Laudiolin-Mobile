@@ -15,6 +15,8 @@ import NavBar from "@components/NavBar";
 import QuickControl from "@components/player/QuickControl";
 
 import { registerListener } from "@backend/navigation";
+import * as user from "@backend/user";
+import emitter from "@backend/events";
 
 class Hide extends React.Component<any, any> {
     constructor(props: any) {
@@ -49,16 +51,22 @@ class App extends React.Component<any, IState> {
 
         this.state = {
             pageIndex: 0,
-            loggedIn: false,
+            loggedIn: user.userData != null,
 
             showTabs: true,
             showPlayingTrackPage: false,
             showPlaylistsPage: false,
             showPlaylistPage: false
         };
+
+        emitter.on("login", () =>
+            this.setState({ loggedIn: true }));
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        // Login to laudiolin.
+        await user.login();
+
         registerListener(page => {
             switch (page) {
                 default:

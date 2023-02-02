@@ -63,7 +63,7 @@ export async function login(code: string = "", loadData: boolean = true) {
     }
 
     userData = await response.json(); // Load the data into the user data variable.
-    console.debug("User data has been loaded."); // Log the success.
+    console.info("User data has been loaded."); // Log the success.
 
     // Emit the login event.
     emitter.emit("login", userData);
@@ -87,8 +87,8 @@ export async function logout() {
     await settings.saveSettings(newSettings);
 
     // Set the user as logged out.
-    await settings.remove("isAuthenticated");
-    await settings.remove("isGuest");
+    await settings.remove("user_token");
+    await settings.remove("authenticated");
 
     // Emit the logout event.
     emitter.emit("logout");
@@ -116,10 +116,15 @@ export async function loadPlaylists() {
         if (response.status != 301) {
             console.error(`Failed to get playlist data from the backend. Status code: ${response.status}`); return;
         }
+
         playlists.push(await response.json()); // Load the data into the playlist array.
     }
 
-    console.debug(`Loaded ${playlists.length} playlists.`); // Log the success.
+    // Remove duplicate playlists.
+    playlists = playlists.filter((playlist, index, self) =>
+        self.findIndex(p => p.id == playlist.id) == index);
+
+    console.info(`Loaded ${playlists.length} playlists.`); // Log the success.
 }
 
 /**

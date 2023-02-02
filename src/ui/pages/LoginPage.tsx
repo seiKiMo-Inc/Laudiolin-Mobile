@@ -7,6 +7,7 @@ import BasicText from "@components/common/BasicText";
 
 import { LoginPageStyle } from "@styles/PageStyles";
 
+import * as settings from "@backend/settings";
 import { navigate } from "@backend/navigation";
 import { getLoginUrl, login } from "@backend/user";
 
@@ -55,7 +56,12 @@ class SearchPage extends React.Component<any, IState> {
                 .split("&")[0];
             // Login with the account.
             login(code)
-                .then(() => {
+                .then(async () => {
+                    // Save the user's token.
+                    await settings.setToken(code);
+                    // Set the user as authenticated.
+                    await settings.save("authenticated", "discord");
+
                     // Navigate to the home page.
                     navigate("Home");
                     this.setState({ showLogin: false });
