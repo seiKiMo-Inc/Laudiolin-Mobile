@@ -14,7 +14,6 @@ import PlaylistPage from "@pages/PlaylistPage";
 
 import NavBar from "@components/NavBar";
 import QuickControl from "@components/player/QuickControl";
-import Hide from "@components/common/Hide";
 
 import { registerListener } from "@backend/navigation";
 import * as user from "@backend/user";
@@ -24,7 +23,6 @@ interface IState {
     pageIndex: number;
     loggedIn: boolean;
 
-    showTabs: boolean;
     showPlayingTrackPage: boolean;
     showPlaylistsPage: boolean;
     showPlaylistPage: boolean;
@@ -120,34 +118,32 @@ class App extends React.Component<any, IState> {
     render() {
         return this.state.loggedIn ? (
             <>
-                <Hide show={this.state.showTabs}>
-                    <TabView
-                        value={this.state.pageIndex}
-                        onChange={(i) => this.setState({ pageIndex: i })}
-                        animationType="spring"
-                        animationConfig={{ useNativeDriver: true, speed: 100 }}
-                        disableSwipe={true}
-                        containerStyle={{ backgroundColor: "#0c0f17" }}
-                    >
-                        <TabView.Item>
-                            <Home />
-                        </TabView.Item>
-                        <TabView.Item>
-                            <SearchPage />
-                        </TabView.Item>
-                        <TabView.Item>
-                            <SettingsPage />
-                        </TabView.Item>
-                    </TabView>
+                <TabView
+                    value={this.state.pageIndex}
+                    onChange={(i) => this.setState({ pageIndex: i })}
+                    animationType="spring"
+                    animationConfig={{ useNativeDriver: true, speed: 100 }}
+                    disableSwipe={true}
+                    containerStyle={{ backgroundColor: "#0c0f17" }}
+                >
+                    <TabView.Item>
+                        <Home />
+                    </TabView.Item>
+                    <TabView.Item>
+                        <SearchPage />
+                    </TabView.Item>
+                    <TabView.Item>
+                        <SettingsPage />
+                    </TabView.Item>
+                </TabView>
 
-                    <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 40, backgroundColor: "#0c0f17", zIndex: 0 }} />
-                    <LinearGradient
-                        colors={["transparent", "#0c0f17"]}
-                        style={{ position: "absolute", bottom: this.state.isQuickControlVisible ? 110 : 20, width: "100%", height: 40 }}
-                        locations={[0, 0.4]}
-                    />
-                    <NavBar pageIndex={this.state.pageIndex} setPageIndex={(i) => this.setState({ pageIndex: i })} />
-                </Hide>
+                <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 40, backgroundColor: "#0c0f17", zIndex: 0 }} />
+                <LinearGradient
+                    colors={["transparent", "#0c0f17"]}
+                    style={{ position: "absolute", bottom: this.state.isQuickControlVisible ? 110 : 20, width: "100%", height: 40 }}
+                    locations={[0, 0.4]}
+                />
+                <NavBar pageIndex={this.state.pageIndex} setPageIndex={(i) => this.setState({ pageIndex: i })} />
 
                 <PlayingTrackPage
                     showPage={this.state.showPlayingTrackPage}
