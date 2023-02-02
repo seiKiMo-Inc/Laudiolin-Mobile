@@ -4,6 +4,8 @@ import { View } from "react-native";
 import { Icon } from "@rneui/themed";
 
 interface IProps {
+    isPaused: boolean;
+
     shuffleRepeatControl: () => void;
     skipToPreviousControl: () => void;
     playControl: () => void;
@@ -28,7 +30,7 @@ class Controls extends React.Component<IProps, any> {
                     underlayColor={"#FFFFFF"}
                     onPress={this.props.shuffleRepeatControl}
                 />
-                
+
                 <Icon
                     name={"skip-previous"}
                     type={"material"}
@@ -37,16 +39,16 @@ class Controls extends React.Component<IProps, any> {
                     underlayColor={"#FFFFFF"}
                     onPress={this.props.skipToPreviousControl}
                 />
-                
+
                 <Icon
-                    name={"play-arrow"}
+                    name={this.props.isPaused ? "play-arrow" : "pause"}
                     type={"material"}
                     size={30}
                     color={"#FFFFFF"}
                     underlayColor={"#FFFFFF"}
                     onPress={this.props.playControl}
                 />
-                
+
                 <Icon
                     name={"skip-next"}
                     type={"material"}
@@ -55,7 +57,7 @@ class Controls extends React.Component<IProps, any> {
                     underlayColor={"#FFFFFF"}
                     onPress={this.props.skipToNextControl}
                 />
-                
+
                 <Icon
                     name={"favorite"}
                     type={"material"}

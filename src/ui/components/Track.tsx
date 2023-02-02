@@ -12,7 +12,7 @@ import { getIconUrl } from "@app/utils";
 interface IProps {
     track: TrackData;
     padding?: number;
-    onClick?: () => void;
+    onClick?: (track: TrackData) => void;
 }
 
 class Track extends React.Component<IProps, any> {
@@ -24,39 +24,42 @@ class Track extends React.Component<IProps, any> {
         const { track } = this.props;
 
         return (
-            <TouchableHighlight
-                onPress={this.props.onClick}
-            >
-                <View style={{
-                    flexDirection: "row",
-                    paddingBottom: this.props.padding ?? 0
-                }}>
-                    <Image
-                        style={TrackStyle.image}
-                        source={{ uri: getIconUrl(track) }}
-                    />
+            <View style={{
+                paddingBottom: this.props.padding ?? 0
+            }}>
+                <TouchableHighlight
+                    underlayColor={"transparent"}
+                    style={{ borderRadius: 20 }}
+                    onPress={() => this.props.onClick?.(track)}
+                >
+                    <View style={{ flexDirection: "row", }}>
+                        <Image
+                            style={TrackStyle.image}
+                            source={{ uri: getIconUrl(track) }}
+                        />
 
-                    <View style={TrackStyle.text}>
-                        <TextTicker
-                            style={TrackStyle.title}
-                            loop duration={5000}
-                        >
-                            {track.title}
-                        </TextTicker>
+                        <View style={TrackStyle.text}>
+                            <TextTicker
+                                style={TrackStyle.title}
+                                loop duration={5000}
+                            >
+                                {track.title}
+                            </TextTicker>
 
-                        <BasicText
-                            text={track.artist}
-                            style={TrackStyle.artist}
+                            <BasicText
+                                text={track.artist}
+                                style={TrackStyle.artist}
+                            />
+                        </View>
+
+                        <Icon
+                            color={"white"}
+                            type="material" name={"more-vert"}
+                            containerStyle={TrackStyle.more}
                         />
                     </View>
-
-                    <Icon
-                        color={"white"}
-                        type="material" name={"more-vert"}
-                        containerStyle={TrackStyle.more}
-                    />
-                </View>
-            </TouchableHighlight>
+                </TouchableHighlight>
+            </View>
         );
     }
 }

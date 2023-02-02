@@ -90,7 +90,7 @@ class SearchPage extends React.Component<any, IState> {
                         this.state.results.map((track, index) => (
                             <Track
                                 key={index} track={track} padding={10}
-                                onClick={() => this.playTrack(track)}
+                                onClick={track => this.playTrack(track)}
                             />
                         ))
                     }

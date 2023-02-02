@@ -16,9 +16,9 @@ class ProgressBar extends React.Component<IProps, any> {
         super(props);
     }
 
-    msToTime(duration: number) {
-        let seconds: string|number = Math.floor((duration / 1000) % 60);
-        let minutes: string|number = Math.floor((duration / (1000 * 60)) % 60);
+    toTime(duration: number) {
+        let seconds: string|number = Math.floor((duration) % 60);
+        let minutes: string|number = Math.floor((duration / (60)) % 60);
 
         seconds = seconds < 10 ? "0" + seconds : seconds;
         minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -27,8 +27,9 @@ class ProgressBar extends React.Component<IProps, any> {
     }
 
     render() {
-        const elapsed = this.msToTime(this.props.currentTime);
-        const duration = this.msToTime(this.props.trackLength);
+        const elapsed = this.toTime(this.props.currentTime);
+        const duration = this.toTime(this.props.trackLength);
+
         return (
             <View>
                 <Slider
@@ -41,11 +42,14 @@ class ProgressBar extends React.Component<IProps, any> {
                     thumbStyle={ProgressBarStyle.thumb}
                     trackStyle={ProgressBarStyle.track}
                 />
+
                 <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
                     <Text style={ProgressBarStyle.text}>
                         {elapsed[0] + ":" + elapsed[1]}
                     </Text>
+
                     <View style={{ flex: 1 }} />
+
                     <Text style={ProgressBarStyle.text}>
                         {duration[0] + ":" + duration[1]}
                     </Text>

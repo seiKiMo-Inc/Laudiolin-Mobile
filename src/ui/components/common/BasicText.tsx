@@ -8,7 +8,7 @@ interface IProps {
     width?: number;
     numberOfLines?: number;
     style?: StyleProp<TextStyle>;
-    
+
     press?: () => void;
 }
 
@@ -21,6 +21,7 @@ class BasicText extends React.Component<IProps, any> {
         return this.props.press ? (
             <View style={{ width: this.props.width }}>
                 <TouchableHighlight
+                    underlayColor={"transparent"}
                     onPress={this.props.press}
                 >
                     <Text

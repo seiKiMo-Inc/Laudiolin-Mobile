@@ -1,5 +1,5 @@
 import React from "react";
-import { BackHandler, StyleSheet, View } from "react-native";
+import { StyleSheet, View, BackHandler } from "react-native";
 
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
@@ -15,9 +15,9 @@ import PlaylistPage from "@pages/PlaylistPage";
 import NavBar from "@components/NavBar";
 import QuickControl from "@components/player/QuickControl";
 
-import { registerListener } from "@backend/navigation";
 import * as user from "@backend/user";
 import emitter from "@backend/events";
+import { navigate, registerListener } from "@backend/navigation";
 
 interface IState {
     pageIndex: number;
@@ -88,6 +88,14 @@ class App extends React.Component<any, IState> {
                         showPlaylistPage: true
                     });
                     return;
+                case "Playing":
+                    this.setState({
+                        pageIndex: 0,
+                        showPlayingTrackPage: true,
+                        showPlaylistsPage: false,
+                        showPlaylistPage: false
+                    });
+                    return;
                 case "Playlists":
                     this.setState({
                         pageIndex: 0,
@@ -151,7 +159,7 @@ class App extends React.Component<any, IState> {
 
                 <PlayingTrackPage
                     showPage={this.state.showPlayingTrackPage}
-                    showPageFn={(show) => this.setState({ showPlayingTrackPage: show })}
+                    showPageFn={() => navigate("Home")}
                 />
                 <PlaylistsPage showPage={this.state.showPlaylistsPage} />
                 <PlaylistPage showPage={this.state.showPlaylistPage} />
