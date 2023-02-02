@@ -42,6 +42,7 @@ class HomePlaylist extends React.Component<any, any> {
             <View style={HomePageStyle.playlist}>
                 <TouchableHighlight
                     style={{ borderRadius: 20 }}
+                    underlayColor={"transparent"}
                     onPress={() => this.openPlaylist()}
                 >
                     <ImageBackground
