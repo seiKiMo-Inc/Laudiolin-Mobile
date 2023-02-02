@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, ScrollView, View } from "react-native";
+import { FlatList, ListRenderItemInfo, ScrollView, View } from "react-native";
 
 import Track from "@components/Track";
 import BasicText from "@components/common/BasicText";
@@ -7,6 +7,12 @@ import BasicText from "@components/common/BasicText";
 import { Image } from "@rneui/base";
 
 import { HomePageStyle } from "@styles/PageStyles";
+
+import { Playlist } from "@backend/types";
+import { playlists } from "@backend/user";
+
+import emitter from "@backend/events";
+import { navigate } from "@backend/navigation";
 
 const testTrack = {
     title: "Hikaru Nara (Your Lie In April)",
@@ -18,12 +24,28 @@ const testTrack = {
 };
 
 class HomePlaylist extends React.Component<any, any> {
+    constructor(props: any) {
+        super(props);
+    }
+
+    /**
+     * Opens the playlist viewer.
+     */
+    openPlaylist(): void {
+        emitter.emit("showPlaylist",
+            this.props.playlist);
+        navigate("Playlist");
+    }
+
     render() {
+        const playlist = this.props.playlist as Playlist;
+
         return (
             <View style={HomePageStyle.playlist}>
                 <Image
-                    source={require("../../../resources/images/icon.png")}
+                    source={{ uri: playlist.icon }}
                     style={HomePageStyle.playlistImage}
+                    onPress={() => this.openPlaylist()}
                 />
             </View>
         );
@@ -33,6 +55,18 @@ class HomePlaylist extends React.Component<any, any> {
 class Home extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
+    }
+
+    /**
+     * Renders a home playlist.
+     * @param info The info of the playlist.
+     */
+    renderPlaylist(info: ListRenderItemInfo<Playlist>) {
+        const { item, index } = info;
+
+        return (
+            <HomePlaylist key={index} playlist={item} />
+        );
     }
 
     render() {
@@ -45,10 +79,11 @@ class Home extends React.Component<any, any> {
                             <BasicText text={"More"} style={HomePageStyle.morePlaylists} />
                         </View>
                     </View>
+
                     <FlatList
                         style={HomePageStyle.playlists}
-                        data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                        renderItem={() => <HomePlaylist />}
+                        data={playlists}
+                        renderItem={(info) => this.renderPlaylist(info)}
                         horizontal showsHorizontalScrollIndicator={false}
                     />
                 </View>
