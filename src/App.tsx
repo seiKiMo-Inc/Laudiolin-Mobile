@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { BackHandler, StyleSheet, View } from "react-native";
 
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
@@ -95,6 +95,25 @@ class App extends React.Component<any, IState> {
                     });
                     return;
             }
+        });
+
+        BackHandler.addEventListener("hardwareBackPress", () => {
+            if (this.state.showPlaylistPage) {
+                this.setState({ showPlaylistPage: false });
+                return true;
+            }
+
+            if (this.state.showPlaylistsPage) {
+                this.setState({ showPlaylistsPage: false });
+                return true;
+            }
+
+            if (this.state.showPlayingTrackPage) {
+                this.setState({ showPlayingTrackPage: false });
+                return true;
+            }
+
+            return false;
         });
     }
 
