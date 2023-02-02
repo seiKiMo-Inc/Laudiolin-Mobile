@@ -11,22 +11,13 @@ import PlaylistsPage from "@pages/PlaylistsPage";
 import PlayingTrackPage from "@pages/PlayingTrackPage";
 import PlaylistPage from "@pages/PlaylistPage";
 
+import Hide from "@components/Hide";
 import NavBar from "@components/NavBar";
 import QuickControl from "@components/player/QuickControl";
 
-import { registerListener } from "@backend/navigation";
 import * as user from "@backend/user";
 import emitter from "@backend/events";
-
-class Hide extends React.Component<any, any> {
-    constructor(props: any) {
-        super(props);
-    }
-
-    render() {
-        return this.props.show ? this.props.children : null;
-    }
-}
+import { registerListener } from "@backend/navigation";
 
 interface IState {
     pageIndex: number;
