@@ -92,6 +92,14 @@ class App extends React.Component<any, IState> {
                         showPlaylistPage: true
                     });
                     return;
+                case "Playlists":
+                    this.setState({
+                        pageIndex: 0,
+                        showPlayingTrackPage: false,
+                        showPlaylistsPage: true,
+                        showPlaylistPage: false
+                    });
+                    return;
             }
         });
 
