@@ -10,16 +10,8 @@ import BasicButton from "@components/common/BasicButton";
 import { PlaylistPageStyle } from "@styles/PageStyles";
 
 import { Playlist, TrackData } from "@backend/types";
+import { playTrack } from "@backend/audio";
 import emitter from "@backend/events";
-
-const testTrack = {
-    title: "Hikaru Nara (Your Lie In April)",
-    artist: "Otaku",
-    icon: "https://i.scdn.co/image/ab67616d0000b273cbd6575a821e3a9bee15fc93",
-    url: "https://open.spotify.com/track/1eznJLhlnbXrXuO8Ykkhhg",
-    id: "FRR642100241",
-    duration: 117
-};
 
 interface IProps {
     showPage: boolean;
@@ -47,8 +39,25 @@ class PlaylistPage extends React.Component<IProps, IState> {
      */
     renderPlaylist(item: ListRenderItemInfo<TrackData>) {
         return (
-            <Track key={item.index} track={item.item} padding={20} />
+            <Track
+                key={item.index} track={item.item} padding={20}
+                onClick={track => playTrack(track, true, true)}
+            />
         );
+    }
+
+    /**
+     * Returns the tracks in the playlist.
+     */
+    getPlaylistTracks(): TrackData[] {
+        if (this.state.playlist == null)
+            return [];
+
+        return this.state.playlist.tracks
+            // Remove duplicate tracks.
+            .filter((track, index, self) => {
+                return self.findIndex(t => t.id == track.id) == index;
+            });
     }
 
     render() {
@@ -111,7 +120,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
 
                     <FlatList
                         style={PlaylistPageStyle.tracks}
-                        data={[testTrack]}
+                        data={this.getPlaylistTracks()}
                         renderItem={this.renderPlaylist}
                         showsHorizontalScrollIndicator={false}
                     />
