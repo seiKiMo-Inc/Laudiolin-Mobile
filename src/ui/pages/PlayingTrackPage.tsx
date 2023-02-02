@@ -1,12 +1,16 @@
 import React from "react";
 import { Text, View, ImageBackground } from "react-native";
 
-import { TrackData } from "@backend/types";
-
 import { Icon, Image } from "@rneui/themed";
-import { PlayingTrackPageStyle } from "@styles/PageStyles";
+import BasicText from "@components/common/BasicText";
 import ProgressBar from "@components/player/ProgressBar";
 import Controls from "@components/player/Controls";
+
+import { PlayingTrackPageStyle } from "@styles/PageStyles";
+
+import { TrackData } from "@backend/types";
+import { shuffleQueue } from "@backend/audio";
+import TrackPlayer from "react-native-track-player";
 
 const track: TrackData = {
     title: "Travelogue (Global Acappella Ver.)",
@@ -29,8 +33,7 @@ class PlayingTrackPage extends React.Component<IProps, never> {
     }
 
     render() {
-        return this.props.showPage
-        ? (
+        return this.props.showPage ? (
                 <View style={PlayingTrackPageStyle.view}>
                     <ImageBackground
                         style={PlayingTrackPageStyle.background}
@@ -48,10 +51,18 @@ class PlayingTrackPage extends React.Component<IProps, never> {
                             color={"#FFFFFF"}
                             onPress={() => this.props.showPageFn(false)}
                         />
+                        
                         <View style={PlayingTrackPageStyle.topBarText}>
-                            <Text>PLAYING FROM PLAYLIST</Text>
-                            <Text style={{ fontWeight: "bold", color: "#FFFFFF" }}>Favorites</Text>
+                            <BasicText 
+                                text={"Playing From Playlist"}
+                                style={{ textTransform: "uppercase" }}
+                            />
+                            <BasicText 
+                                text={"Favorites"}
+                                style={{ fontWeight: "bold", color: "#FFFFFF" }} 
+                            />
                         </View>
+                        
                         <Icon
                             name={"more-vert"}
                             type={"material"}
@@ -66,18 +77,32 @@ class PlayingTrackPage extends React.Component<IProps, never> {
                             style={PlayingTrackPageStyle.trackImage}
                             source={{ uri: track.icon }}
                         />
+                        
                         <View style={{ padding: 25, flexDirection: "column", gap: 10 }}>
-                            <Text numberOfLines={2} style={{ color: "#FFFFFF", fontSize: 25 }}>{track.title}</Text>
-                            <Text numberOfLines={1} style={{ color: "#a1a1a1", fontSize: 15 }}>{track.artist}</Text>
+                            <BasicText 
+                                numberOfLines={2} 
+                                style={{ color: "#FFFFFF", fontSize: 25 }} 
+                                text={track.title}
+                            />
+                            <BasicText 
+                                numberOfLines={1} 
+                                style={{ color: "#a1a1a1", fontSize: 15 }} 
+                                text={track.artist}
+                            />
 
-                            <ProgressBar trackLength={track.duration} currentTime={track.duration / 2} onSeek={() => null} onSlidingStart={() => null} />
+                            <ProgressBar 
+                                trackLength={track.duration} 
+                                currentTime={track.duration / 2} 
+                                onSeek={() => null} 
+                                onSlidingStart={() => null} 
+                            />
 
                             <Controls
-                                shuffleRepeatControl={() => null}
-                                skipToPreviousControl={() => null}
-                                playControl={() => null}
-                                skipToNextControl={() => null}
-                                makeFavoriteControl={() => null} />
+                                shuffleRepeatControl={async () => await shuffleQueue()}
+                                skipToPreviousControl={async () => await TrackPlayer.skipToPrevious()}
+                                playControl={async () => await TrackPlayer.play()}
+                                skipToNextControl={async () => await TrackPlayer.skipToNext()}
+                                makeFavoriteControl={async () => null} />
                         </View>
                     </View>
                 </View>
