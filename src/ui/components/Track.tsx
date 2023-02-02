@@ -12,7 +12,7 @@ import { getIconUrl } from "@app/utils";
 interface IProps {
     track: TrackData;
     padding?: number;
-    onClick?: () => void;
+    onClick?: (track: TrackData) => void;
 }
 
 class Track extends React.Component<IProps, any> {
@@ -25,7 +25,7 @@ class Track extends React.Component<IProps, any> {
 
         return (
             <TouchableHighlight
-                onPress={this.props.onClick}
+                onPress={() => this.props.onClick?.(track)}
             >
                 <View style={{
                     flexDirection: "row",
