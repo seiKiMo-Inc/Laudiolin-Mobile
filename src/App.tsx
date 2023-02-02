@@ -44,7 +44,6 @@ class App extends React.Component<any, IState> {
             pageIndex: 0,
             loggedIn: user.userData != null,
 
-            showTabs: true,
             showPlayingTrackPage: false,
             showPlaylistsPage: false,
             showPlaylistPage: false,
@@ -67,7 +66,6 @@ class App extends React.Component<any, IState> {
                     this.setState({
                         pageIndex: 0,
                         loggedIn: true,
-                        showTabs: true,
                         showPlayingTrackPage: false,
                         showPlaylistsPage: false,
                         showPlaylistPage: false
@@ -77,7 +75,6 @@ class App extends React.Component<any, IState> {
                     this.setState({
                         pageIndex: 0,
                         loggedIn: false,
-                        showTabs: false,
                         showPlayingTrackPage: false,
                         showPlaylistsPage: false,
                         showPlaylistPage: false
@@ -86,7 +83,6 @@ class App extends React.Component<any, IState> {
                 case "Playlist":
                     this.setState({
                         pageIndex: 0,
-                        showTabs: false,
                         showPlayingTrackPage: false,
                         showPlaylistsPage: false,
                         showPlaylistPage: true

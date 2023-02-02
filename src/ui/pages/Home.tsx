@@ -76,7 +76,7 @@ class Home extends React.Component<any, any> {
                     <View style={{ flexDirection: "row" }}>
                         <BasicText text={"Playlists"} style={HomePageStyle.header} />
                         <View style={{ justifyContent: "center" }}>
-                            <BasicText text={"More"} style={HomePageStyle.morePlaylists} />
+                            <BasicText text={"More"} style={HomePageStyle.morePlaylists} press={() => navigate("Playlists")} />
                         </View>
                     </View>
 
