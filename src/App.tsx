@@ -17,7 +17,7 @@ import QuickControl from "@components/player/QuickControl";
 
 import * as user from "@backend/user";
 import emitter from "@backend/events";
-import { navigate, registerListener } from "@backend/navigation";
+import { registerListener } from "@backend/navigation";
 
 interface IState {
     pageIndex: number;
@@ -157,10 +157,7 @@ class App extends React.Component<any, IState> {
                 />
                 <NavBar pageIndex={this.state.pageIndex} setPageIndex={(i) => this.setState({ pageIndex: i })} />
 
-                <PlayingTrackPage
-                    showPage={this.state.showPlayingTrackPage}
-                    showPageFn={() => navigate("Home")}
-                />
+                <PlayingTrackPage showPage={this.state.showPlayingTrackPage} />
                 <PlaylistsPage showPage={this.state.showPlaylistsPage} />
                 <PlaylistPage showPage={this.state.showPlaylistPage} />
 

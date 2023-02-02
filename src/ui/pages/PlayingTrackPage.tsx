@@ -10,10 +10,10 @@ import { PlayingTrackPageStyle } from "@styles/PageStyles";
 
 import { getCurrentTrack, shuffleQueue } from "@backend/audio";
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
+import { navigate } from "@backend/navigation";
 
 interface IProps {
     showPage: boolean;
-    showPageFn: () => void;
 }
 
 interface IState {
@@ -106,7 +106,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                             type={"material"}
                             size={30}
                             color={"#FFFFFF"}
-                            onPress={() => this.props.showPageFn()}
+                            onPress={() => navigate("Home")}
                         />
 
                         <View style={PlayingTrackPageStyle.topBarText}>
