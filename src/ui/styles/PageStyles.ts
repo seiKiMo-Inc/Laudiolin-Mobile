@@ -177,12 +177,9 @@ export const PlaylistsPageStyle = StyleSheet.create({
         alignItems: "center",
         marginBottom: 20
     },
-    list: {
-        paddingBottom: 80
-    },
     playlist: {
         paddingBottom: 20,
-        flexDirection: "row"
+        width: "100%"
     },
     playlistImage: {
         width: 96, height: 96,
@@ -190,7 +187,8 @@ export const PlaylistsPageStyle = StyleSheet.create({
     },
     playlistContent: {
         flexDirection: "row",
-        borderRadius: 21
+        borderRadius: 21,
+        width: "100%",
     },
     playlistTitle: {
         fontSize: 17,
@@ -200,8 +198,9 @@ export const PlaylistsPageStyle = StyleSheet.create({
         fontSize: 16
     },
     playlistMore: {
-        paddingLeft: 20,
-        justifyContent: "center"
+        position: "absolute",
+        right: 20,
+        alignSelf: "center"
     }
 });
 
