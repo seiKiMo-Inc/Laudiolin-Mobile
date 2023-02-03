@@ -11,6 +11,7 @@ import { PlayingTrackPageStyle } from "@styles/PageStyles";
 import { getCurrentTrack, shuffleQueue } from "@backend/audio";
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 import { navigate } from "@backend/navigation";
+import JumpInView from "@components/common/JumpInView";
 
 interface IProps {
     showPage: boolean;
@@ -91,7 +92,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
         if (!track) return null;
 
         return this.props.showPage ? (
-                <View style={PlayingTrackPageStyle.view}>
+                <JumpInView visible={this.props.showPage} style={PlayingTrackPageStyle.view}>
                     <ImageBackground
                         style={PlayingTrackPageStyle.background}
                         source={{ uri: track.artwork as string }}
@@ -163,7 +164,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                                 makeFavoriteControl={() => null} />
                         </View>
                     </View>
-                </View>
+                </JumpInView>
             )
         : null;
     }

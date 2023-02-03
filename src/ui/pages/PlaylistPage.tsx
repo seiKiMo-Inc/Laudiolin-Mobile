@@ -6,6 +6,7 @@ import Hide from "@components/Hide";
 import Track from "@components/Track";
 import BasicText from "@components/common/BasicText";
 import BasicButton from "@components/common/BasicButton";
+import JumpInView from "@components/common/JumpInView";
 
 import { PlaylistPageStyle } from "@styles/PageStyles";
 
@@ -65,7 +66,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
         const { playlist } = this.state;
 
         return this.props.showPage ? (
-            <View style={PlaylistPageStyle.container}>
+            <JumpInView visible={this.props.showPage} style={PlaylistPageStyle.container}>
                 <Hide show={playlist != null}>
                     <View style={PlaylistPageStyle.info}>
                         <Image
@@ -125,7 +126,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
                         showsHorizontalScrollIndicator={false}
                     />
                 </Hide>
-            </View>
+            </JumpInView>
         ) : null;
     }
 }

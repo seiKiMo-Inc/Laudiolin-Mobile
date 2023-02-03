@@ -6,6 +6,7 @@ import BasicText from "@components/common/BasicText";
 import LinearGradient from "react-native-linear-gradient";
 
 import { PlaylistsPageStyle } from "@styles/PageStyles";
+import JumpInView from "@components/common/JumpInView";
 
 import { navigate } from "@backend/navigation";
 
@@ -58,7 +59,7 @@ class PlaylistsPage extends React.Component<IProps, any> {
 
     render() {
         return this.props.showPage ? (
-            <View style={PlaylistsPageStyle.container}>
+            <JumpInView visible={this.props.showPage} style={PlaylistsPageStyle.container}>
                 <View style={PlaylistsPageStyle.header}>
                     <Icon name={"chevron-left"} type={"material"} color={"white"} size={35} onPress={() => navigate("Home")} underlayColor={"#FFF"} />
                     <BasicText text={"Playlists"} style={{ fontSize: 25, fontWeight: "bold", marginLeft: 10 }} />
@@ -70,7 +71,7 @@ class PlaylistsPage extends React.Component<IProps, any> {
                     renderItem={() => <Playlist />}
                     showsVerticalScrollIndicator={false}
                 />
-            </View>
+            </JumpInView>
         ) : null;
     }
 }
