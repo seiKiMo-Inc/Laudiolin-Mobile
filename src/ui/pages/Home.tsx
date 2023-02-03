@@ -53,6 +53,8 @@ class HomePlaylist extends React.Component<any, any> {
                         <BasicText
                             text={playlist.name}
                             style={HomePageStyle.playlistName}
+                            containerStyle={HomePageStyle.playlistNameContainer}
+                            numberOfLines={2}
                         />
                     </ImageBackground>
                 </TouchableHighlight>

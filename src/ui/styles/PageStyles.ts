@@ -72,8 +72,13 @@ export const HomePageStyle = StyleSheet.create({
     },
     playlistName: {
         fontSize: 20,
-        paddingLeft: 10,
-        alignSelf: "flex-end"
+        fontWeight: "bold"
+    },
+    playlistNameContainer: {
+        position: "absolute",
+        bottom: 0,
+        padding: 10,
+        alignSelf: "center",
     }
 });
 
