@@ -102,11 +102,9 @@ class Home extends React.Component<any, any> {
         return (
             <ScrollView contentContainerStyle={HomePageStyle.text}>
                 <View style={{ paddingBottom: 20 }}>
-                    <View style={{ flexDirection: "row" }}>
-                        <BasicText text={"Playlists"} style={HomePageStyle.header} />
-                        <View style={{ justifyContent: "center" }}>
-                            <BasicText text={"More"} style={HomePageStyle.morePlaylists} press={() => navigate("Playlists")} />
-                        </View>
+                    <View style={HomePageStyle.header}>
+                        <BasicText text={"Playlists"} style={HomePageStyle.headerText} />
+                        <BasicText text={"More"} style={HomePageStyle.morePlaylists} press={() => navigate("Playlists")} />
                     </View>
 
                     <FlatList
@@ -118,11 +116,9 @@ class Home extends React.Component<any, any> {
                 </View>
 
                 <View style={{ paddingBottom: 20 }}>
-                    <View style={{ flexDirection: "row" }}>
-                        <BasicText text={"Downloads"} style={HomePageStyle.header} />
-                        <View style={{ justifyContent: "center" }}>
-                            <BasicText text={"More"} style={HomePageStyle.moreDownloads} />
-                        </View>
+                    <View style={HomePageStyle.header}>
+                        <BasicText text={"Downloads"} style={HomePageStyle.headerText} />
+                        <BasicText text={"More"} style={HomePageStyle.moreDownloads} />
                     </View>
 
                     <View>
@@ -134,11 +130,9 @@ class Home extends React.Component<any, any> {
                 </View>
 
                 <View>
-                    <View style={{ flexDirection: "row" }}>
-                        <BasicText text={"Recent Plays"} style={HomePageStyle.header} />
-                        <View style={{ justifyContent: "center" }}>
-                            <BasicText text={"More"} style={HomePageStyle.morePlays} />
-                        </View>
+                    <View style={HomePageStyle.header}>
+                        <BasicText text={"Recent Plays"} style={HomePageStyle.headerText} />
+                        <BasicText text={"More"} style={HomePageStyle.moreDownloads} />
                     </View>
 
                     <View>

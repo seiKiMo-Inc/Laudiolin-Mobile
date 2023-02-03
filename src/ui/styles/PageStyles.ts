@@ -34,13 +34,18 @@ export const LoginPageStyle = StyleSheet.create({
 export const HomePageStyle = StyleSheet.create({
     text: {
         paddingLeft: 20,
-        paddingTop: 40,
+        paddingTop: 20,
         width: Dimensions.get("window").width,
     },
     header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingBottom: 20
+    },
+    headerText: {
         fontSize: 28,
         fontWeight: "bold",
-        paddingBottom: 20
     },
     morePlaylists: {
         textDecorationLine: "underline",
