@@ -123,7 +123,8 @@ class App extends React.Component<any, IState> {
                 return true;
             }
 
-            return false;
+            BackHandler.exitApp();
+            return true;
         });
     }
 
