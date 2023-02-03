@@ -1,5 +1,6 @@
 import React from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, ImageBackground, ListRenderItemInfo, View, TouchableHighlight } from "react-native";
+
 import { Icon, Image } from "@rneui/base";
 
 import BasicText from "@components/common/BasicText";
@@ -7,42 +8,65 @@ import LinearGradient from "react-native-linear-gradient";
 
 import { PlaylistsPageStyle } from "@styles/PageStyles";
 import JumpInView from "@components/common/JumpInView";
+import BasicButton from "@components/common/BasicButton";
 
 import { navigate } from "@backend/navigation";
+import { playlists } from "@backend/user";
+import { Playlist } from "@backend/types";
+import emitter from "@backend/events";
 
-class Playlist extends React.Component<any, any> {
+class ListPlaylist extends React.Component<any, any> {
+    /**
+     * Opens the playlist viewer.
+     */
+    openPlaylist(): void {
+        emitter.emit("showPlaylist",
+            this.props.playlist);
+        navigate("Playlist");
+    }
+
     render() {
+        const playlist = this.props.playlist as Playlist;
+
         return (
             <View style={PlaylistsPageStyle.playlist}>
-                {/* TODO: Change first color to average color of icon. */}
-                <LinearGradient
-                    style={PlaylistsPageStyle.playlistContent}
-                    colors={["#f7e9d1", "transparent"]}
-                    start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-                >
-                    <Image
-                        source={require("../../../resources/images/icon.png")}
-                        style={PlaylistsPageStyle.playlistImage}
-                    />
-
-                    <View style={{ paddingLeft: 20, justifyContent: "center" }}>
-                        <BasicText
-                            text={"i'm literally losing my mind"}
-                            style={PlaylistsPageStyle.playlistTitle}
+                <TouchableHighlight onPress={() => this.openPlaylist()}>
+                    <LinearGradient
+                        style={PlaylistsPageStyle.playlistContent}
+                        colors={["transparent", "#0c0f17"]}
+                        start={{ x: 0.2, y: 0 }} end={{ x: 1, y: 0 }}
+                    >
+                        <ImageBackground
+                            source={{ uri: playlist.icon }}
+                            style={{ width: "99%", height: "100%", position: "absolute", top: 0, left: 0, zIndex: -1 }}
+                            imageStyle={{ borderRadius: 20 }}
+                            blurRadius={80}
                         />
 
-                        <BasicText
-                            text={"natsu#4700"}
-                            style={PlaylistsPageStyle.playlistAuthor}
+                        <Image
+                            source={{ uri: playlist.icon }}
+                            style={PlaylistsPageStyle.playlistImage}
                         />
-                    </View>
 
-                    <Icon
-                        color={"white"}
-                        type="material" name={"more-vert"}
-                        containerStyle={PlaylistsPageStyle.playlistMore}
-                    />
-                </LinearGradient>
+                        <View style={{ paddingLeft: 20, justifyContent: "center" }}>
+                            <BasicText
+                                text={playlist.name}
+                                style={PlaylistsPageStyle.playlistTitle}
+                            />
+
+                            <BasicText
+                                text={playlist.owner as string}
+                                style={PlaylistsPageStyle.playlistAuthor}
+                            />
+                        </View>
+
+                        <Icon
+                            color={"white"}
+                            type="material" name={"more-vert"}
+                            containerStyle={PlaylistsPageStyle.playlistMore}
+                        />
+                    </LinearGradient>
+                </TouchableHighlight>
             </View>
         );
     }
@@ -57,6 +81,14 @@ class PlaylistsPage extends React.Component<IProps, any> {
         super(props);
     }
 
+    renderPlaylist(info: ListRenderItemInfo<Playlist>) {
+        const { item, index } = info;
+
+        return (
+            <ListPlaylist key={index} playlist={item} />
+        );
+    }
+
     render() {
         return this.props.showPage ? (
             <JumpInView visible={this.props.showPage} style={PlaylistsPageStyle.container}>
@@ -65,12 +97,25 @@ class PlaylistsPage extends React.Component<IProps, any> {
                     <BasicText text={"Playlists"} style={{ fontSize: 25, fontWeight: "bold", marginLeft: 10 }} />
                 </View>
 
-                <FlatList
-                    contentContainerStyle={PlaylistsPageStyle.list}
-                    data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                    renderItem={() => <Playlist />}
-                    showsVerticalScrollIndicator={false}
-                />
+                <View>
+                    <FlatList
+                        data={playlists}
+                        renderItem={(info) => this.renderPlaylist(info)}
+                        showsVerticalScrollIndicator={false}
+                    />
+
+                    <BasicButton
+                        text={"Add Playlist"}
+                        color={"#4e7abe"}
+                        button={{ borderRadius: 10, width: 150, height: 40 }}
+                        container={{ alignItems: "flex-end" }}
+                        icon={<Icon
+                            color={"white"}
+                            type={"material"} name={"add"}
+                            style={{ paddingRight: 5 }}
+                        />}
+                    />
+                </View>
             </JumpInView>
         ) : null;
     }
