@@ -92,12 +92,20 @@ class QuickControl extends React.Component<IProps, IState> {
                     <View style={{ justifyContent: "center" }}>
                         <View style={{
                             height: 65,
-                            width: Dimensions.get("window").width - 33 - 100,
+                            width: Dimensions.get("window").width - 33,
                             position: "absolute",
-                            borderColor: "#1e85ad",
-                            borderRadius: 20,
-                            borderWidth: 5
-                        }} />
+                            backgroundColor: "transparent",
+                            borderRadius: 22,
+                            overflow: "hidden"
+                        }}>
+                            {/* TODO: Adjust the width of this inner view to show progress */}
+                            <View style={{
+                                height: 65,
+                                width: Dimensions.get("window").width - 33 - 100,
+                                position: "absolute",
+                                backgroundColor: "#1e85ad"
+                            }}/>
+                        </View>
 
                         <Image
                             source={{ uri: (track?.artwork as string ?? "") }}
