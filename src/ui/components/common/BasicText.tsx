@@ -1,15 +1,15 @@
 import React from "react";
-import { View, Text, StyleProp, TextStyle, TouchableHighlight } from "react-native";
+import { View, Text, StyleProp, TextStyle, TouchableHighlight, ViewStyle } from "react-native";
 
 import { BasicTextStyle } from "@styles/TextStyle";
 
 interface IProps {
     text: string;
-    width?: number;
     numberOfLines?: number;
     style?: StyleProp<TextStyle>;
 
     press?: () => void;
+    containerStyle?: StyleProp<ViewStyle>;
 }
 
 class BasicText extends React.Component<IProps, any> {
@@ -19,7 +19,7 @@ class BasicText extends React.Component<IProps, any> {
 
     render() {
         return this.props.press ? (
-            <View style={{ width: this.props.width }}>
+            <View style={this.props.containerStyle}>
                 <TouchableHighlight
                     underlayColor={"transparent"}
                     onPress={this.props.press}
@@ -36,7 +36,7 @@ class BasicText extends React.Component<IProps, any> {
                 </TouchableHighlight>
             </View>
                 ) : (
-                <View style={{ width: this.props.width }}>
+                <View style={this.props.containerStyle}>
                     <Text
                         style={{
                             ...BasicTextStyle.text,

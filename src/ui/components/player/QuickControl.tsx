@@ -129,13 +129,13 @@ class QuickControl extends React.Component<IProps, IState> {
                                 text={track?.title ?? ""}
                                 numberOfLines={1}
                                 style={{ fontSize: 17 }}
-                                width={Dimensions.get("window").width - 220}
+                                containerStyle={{ width: Dimensions.get("window").width - 220 }}
                             />
                             <BasicText
                                 text={track?.artist ?? ""}
                                 style={{ fontSize: 14 }}
                                 numberOfLines={1}
-                                width={Dimensions.get("window").width - 220}
+                                containerStyle={{ width: Dimensions.get("window").width - 220 }}
                             />
                         </View>
                     </View>
