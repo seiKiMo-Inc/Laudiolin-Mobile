@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Tab } from '@rneui/themed';
+import {Icon, Tab} from '@rneui/themed';
 
 import { NavBarStyle } from "@styles/NavBarStyle"
 
@@ -22,9 +22,21 @@ class NavBar extends React.Component<IProps, never> {
                  indicatorStyle={{ height: 0 }}
                  style={NavBarStyle.container}
              >
-                 <Tab.Item title="Home" titleStyle={(active) => ({...NavBarStyle.tab, color: active ? "#FFFFFF" : "#6c7071"})} />
-                 <Tab.Item title="Search" titleStyle={(active) => ({...NavBarStyle.tab, color: active ? "#FFFFFF" : "#6c7071"})} />
-                 <Tab.Item title="Settings" titleStyle={(active) => ({...NavBarStyle.tab, color: active ? "#FFFFFF" : "#6c7071"})} />
+                 <Tab.Item
+                     title="Home"
+                     titleStyle={(active) => ({ ...NavBarStyle.tab, color: active ? "#5bc6ff" : "#bebebe" })}
+                     icon={{ name: "home", type: "material", color: this.props.pageIndex == 0 ? "#5bc6ff" : "#bebebe" }}
+                 />
+                 <Tab.Item
+                     title="Search"
+                     titleStyle={(active) => ({...NavBarStyle.tab, color: active ? "#5bc6ff" : "#bebebe"})}
+                     icon={{ name: "search", type: "material", color: this.props.pageIndex == 1 ? "#5bc6ff" : "#bebebe" }}
+                 />
+                 <Tab.Item
+                     title="Settings"
+                     titleStyle={(active) => ({...NavBarStyle.tab, color: active ? "#5bc6ff" : "#bebebe"})}
+                     icon={{ name: "settings", type: "material", color: this.props.pageIndex == 2 ? "#5bc6ff" : "#bebebe" }}
+                 />
              </Tab>
         );
     }
