@@ -15,12 +15,30 @@ import TrackPlayer, { Event, State } from "react-native-track-player";
  */
 export function asTrack(trackData: TrackData, local = false): Track {
     return {
+        id: trackData.id,
         url: local ? `file://${fs.getTrackPath(trackData)}` : getStreamingUrl(trackData),
         artwork: local ? `file://${fs.getIconPath(trackData)}` : trackData.icon,
         contentType: "audio/mpeg",
         title: trackData.title,
         artist: trackData.artist,
         duration: trackData.duration
+    };
+}
+
+/**
+ * Converts a track player object into a local track data object.
+ * Use this method to get a serialized object from TrackPlayer.
+ * @param track A track player object.
+ * @return A track data object.
+ */
+export function asData(track: Track): TrackData {
+    return {
+        id: track.id ?? "",
+        title: track.title ?? "",
+        artist: track.artist ?? "",
+        duration: track.duration ?? 0,
+        url: <string> track.url ?? "",
+        icon: <string> track.artwork ?? ""
     };
 }
 
@@ -66,7 +84,7 @@ export async function shuffleQueue(): Promise<void> {
     // Pull the current queue and reset it.
     let queue = await TrackPlayer.getQueue();
     await TrackPlayer.removeUpcomingTracks();
-    
+
     // Shuffle the pulled queue.
     queue.sort(() => Math.random () - 0.5);
     // Re-queue the tracks.

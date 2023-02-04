@@ -5,6 +5,7 @@ import { Icon } from "@rneui/themed";
 
 interface IProps {
     isPaused: boolean;
+    isFavorite: boolean;
 
     shuffleRepeatControl: () => void;
     skipToPreviousControl: () => void;
@@ -62,7 +63,7 @@ class Controls extends React.Component<IProps, any> {
                     name={"favorite"}
                     type={"material"}
                     size={30}
-                    color={"#FFFFFF"}
+                    color={this.props.isFavorite ? "#d21d4f" : "#FFFFFF"}
                     underlayColor={"#FFFFFF"}
                     onPress={this.props.makeFavoriteControl}
                 />

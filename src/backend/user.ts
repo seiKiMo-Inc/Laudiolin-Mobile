@@ -10,6 +10,7 @@ export let targetRoute = Gateway.url; // The base address for the backend.
 export let userData: User | null = null; // The loaded user data.
 export let playlists: Playlist[] = []; // The loaded playlist data.
 export let favorites: TrackData[] = []; // The loaded favorite tracks.
+export let recents: TrackData[] = []; // The loaded recent tracks.
 
 /*
  * HTTP request utilities.
@@ -47,6 +48,7 @@ export function userId(): string {
  */
 export async function login(code: string = "", loadData: boolean = true) {
     if (code == "") code = await token(); // If no code is provided, use the token.
+    if (!code || code == "") return; // If no code is provided, exit.
 
     const route = `${targetRoute}/user`;
     const response = await fetch(route, {
@@ -69,7 +71,9 @@ export async function login(code: string = "", loadData: boolean = true) {
     emitter.emit("login", userData);
 
     if (loadData) {
+        await loadRecents(); // Load recent tracks.
         await loadPlaylists(); // Load the playlists.
+        await loadFavorites(); // Load favorite tracks.
     }
 }
 
@@ -131,7 +135,22 @@ export async function loadPlaylists() {
  * Loads favorite tracks from the backend.
  */
 export async function loadFavorites() {
-    // TODO: Load favorite tracks.
+    if (!userData) return; // Check if the user data has been loaded.
+    if (!userData.likedSongs) return; // Check if the user has any favorites.
+    favorites = userData.likedSongs; // Load the favorites.
+
+    console.info(`Loaded ${favorites.length} favorite tracks.`); // Log the success.
+}
+
+/**
+ * Loads recent tracks from the backend.
+ */
+export async function loadRecents() {
+    if (!userData) return; // Check if the user data has been loaded.
+    if (!userData.recentlyPlayed) return; // Check if the user has any recents.
+    recents = userData.recentlyPlayed; // Load the recents.
+
+    console.info(`Loaded ${recents.length} recent tracks.`); // Log the success.
 }
 
 /*
@@ -204,6 +223,32 @@ export async function getUserPlaylists(user: User): Promise<Playlist[]|null> {
 /*
  * Modifying user data.
  */
+
+/**
+ * Adds a favorite track on the backend.
+ * @param track The track to add.
+ * @param add Whether to add or remove the track.
+ */
+export async function favoriteTrack(track: TrackData, add: boolean = true): Promise<boolean> {
+    const route = `${targetRoute}/user/favorite`;
+    const response = await fetch(route, {
+        method: "POST", headers: {
+            Operation: add ? "add" : "remove",
+            Authorization: await token(),
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(track)
+    });
+
+    if (response.status != 200) {
+        console.error(`Failed to add favorite track. Status code: ${response.status}`); return false;
+    }
+
+    // Update the favorites array.
+    favorites = await response.json();
+
+    return true;
+}
 
 /**
  * Creates the playlist on the backend.

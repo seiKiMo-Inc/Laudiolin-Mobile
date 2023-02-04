@@ -6,20 +6,11 @@ import BasicText from "@components/common/BasicText";
 
 import { HomePageStyle } from "@styles/PageStyles";
 
-import { Playlist } from "@backend/types";
-import { playlists } from "@backend/user";
+import { Playlist, TrackData } from "@backend/types";
+import { favorites, playlists } from "@backend/user";
 
 import emitter from "@backend/events";
 import { navigate } from "@backend/navigation";
-
-const testTrack = {
-    title: "Hikaru Nara (Your Lie In April)",
-    artist: "Otaku",
-    icon: "https://i.scdn.co/image/ab67616d0000b273cbd6575a821e3a9bee15fc93",
-    url: "https://open.spotify.com/track/1eznJLhlnbXrXuO8Ykkhhg",
-    id: "FRR642100241",
-    duration: 117
-};
 
 class HomePlaylist extends React.Component<any, any> {
     constructor(props: any) {
@@ -54,7 +45,7 @@ class HomePlaylist extends React.Component<any, any> {
                             text={playlist.name}
                             style={HomePageStyle.playlistName}
                             containerStyle={HomePageStyle.playlistNameContainer}
-                            numberOfLines={2}
+                            numberOfLines={3}
                         />
                     </ImageBackground>
                 </TouchableHighlight>
@@ -98,6 +89,18 @@ class Home extends React.Component<any, any> {
         );
     }
 
+    /**
+     * Renders a favorite track.
+     * @param info The info of the track.
+     */
+    renderFavorite(info: ListRenderItemInfo<TrackData>) {
+        const { item, index } = info;
+
+        return (
+            <Track key={index} track={item} padding={20} />
+        );
+    }
+
     render() {
         return (
             <ScrollView contentContainerStyle={HomePageStyle.text}>
@@ -115,7 +118,7 @@ class Home extends React.Component<any, any> {
                     />
                 </View>
 
-                <View style={{ paddingBottom: 20 }}>
+                {/* <View style={{ paddingBottom: 20 }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Downloads"} style={HomePageStyle.headerText} />
                         <BasicText text={"More"} style={HomePageStyle.moreDownloads} />
@@ -127,7 +130,7 @@ class Home extends React.Component<any, any> {
                         <Track track={testTrack} padding={15} />
                         <Track track={testTrack} padding={15} />
                     </View>
-                </View>
+                </View> */}
 
                 <View>
                     <View style={HomePageStyle.header}>
@@ -135,13 +138,11 @@ class Home extends React.Component<any, any> {
                         <BasicText text={"More"} style={HomePageStyle.moreDownloads} />
                     </View>
 
-                    <View>
-                        <Track track={testTrack} padding={15} />
-                        <Track track={testTrack} padding={15} />
-                        <Track track={testTrack} padding={15} />
-                        <Track track={testTrack} padding={15} />
-                        <Track track={testTrack} padding={15} />
-                    </View>
+                    <FlatList
+                        data={favorites}
+                        renderItem={(info) => this.renderFavorite(info)}
+                        showsVerticalScrollIndicator={false}
+                    />
                 </View>
             </ScrollView>
         );

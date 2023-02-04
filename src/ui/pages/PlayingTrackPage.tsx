@@ -3,15 +3,16 @@ import { View, ImageBackground } from "react-native";
 
 import { Icon, Image } from "@rneui/themed";
 import BasicText from "@components/common/BasicText";
+import JumpInView from "@components/common/JumpInView";
 import ProgressBar from "@components/player/ProgressBar";
 import Controls from "@components/player/Controls";
 
 import { PlayingTrackPageStyle } from "@styles/PageStyles";
 
-import { getCurrentTrack, shuffleQueue } from "@backend/audio";
-import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 import { navigate } from "@backend/navigation";
-import JumpInView from "@components/common/JumpInView";
+import { favoriteTrack, favorites } from "@backend/user";
+import { getCurrentTrack, shuffleQueue, asData } from "@backend/audio";
+import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 
 interface IProps {
     showPage: boolean;
@@ -21,6 +22,7 @@ interface IState {
     track: Track|null;
     position: number;
     paused: boolean;
+    favorite: boolean;
 }
 
 class PlayingTrackPage extends React.Component<IProps, IState> {
@@ -32,7 +34,8 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
         this.state = {
             track: null,
             position: 0,
-            paused: false
+            paused: false,
+            favorite: false
         };
 
         // Register track player listeners.
@@ -56,6 +59,18 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
     }
 
     /**
+     * Changes the favorite state of the current track.
+     */
+    async favoriteTrack(): Promise<void> {
+        const { track } = this.state;
+        if (!track) return;
+
+        // Toggle the favorite state.
+        this.setState({ favorite: !this.state.favorite });
+        await favoriteTrack(asData(track), this.state.favorite);
+    }
+
+    /**
      * Called when the track player updates.
      */
     async positionUpdate() {
@@ -75,7 +90,8 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
         this.setState({
             track: track ?? this.state.track,
             position: await TrackPlayer.getPosition(),
-            paused: await TrackPlayer.getState() == State.Paused
+            paused: await TrackPlayer.getState() == State.Paused,
+            favorite: track ? favorites.find(t => t.id == track.id) != null : false
         });
     }
 
@@ -157,11 +173,12 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
 
                             <Controls
                                 isPaused={this.state.paused}
+                                isFavorite={this.state.favorite}
                                 shuffleRepeatControl={() => shuffleQueue()}
                                 skipToPreviousControl={() => TrackPlayer.skipToPrevious()}
                                 playControl={async () => this.togglePlayback()}
                                 skipToNextControl={() => TrackPlayer.skipToNext()}
-                                makeFavoriteControl={() => null} />
+                                makeFavoriteControl={() => this.favoriteTrack()} />
                         </View>
                     </View>
                 </JumpInView>

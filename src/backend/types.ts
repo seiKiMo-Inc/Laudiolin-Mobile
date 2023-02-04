@@ -32,7 +32,8 @@ export type Playlist = {
 
 export type User = {
     playlists?: string[];
-    likedSongs?: string[];
+    likedSongs?: TrackData[];
+    recentlyPlayed?: TrackData[];
 
     username?: string;
     discriminator?: string;
