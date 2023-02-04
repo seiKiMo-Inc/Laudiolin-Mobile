@@ -81,7 +81,8 @@ function onClose(): void {
     connected = false;
 
     // Retry the connection.
-    retryToken = setTimeout(connect, 5000);
+    // TODO: Pause when the device closes the app.
+    // retryToken = setTimeout(connect, 5000);
 }
 
 /**
