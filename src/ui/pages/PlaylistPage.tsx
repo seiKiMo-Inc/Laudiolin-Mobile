@@ -11,9 +11,10 @@ import JumpInView from "@components/common/JumpInView";
 import { PlaylistPageStyle } from "@styles/PageStyles";
 
 import { Playlist, TrackData } from "@backend/types";
+import { getPlaylistAuthor } from "@backend/user";
+import { navigate } from "@backend/navigation";
 import { playTrack } from "@backend/audio";
 import emitter from "@backend/events";
-import { navigate } from "@backend/navigation";
 
 interface IProps {
     showPage: boolean;
@@ -21,16 +22,22 @@ interface IProps {
 
 interface IState {
     playlist: Playlist|null;
+    author: string;
 }
 
 class PlaylistPage extends React.Component<IProps, IState> {
-    onPlaylist = (playlist: Playlist) => this.setState({ playlist });
+    onPlaylist = async (playlist: Playlist) => {
+        this.setState({
+            playlist, author: await getPlaylistAuthor(playlist)
+        });
+    };
 
     constructor(props: IProps) {
         super(props);
 
         this.state = {
-            playlist: null
+            playlist: null,
+            author: ""
         };
     }
 
@@ -75,21 +82,24 @@ class PlaylistPage extends React.Component<IProps, IState> {
 
         return this.props.showPage ? (
             <JumpInView visible={this.props.showPage} style={PlaylistPageStyle.container}>
-                <Hide show={playlist != null}>
-                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
-                        <Icon
-                            name={"chevron-left"}
-                            type={"material"} size={30}
-                            color={"white"} onPress={() => navigate("Home")}
-                            underlayColor={"white"}
-                        />
+                <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
+                    <Icon
+                        name={"chevron-left"}
+                        type={"material"} size={30}
+                        color={"white"} onPress={() => navigate("Home")}
+                        underlayColor={"white"}
+                    />
+
+                    <Hide show={playlist != null}>
                         <BasicText
-                            text={`Author: ${playlist?.owner}`}
+                            text={`Author: ${this.state.author}`}
                             style={{ fontWeight: "bold", fontSize: 15 }}
                             containerStyle={{ marginLeft: 20 }}
                         />
-                    </View>
+                    </Hide>
+                </View>
 
+                <Hide show={playlist != null}>
                     <View style={PlaylistPageStyle.info}>
                         <Image
                             source={{ uri: playlist?.icon }}

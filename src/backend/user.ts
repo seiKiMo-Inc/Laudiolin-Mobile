@@ -195,6 +195,24 @@ export function makePlaylist(
     };
 }
 
+/**
+ * Returns the author of a playlist.
+ * @param playlist The playlist to get the author of.
+ */
+export async function getPlaylistAuthor(playlist: Playlist): Promise<string> {
+    const owner = playlist.owner ?? ""; // Get the owner's ID.
+    if (owner == "") return "Unknown"; // If no owner is provided, return "Unknown".
+
+    // If the owner is the current user, return the user's username.
+    if (owner == getUserId()) return `${userData?.username}#${userData?.discriminator}`;
+
+    // Otherwise, load the owner's data.
+    const user = await getUserById(owner);
+    if (!user) return "Unknown"; // If the user data could not be loaded, return "Unknown".
+
+    return `${user.username}#${user.discriminator}`; // Return the user's username.
+}
+
 /*
  * Loading other user data.
  */
