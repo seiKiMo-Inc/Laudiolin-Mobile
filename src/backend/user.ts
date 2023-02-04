@@ -252,8 +252,6 @@ export async function getUserPlaylists(user: User): Promise<Playlist[]|null> {
  * @param add Whether to add or remove the track.
  */
 export async function favoriteTrack(track: TrackData, add: boolean = true): Promise<boolean> {
-    console.log(track);
-
     const route = `${targetRoute}/user/favorite`;
     const response = await fetch(route, {
         method: "POST", headers: {

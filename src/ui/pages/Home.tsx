@@ -141,8 +141,6 @@ class Home extends React.Component<any, any> {
     }
 
     render() {
-        console.log();
-
         return (
             <View style={HomePageStyle.text}>
                 <View style={{ paddingBottom: 20 }}>
