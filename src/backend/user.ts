@@ -173,6 +173,28 @@ export function getAvatar(): string {
     return userData ? userData.avatar ?? "" : "";
 }
 
+/**
+ * Creates a local-playlist from the given data.
+ * @param id The playlist's ID.
+ * @param name The playlist's name.
+ * @param icon The playlist's icon.
+ * @param description The playlist's description.
+ * @param tracks The playlist's tracks.
+ */
+export function makePlaylist(
+    id: string,
+    name: string,
+    icon: string,
+    description: string,
+    tracks: TrackData[],
+): Playlist {
+    return {
+        owner: userId(),
+        id, name, icon, description,
+        isPrivate: false, tracks
+    };
+}
+
 /*
  * Loading other user data.
  */
@@ -230,6 +252,8 @@ export async function getUserPlaylists(user: User): Promise<Playlist[]|null> {
  * @param add Whether to add or remove the track.
  */
 export async function favoriteTrack(track: TrackData, add: boolean = true): Promise<boolean> {
+    console.log(track);
+
     const route = `${targetRoute}/user/favorite`;
     const response = await fetch(route, {
         method: "POST", headers: {
@@ -241,11 +265,12 @@ export async function favoriteTrack(track: TrackData, add: boolean = true): Prom
     });
 
     if (response.status != 200) {
-        console.error(`Failed to add favorite track. Status code: ${response.status}`); return false;
+        console.error(`Failed to ${add ? "add" : "remove"} favorite track. Status code: ${response.status}`); return false;
     }
 
     // Update the favorites array.
     favorites = await response.json();
+    emitter.emit("favorites");
 
     return true;
 }
