@@ -34,6 +34,6 @@ async function initialize() {
     // Initialize the track player.
     await TrackPlayer.setupPlayer();
     await TrackPlayer.updateOptions({
-        progressUpdateEventInterval: 500
+        progressUpdateEventInterval: 1
     });
 }
