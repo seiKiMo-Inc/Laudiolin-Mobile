@@ -2,6 +2,7 @@ import type { Track } from "react-native-track-player";
 import type { TrackData } from "@backend/types";
 
 import * as fs from "@backend/fs";
+import { doSearch } from "@backend/search";
 import { getStreamingUrl } from "@backend/gateway";
 
 import TrackPlayer, { Event, State } from "react-native-track-player";
@@ -99,6 +100,28 @@ export async function getCurrentTrack(): Promise<Track|null> {
 }
 
 /**
+ * Syncs the current player to the specified track.
+ * @param track The track to sync to.
+ * @param progress The progress to sync to.
+ */
+export async function syncToTrack(track: TrackData|null, progress: number): Promise<void> {
+    // Reset the player if the track is null.
+    if (track == null) {
+        await TrackPlayer.reset(); return;
+    }
+
+    // Check if the track needs to be played.
+    const playing = await getCurrentTrack();
+    if (playing?.id != track.id) {
+        // Play the track.
+        await playTrack(track, true, true);
+    }
+
+    // Set the progress.
+    await TrackPlayer.seekTo(progress);
+}
+
+/**
  * Define service workers for the application.
  * Called on application registration.
  */
@@ -106,5 +129,21 @@ export async function playbackService(): Promise<void> {
     TrackPlayer.addEventListener(Event.PlaybackState, ({ state }) => {
         if (state == State.Stopped)
             TrackPlayer.reset();
+    });
+
+    TrackPlayer.addEventListener(Event.RemotePlay, () => TrackPlayer.play());
+    TrackPlayer.addEventListener(Event.RemotePause, () => TrackPlayer.pause());
+    TrackPlayer.addEventListener(Event.RemoteStop, () => TrackPlayer.reset());
+    TrackPlayer.addEventListener(Event.RemoteSkip, () => TrackPlayer.skipToNext());
+    TrackPlayer.addEventListener(Event.RemoteNext, () => TrackPlayer.skipToNext());
+    TrackPlayer.addEventListener(Event.RemotePrevious, () => TrackPlayer.skipToPrevious());
+    TrackPlayer.addEventListener(Event.RemoteSeek, ({ position }) => TrackPlayer.seekTo(position));
+    TrackPlayer.addEventListener(Event.RemoteDuck, ({ paused }) => paused ? TrackPlayer.pause() : TrackPlayer.play());
+
+    TrackPlayer.addEventListener(Event.RemotePlaySearch, async ({ query }) => {
+        // Search for the song.
+        const track = await doSearch(query);
+        // Play the song if found.
+        track.top && await playTrack(track.top, true, true);
     });
 }

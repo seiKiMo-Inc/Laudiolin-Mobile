@@ -10,6 +10,7 @@ import { setAppData } from "@app/constants";
 import { playbackService } from "@backend/audio";
 
 // Setup event listeners.
+import * as gateway from "@backend/gateway";
 import * as settings from "@backend/settings";
 
 import * as app from "./app.json";
@@ -26,6 +27,13 @@ async function initialize() {
     // Fetch the application settings.
     await settings.reloadSettings();
 
+    // Initialize the gateway.
+    await gateway.setupListeners();
+    await gateway.connect()
+
     // Initialize the track player.
     await TrackPlayer.setupPlayer();
+    await TrackPlayer.updateOptions({
+        progressUpdateEventInterval: 500
+    });
 }
