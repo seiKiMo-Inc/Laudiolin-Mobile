@@ -37,6 +37,8 @@ const style = StyleSheet.create({
 });
 
 class App extends React.Component<any, IState> {
+    onLogin = () => this.setState({ loggedIn: true });
+
     constructor(props: any) {
         super(props);
 
@@ -49,12 +51,12 @@ class App extends React.Component<any, IState> {
             showPlaylistPage: false,
             isQuickControlVisible: false
         };
-
-        emitter.on("login", () =>
-            this.setState({ loggedIn: true }));
     }
 
     async componentDidMount() {
+        // Listen for the login event.
+        emitter.on("login", this.onLogin);
+
         // Login to laudiolin.
         await user.login();
 
@@ -126,6 +128,10 @@ class App extends React.Component<any, IState> {
             BackHandler.exitApp();
             return true;
         });
+    }
+
+    componentWillUnmount() {
+        emitter.removeListener("login", this.onLogin);
     }
 
     render() {

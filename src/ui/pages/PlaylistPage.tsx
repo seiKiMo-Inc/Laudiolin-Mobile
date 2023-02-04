@@ -23,15 +23,22 @@ interface IState {
 }
 
 class PlaylistPage extends React.Component<IProps, IState> {
+    onPlaylist = (playlist: Playlist) => this.setState({ playlist });
+
     constructor(props: IProps) {
         super(props);
 
         this.state = {
             playlist: null
         };
+    }
 
-        emitter.on("showPlaylist", (playlist: Playlist) =>
-            this.setState({ playlist }));
+    componentDidMount() {
+        emitter.on("showPlaylist", this.onPlaylist);
+    }
+
+    componentWillUnmount() {
+        emitter.removeListener("showPlaylist", this.onPlaylist);
     }
 
     /**
