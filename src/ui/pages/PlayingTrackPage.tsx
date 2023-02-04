@@ -59,8 +59,8 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
         if (!track) return;
 
         // Toggle the favorite state.
+        await favoriteTrack(asData(track), !this.state.favorite);
         this.setState({ favorite: !this.state.favorite });
-        await favoriteTrack(asData(track), this.state.favorite);
     }
 
     /**
