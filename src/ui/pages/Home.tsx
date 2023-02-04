@@ -7,10 +7,43 @@ import BasicText from "@components/common/BasicText";
 import { HomePageStyle } from "@styles/PageStyles";
 
 import { Playlist, TrackData } from "@backend/types";
-import { playlists, recents } from "@backend/user";
+import { favorites, makePlaylist, playlists, recents } from "@backend/user";
 
 import emitter from "@backend/events";
+import { Gateway } from "@app/constants";
 import { navigate } from "@backend/navigation";
+
+/**
+ * Gets the playlists for the user.
+ * Adds the Favorites playlist if it exists.
+ */
+function getPlaylists(): Playlist[] {
+    const lists = [...playlists];
+
+    // Check if the user has favorites.
+    if (favorites.length > 0) {
+        // Add the favorites playlist.
+        lists.unshift(makePlaylist(
+            "favorites", "Favorites", `${Gateway.url}/Favorite.png`,
+            "All your favorites!", favorites));
+    }
+
+    return lists;
+}
+
+/**
+ * Filters the tracks.
+ * Removes duplicate entries.
+ * @param tracks The tracks to filter.
+ */
+function filter(tracks: TrackData[]): TrackData[] {
+    return tracks
+        // Remove duplicate tracks.
+        .filter((track, index, self) => {
+            if (track == null) return false;
+            return self.findIndex(t => t.id == track.id) == index;
+        });
+}
 
 class HomePlaylist extends React.Component<any, any> {
     constructor(props: any) {
@@ -71,10 +104,14 @@ class Home extends React.Component<any, any> {
         }, 1000);
 
         emitter.on("login", this.update);
+        emitter.on("recent", this.update);
+        emitter.on("favorite", this.update);
     }
 
     componentWillUnmount() {
         emitter.removeListener("login", this.update);
+        emitter.removeListener("recent", this.update);
+        emitter.removeListener("favorite", this.update);
     }
 
     /**
@@ -83,6 +120,7 @@ class Home extends React.Component<any, any> {
      */
     renderPlaylist(info: ListRenderItemInfo<Playlist>) {
         const { item, index } = info;
+        if (item == null) return <></>;
 
         return (
             <HomePlaylist key={index} playlist={item} />
@@ -95,6 +133,7 @@ class Home extends React.Component<any, any> {
      */
     renderFavorite(info: ListRenderItemInfo<TrackData>) {
         const { item, index } = info;
+        if (item == null) return <></>;
 
         return (
             <Track key={index} track={item} padding={20} />
@@ -102,6 +141,8 @@ class Home extends React.Component<any, any> {
     }
 
     render() {
+        console.log();
+
         return (
             <View style={HomePageStyle.text}>
                 <View style={{ paddingBottom: 20 }}>
@@ -112,7 +153,7 @@ class Home extends React.Component<any, any> {
 
                     <FlatList
                         style={HomePageStyle.playlists}
-                        data={playlists}
+                        data={getPlaylists()}
                         renderItem={(info) => this.renderPlaylist(info)}
                         horizontal showsHorizontalScrollIndicator={false}
                     />
@@ -139,7 +180,7 @@ class Home extends React.Component<any, any> {
                     </View>
 
                     <FlatList
-                        data={recents}
+                        data={filter(recents)}
                         renderItem={(info) => this.renderFavorite(info)}
                         showsVerticalScrollIndicator={false}
                     />
