@@ -45,7 +45,7 @@ function filter(tracks: TrackData[]): TrackData[] {
         });
 }
 
-class HomePlaylist extends React.Component<any, any> {
+class HomePlaylist extends React.PureComponent<any, any> {
     constructor(props: any) {
         super(props);
     }
