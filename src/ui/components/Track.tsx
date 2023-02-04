@@ -15,7 +15,7 @@ interface IProps {
     onClick?: (track: TrackData) => void;
 }
 
-class Track extends React.Component<IProps, any> {
+class Track extends React.PureComponent<IProps, never> {
     constructor(props: IProps) {
         super(props);
     }
@@ -32,7 +32,7 @@ class Track extends React.Component<IProps, any> {
                     style={{ borderRadius: 20 }}
                     onPress={() => this.props.onClick?.(track)}
                 >
-                    <View style={{ flexDirection: "row", }}>
+                    <View style={{ flexDirection: "row" }}>
                         <Image
                             style={TrackStyle.image}
                             source={{ uri: getIconUrl(track) }}
