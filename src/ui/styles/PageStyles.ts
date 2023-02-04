@@ -73,7 +73,7 @@ export const HomePageStyle = StyleSheet.create({
     },
     playlistImage: {
         borderRadius: 20,
-        opacity: 0.9
+        opacity: 0.8
     },
     playlistName: {
         fontSize: 20,
