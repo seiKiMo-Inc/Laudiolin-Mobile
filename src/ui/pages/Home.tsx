@@ -7,7 +7,7 @@ import BasicText from "@components/common/BasicText";
 import { HomePageStyle } from "@styles/PageStyles";
 
 import { Playlist, TrackData } from "@backend/types";
-import { favorites, playlists } from "@backend/user";
+import { playlists, recents } from "@backend/user";
 
 import emitter from "@backend/events";
 import { navigate } from "@backend/navigation";
@@ -139,7 +139,7 @@ class Home extends React.Component<any, any> {
                     </View>
 
                     <FlatList
-                        data={favorites}
+                        data={recents}
                         renderItem={(info) => this.renderFavorite(info)}
                         showsVerticalScrollIndicator={false}
                     />
