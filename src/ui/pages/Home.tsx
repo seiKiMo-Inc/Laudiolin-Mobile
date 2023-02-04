@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, ImageBackground, ListRenderItemInfo, ScrollView, TouchableHighlight, View } from "react-native";
+import { FlatList, ImageBackground, ListRenderItemInfo, TouchableHighlight, View } from "react-native";
 
 import Track from "@components/Track";
 import BasicText from "@components/common/BasicText";
@@ -103,7 +103,7 @@ class Home extends React.Component<any, any> {
 
     render() {
         return (
-            <ScrollView contentContainerStyle={HomePageStyle.text}>
+            <View style={HomePageStyle.text}>
                 <View style={{ paddingBottom: 20 }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Playlists"} style={HomePageStyle.headerText} />
@@ -144,7 +144,7 @@ class Home extends React.Component<any, any> {
                         showsVerticalScrollIndicator={false}
                     />
                 </View>
-            </ScrollView>
+            </View>
         );
     }
 }
