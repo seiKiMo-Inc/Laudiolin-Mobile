@@ -26,8 +26,6 @@ interface IState {
 }
 
 class PlayingTrackPage extends React.Component<IProps, IState> {
-    updateInterval: any|null = null;
-
     constructor(props: IProps) {
         super(props);
 
@@ -37,11 +35,6 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
             paused: false,
             favorite: false
         };
-
-        // Register track player listeners.
-        TrackPlayer.addEventListener(Event.PlaybackTrackChanged, () => this.update());
-        TrackPlayer.addEventListener(Event.PlaybackQueueEnded, () => this.update());
-        TrackPlayer.addEventListener(Event.PlaybackState, () => this.update());
     }
 
     /**
@@ -96,11 +89,11 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        this.updateInterval = setInterval(() => this.positionUpdate(), 500);
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.updateInterval);
+        // Register track player listeners.
+        TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => this.positionUpdate());
+        TrackPlayer.addEventListener(Event.PlaybackTrackChanged, () => this.update());
+        TrackPlayer.addEventListener(Event.PlaybackQueueEnded, () => this.update());
+        TrackPlayer.addEventListener(Event.PlaybackState, () => this.update());
     }
 
     render() {
