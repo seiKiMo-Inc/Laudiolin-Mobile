@@ -13,6 +13,7 @@ import { PlaylistPageStyle } from "@styles/PageStyles";
 import { Playlist, TrackData } from "@backend/types";
 import { playTrack } from "@backend/audio";
 import emitter from "@backend/events";
+import { navigate } from "@backend/navigation";
 
 interface IProps {
     showPage: boolean;
@@ -68,6 +69,20 @@ class PlaylistPage extends React.Component<IProps, IState> {
         return this.props.showPage ? (
             <JumpInView visible={this.props.showPage} style={PlaylistPageStyle.container}>
                 <Hide show={playlist != null}>
+                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
+                        <Icon
+                            name={"chevron-left"}
+                            type={"material"} size={30}
+                            color={"white"} onPress={() => navigate("Home")}
+                            underlayColor={"white"}
+                        />
+                        <BasicText
+                            text={`Author: ${playlist?.owner}`}
+                            style={{ fontWeight: "bold", fontSize: 15 }}
+                            containerStyle={{ marginLeft: 20 }}
+                        />
+                    </View>
+
                     <View style={PlaylistPageStyle.info}>
                         <Image
                             source={{ uri: playlist?.icon }}
@@ -80,7 +95,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
                                 style={PlaylistPageStyle.playlistName}
                             />
                             <BasicText
-                                text={playlist?.owner ?? ""}
+                                text={playlist?.description ?? ""}
                                 style={PlaylistPageStyle.playlistAuthor}
                             />
                         </View>
