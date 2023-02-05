@@ -26,7 +26,7 @@ export const TrackStyle = StyleSheet.create({
 export const ControlStyle = StyleSheet.create({
     container: {
         flexDirection: "row",
-        paddingLeft: 20,
+        marginLeft: 20,
         zIndex: 10000,
     },
     image: {

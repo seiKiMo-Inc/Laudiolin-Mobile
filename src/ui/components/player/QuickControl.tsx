@@ -17,6 +17,7 @@ interface IProps {
 interface IState {
     paused: boolean;
     track: Track|null;
+    trackProgressPercentage: number;
 }
 
 class QuickControl extends React.Component<IProps, IState> {
@@ -25,7 +26,8 @@ class QuickControl extends React.Component<IProps, IState> {
 
         this.state = {
             paused: false,
-            track: null
+            track: null,
+            trackProgressPercentage: 0
         };
 
         // Register track player listeners.
@@ -73,6 +75,15 @@ class QuickControl extends React.Component<IProps, IState> {
 
         if (this.state.track != null)
             this.props.isQuickControlVisible(true);
+
+        TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => this.setTrackProgressPercentage(TrackPlayer.getPosition()));
+    }
+
+    setTrackProgressPercentage = async (progress: Promise<number>) => {
+        const duration = this.state.track?.duration ?? 0;
+        const percentage = (await progress / duration) * 100;
+
+        this.setState({ trackProgressPercentage: percentage });
     }
 
     componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
@@ -101,7 +112,7 @@ class QuickControl extends React.Component<IProps, IState> {
                             {/* TODO: Adjust the width of this inner view to show progress */}
                             <View style={{
                                 height: 65,
-                                width: Dimensions.get("window").width - 33 - 100,
+                                width: `${this.state.trackProgressPercentage}%`,
                                 position: "absolute",
                                 backgroundColor: "#1e85ad"
                             }}/>
