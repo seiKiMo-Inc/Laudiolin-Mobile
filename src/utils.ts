@@ -47,20 +47,36 @@ export function getIconUrl(track: TrackData): string {
  * Gets the original URL of the track.
  * @param id The ID of the track to get the URL for.
  */
-export function getOriginalUrl(id: string): string {
+export async function getOriginalUrl(id: string): Promise<string> {
+    console.info(await fetchSpotifyId(id))
+
     switch (id.length) {
         case 11: return `https://www.youtube.com/watch?v=${id}`;
-        case 12: return `https://open.spotify.com/track/${id}`;
+        case 12: return `https://open.spotify.com/track/${await fetchSpotifyId(id)}`;
         default: return `https://laudiolin.seikimo.moe/track/${id}`;
     }
+}
+
+/**
+ * Gets the Spotify ID from the ISRC.
+ * @param isrc The ISRC of the track to get the Spotify ID for.
+ */
+export async function fetchSpotifyId(isrc: string): Promise<string> {
+    // Perform a request to the gateway.
+    const response = await fetch(`${Gateway.url}/reverse/${isrc}`);
+
+    // Check if the response is valid.
+    if (response.status != 301) return "";
+    // Return the Spotify ID.
+    return (await response.json()).id;
 }
 
 /**
  * Attempts to open the track in the web browser.
  * @param track The track to open.
  */
-export function openTrack(track: Track|TrackData): void {
-    openUrl(getOriginalUrl(track.id as string));
+export async function openTrack(track: Track|TrackData): Promise<void> {
+    openUrl(await getOriginalUrl(track.id as string));
 }
 
 /**
