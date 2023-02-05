@@ -1,6 +1,6 @@
 import React from "react";
 
-import {Icon, Tab} from '@rneui/themed';
+import { Tab,  } from '@rneui/themed';
 
 import { NavBarStyle } from "@styles/NavBarStyle"
 
@@ -19,24 +19,13 @@ class NavBar extends React.Component<IProps, never> {
              <Tab
                  value={this.props.pageIndex}
                  onChange={this.props.setPageIndex}
-                 indicatorStyle={{ height: 0 }}
+                 disableIndicator={true}
                  style={NavBarStyle.container}
              >
-                 <Tab.Item
-                     title="Home"
-                     titleStyle={(active) => ({ ...NavBarStyle.tab, color: active ? "#5bc6ff" : "#bebebe" })}
-                     icon={{ name: "home", type: "material", color: this.props.pageIndex == 0 ? "#5bc6ff" : "#bebebe" }}
-                 />
-                 <Tab.Item
-                     title="Search"
-                     titleStyle={(active) => ({...NavBarStyle.tab, color: active ? "#5bc6ff" : "#bebebe"})}
-                     icon={{ name: "search", type: "material", color: this.props.pageIndex == 1 ? "#5bc6ff" : "#bebebe" }}
-                 />
-                 <Tab.Item
-                     title="Settings"
-                     titleStyle={(active) => ({...NavBarStyle.tab, color: active ? "#5bc6ff" : "#bebebe"})}
-                     icon={{ name: "settings", type: "material", color: this.props.pageIndex == 2 ? "#5bc6ff" : "#bebebe" }}
-                 />
+                 <Tab.Item icon={{ name: "home", type: "material", color: this.props.pageIndex == 0 ? "#5bc6ff" : "#bebebe", size: 30 }} />
+                 <Tab.Item icon={{ name: "search", type: "material", color: this.props.pageIndex == 1 ? "#5bc6ff" : "#bebebe", size: 30 }} />
+                 <Tab.Item icon={{ name: "notifications", type: "material", color: this.props.pageIndex == 2 ? "#5bc6ff" : "#bebebe", size: 30 }} />
+                 <Tab.Item icon={{ name: "account-circle", type: "material", color: this.props.pageIndex == 3 ? "#5bc6ff" : "#bebebe", size: 30 }} />
              </Tab>
         );
     }
