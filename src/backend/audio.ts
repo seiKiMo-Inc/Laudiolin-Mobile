@@ -53,6 +53,8 @@ export async function download(track: TrackData): Promise<void> {
         return;
     }
 
+    // Create the track's folder.
+    await fs.createTrackFolder(track);
     // Download the track data as necessary.
     await fs.downloadUrl(track.url, fs.getTrackPath(track));
     await fs.downloadUrl(track.icon, fs.getIconPath(track));

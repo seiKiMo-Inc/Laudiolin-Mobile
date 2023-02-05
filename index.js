@@ -10,6 +10,7 @@ import { setAppData } from "@app/constants";
 import { playbackService } from "@backend/audio";
 
 // Setup event listeners.
+import * as fs from "@backend/fs";
 import * as gateway from "@backend/gateway";
 import * as settings from "@backend/settings";
 
@@ -26,6 +27,8 @@ async function initialize() {
 
     // Fetch the application settings.
     await settings.reloadSettings();
+    // Create folders if needed.
+    await fs.createFolders();
 
     // Initialize the gateway.
     await gateway.setupListeners();
