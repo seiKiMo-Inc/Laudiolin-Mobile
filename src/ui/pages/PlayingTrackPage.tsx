@@ -8,13 +8,17 @@ import JumpInView from "@components/common/JumpInView";
 import ProgressBar from "@components/player/ProgressBar";
 import Controls from "@components/player/Controls";
 
+import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
+
 import { PlayingTrackPageStyle } from "@styles/PageStyles";
 
+import { openTrack } from "@app/utils";
 import { Playlist } from "@backend/types";
 import { navigate } from "@backend/navigation";
 import { currentPlaylist } from "@backend/playlist";
 import { favoriteTrack, favorites } from "@backend/user";
-import { getCurrentTrack, shuffleQueue, asData } from "@backend/audio";
+import { getCurrentTrack, shuffleQueue, asData, download } from "@backend/audio";
+
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 
 interface IProps {
@@ -152,13 +156,24 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                             </View>
                         </Hide>
 
-                        <Icon
-                            name={"more-vert"}
-                            type={"material"}
-                            size={30}
-                            color={"#FFFFFF"}
-                            onPress={() => null /* TODO: Make more-vert menu */}
-                        />
+                        <Menu style={{ justifyContent: "center" }}>
+                            <MenuTrigger>
+                                <Icon
+                                    size={30}
+                                    name={"more-vert"}
+                                    type={"material"}
+                                    color={"#FFFFFF"}
+                                />
+                            </MenuTrigger>
+
+                            <MenuOptions>
+                                {this.state.playlist == null &&
+                                    <MenuOption text={"Add to Playlist"} onSelect={() => console.log("a")} />}
+
+                                <MenuOption text={"Open Track Source"} onSelect={() => openTrack(track!)} />
+                                <MenuOption text={"Download Track"} onSelect={() => download(asData(track!))} />
+                            </MenuOptions>
+                        </Menu>
                     </View>
 
                     <View style={PlayingTrackPageStyle.trackInfo}>

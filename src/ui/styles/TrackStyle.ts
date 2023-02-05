@@ -19,7 +19,8 @@ export const TrackStyle = StyleSheet.create({
         fontSize: 12
     },
     more: {
-        justifyContent: "center"
+        zIndex: 1,
+        paddingLeft: 10
     }
 });
 

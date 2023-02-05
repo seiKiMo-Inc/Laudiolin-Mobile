@@ -5,9 +5,12 @@ import { Icon, Image } from "@rneui/base";
 import TextTicker from "react-native-text-ticker";
 import BasicText from "@components/common/BasicText";
 
+import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
+
 import { TrackStyle } from "@styles/TrackStyle";
 import { TrackData } from "@backend/types";
-import { getIconUrl } from "@app/utils";
+import { download } from "@backend/audio";
+import { getIconUrl, openTrack } from "@app/utils";
 
 interface IProps {
     track: TrackData;
@@ -52,11 +55,21 @@ class Track extends React.PureComponent<IProps, never> {
                             />
                         </View>
 
-                        <Icon
-                            color={"white"}
-                            type="material" name={"more-vert"}
-                            containerStyle={TrackStyle.more}
-                        />
+                        <Menu style={{ justifyContent: "center" }}>
+                            <MenuTrigger>
+                                <Icon
+                                    color={"white"}
+                                    type="material" name={"more-vert"}
+                                    containerStyle={TrackStyle.more}
+                                />
+                            </MenuTrigger>
+
+                            <MenuOptions>
+                                <MenuOption text={"Add to Playlist"} onSelect={() => console.log("a")} />
+                                <MenuOption text={"Open Track Source"} onSelect={() => openTrack(track)} />
+                                <MenuOption text={"Download Track"} onSelect={() => download(track)} />
+                            </MenuOptions>
+                        </Menu>
                     </View>
                 </TouchableHighlight>
             </View>
