@@ -208,40 +208,40 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                             style={PlayingTrackPageStyle.trackImage}
                             source={{ uri: track.artwork as string }}
                         />
+                    </View>
 
-                        <View style={{ padding: 25, flexDirection: "column", gap: 10 }}>
-                            <BasicText
-                                numberOfLines={2}
-                                style={{ color: "#FFFFFF", fontSize: 25 }}
-                                text={track.title ?? ""}
-                            />
-                            <BasicText
-                                numberOfLines={1}
-                                style={{ color: "#a1a1a1", fontSize: 15 }}
-                                text={track.artist ?? ""}
-                            />
+                    <View style={PlayingTrackPageStyle.lowerContainer}>
+                        <BasicText
+                            numberOfLines={2}
+                            style={{ color: "#FFFFFF", fontSize: 25 }}
+                            text={track.title ?? ""}
+                        />
+                        <BasicText
+                            numberOfLines={1}
+                            style={{ color: "#a1a1a1", fontSize: 15 }}
+                            text={track.artist ?? ""}
+                        />
 
-                            <ProgressBar
-                                trackLength={track.duration ?? 0}
-                                currentTime={this.state.position}
-                                onSeek={time => TrackPlayer.seekTo(time)}
-                                onSlidingStart={() => null}
-                            />
+                        <ProgressBar
+                            trackLength={track.duration ?? 0}
+                            currentTime={this.state.position}
+                            onSeek={time => TrackPlayer.seekTo(time)}
+                            onSlidingStart={() => null}
+                        />
 
-                            <Controls
-                                isPaused={this.state.paused}
-                                isFavorite={this.state.favorite}
-                                shuffleControl={() => shuffleQueue()}
-                                repeatControl={() => this.toggleReplayState()}
-                                skipToPreviousControl={() => this.skip(true)}
-                                playControl={async () => this.togglePlayback()}
-                                skipToNextControl={() => this.skip(false)}
-                                makeFavoriteControl={() => this.favoriteTrack()} />
+                        <Controls
+                            isPaused={this.state.paused}
+                            isFavorite={this.state.favorite}
+                            shuffleControl={() => shuffleQueue()}
+                            repeatControl={() => this.toggleReplayState()}
+                            skipToPreviousControl={() => this.skip(true)}
+                            playControl={async () => this.togglePlayback()}
+                            skipToNextControl={() => this.skip(false)}
+                            makeFavoriteControl={() => this.favoriteTrack()} />
 
-                            <BasicText
-                                text={this.state.alert} style={PlayingTrackPageStyle.alert}
-                            />
-                        </View>
+                        <BasicText
+                            text={this.state.alert} style={PlayingTrackPageStyle.alert}
+                        />
                     </View>
                 </JumpInView>
             )

@@ -219,8 +219,8 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         zIndex: 0,
     },
     view: {
-        width: "100%",
-        height: "100%",
+        width: screenWidth,
+        height: screenHeight,
         backgroundColor: "#0c0f17",
         zIndex: 99999,
         position: "absolute",
@@ -256,6 +256,11 @@ export const PlayingTrackPageStyle = StyleSheet.create({
     },
     alert: {
         alignSelf: "center"
+    },
+    lowerContainer: {
+        padding: 25,
+        flexDirection: "column",
+        gap: 10,
     }
 });
 
