@@ -144,8 +144,14 @@ export async function loadFavorites() {
 
 /**
  * Loads recent tracks from the backend.
+ * @param tracks The recent tracks to load. (gateway)
  */
-export async function loadRecents() {
+export async function loadRecents(tracks: TrackData[]|null = null) {
+    if (tracks) {
+        recents = tracks; // Load the recents from the gateway.
+        return;
+    }
+
     if (!userData) return; // Check if the user data has been loaded.
     if (!userData.recentlyPlayed) return; // Check if the user has any recents.
     recents = userData.recentlyPlayed; // Load the recents.

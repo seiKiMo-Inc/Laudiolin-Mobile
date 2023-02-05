@@ -1,8 +1,9 @@
 import type { TrackData } from "@backend/types";
 
-import { token } from "@backend/user";
+import { loadRecents, token, recents } from "@backend/user";
 import { asData, getCurrentTrack, syncToTrack } from "@backend/audio";
 import { Gateway } from "@app/constants";
+import emitter from "@backend/events";
 
 import TrackPlayer, { Event } from "react-native-track-player";
 
@@ -129,6 +130,12 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
             // Pass the message to the player.
             await syncToTrack(track, progress);
             return;
+        case "recents":
+            const { recents } = message as RecentsMessage;
+
+            await loadRecents(recents); // Load the recents.
+            emitter.emit("recent"); // Emit the recents event.
+            return;
     }
 }
 
@@ -206,4 +213,9 @@ export type SyncMessage = BaseGatewayMessage & {
     type: "sync";
     track: TrackData | null;
     progress: number;
+};
+// To client.
+export type RecentsMessage = BaseGatewayMessage & {
+    type: "recents";
+    recents: TrackData[];
 };
