@@ -56,6 +56,8 @@ export async function download(track: TrackData): Promise<void> {
     // Download the track data as necessary.
     await fs.downloadUrl(track.url, fs.getTrackPath(track));
     await fs.downloadUrl(track.icon, fs.getIconPath(track));
+    // Save the track's data.
+    await fs.saveData(track, fs.getDataPath(track));
 }
 
 /**
