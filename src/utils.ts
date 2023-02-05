@@ -1,5 +1,8 @@
+import { Linking } from "react-native";
+
 import { TrackData } from "@backend/types";
 import { Gateway } from "@app/constants";
+import { Track } from "react-native-track-player";
 
 /**
  * Matches the icon URL to the correct proxy URL.
@@ -25,6 +28,29 @@ export function getIconUrl(track: TrackData): string {
             .replace("{ico}", split[4])
             .replace("{src}", "spot");
     }
+    if (iconUrl.includes("lh3.googleusercontent.com")) {
+        return url
+            .replace("{ico}", split[3])
+            .replace("{src}", "cart");
+    }
 
     return url;
+}
+
+/**
+ * Attempts to open the track in the web browser.
+ * @param track The track to open.
+ */
+export function openTrack(track: Track|TrackData): void {
+    openUrl(track.url as string);
+}
+
+/**
+ * Attempts to open the URL in the web browser.
+ * @param url The URL to open.
+ */
+export function openUrl(url: string): void {
+    Linking.canOpenURL(url).then(supported => {
+        supported && Linking.openURL(url);
+    });
 }
