@@ -11,6 +11,8 @@ import * as settings from "@backend/settings";
 import { navigate } from "@backend/navigation";
 import { getLoginUrl, login } from "@backend/user";
 
+import { console } from "@app/utils";
+
 interface IState {
     showLogin: boolean;
     webViewUrl: string;

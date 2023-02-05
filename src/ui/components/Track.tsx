@@ -65,7 +65,7 @@ class Track extends React.PureComponent<IProps, never> {
                             </MenuTrigger>
 
                             <MenuOptions>
-                                <MenuOption text={"Add to Playlist"} onSelect={() => console.log("a")} />
+                                <MenuOption text={"Add to Playlist"} onSelect={() => null} />
                                 <MenuOption text={"Open Track Source"} onSelect={() => openTrack(track)} />
                                 <MenuOption text={"Download Track"} onSelect={() => download(track)} />
                             </MenuOptions>

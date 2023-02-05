@@ -2,6 +2,8 @@ import type { TrackData, Playlist } from "@backend/types";
 
 import { targetRoute, playlists, token } from "@backend/user";
 
+import { console } from "@app/utils";
+
 export let currentPlaylist: Playlist | null = null;
 
 /*

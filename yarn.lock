@@ -4908,6 +4908,11 @@ react-native-linear-gradient@^2.6.2:
   resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.6.2.tgz#56598a76832724b2afa7889747635b5c80948f38"
   integrity sha512-Z8Xxvupsex+9BBFoSYS87bilNPWcRfRsGC0cpJk72Nxb5p2nEkGSBv73xZbEHnW2mUFvP+huYxrVvjZkr/gRjQ==
 
+react-native-logs@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-logs/-/react-native-logs-5.0.1.tgz#53665919587b499e22f514e50cb6a834cedba1ce"
+  integrity sha512-30aQugeLFfcBEKd6U4I75SKc5q5fb9Qrwv0Vnsy3jwpC716xON9SxRbBEnxoPSDJjzK527r4zi+qYqzig6lPlQ==
+
 react-native-popup-menu@^0.16.1:
   version "0.16.1"
   resolved "https://registry.yarnpkg.com/react-native-popup-menu/-/react-native-popup-menu-0.16.1.tgz#b1bb56be5c0838bbc2f532af7b1f554b7ceef566"

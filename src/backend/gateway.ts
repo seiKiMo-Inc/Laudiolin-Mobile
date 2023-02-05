@@ -7,6 +7,8 @@ import emitter from "@backend/events";
 
 import TrackPlayer, { Event } from "react-native-track-player";
 
+import { console } from "@app/utils";
+
 let retryToken: any = null;
 let connected: boolean = false;
 export let gateway: WebSocket | null = null;

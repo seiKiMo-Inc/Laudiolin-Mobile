@@ -6,6 +6,8 @@ import * as settings from "@backend/settings";
 
 import { Gateway } from "@app/constants";
 
+import { console } from "@app/utils";
+
 export const updateTargetRoute = () => targetRoute = Gateway.getUrl();
 export let targetRoute = Gateway.getUrl(); // The base address for the backend.
 export let userData: User | null = null; // The loaded user data.

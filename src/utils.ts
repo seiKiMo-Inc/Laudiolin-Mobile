@@ -4,6 +4,9 @@ import { TrackData } from "@backend/types";
 import { Gateway } from "@app/constants";
 import { Track } from "react-native-track-player";
 
+import { logger } from "react-native-logs";
+export const console = logger.createLogger();
+
 /**
  * Matches the icon URL to the correct proxy URL.
  * @param track The track to get the icon URL for.
