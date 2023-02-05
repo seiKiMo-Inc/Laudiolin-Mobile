@@ -2,6 +2,7 @@ import React from "react";
 import { View, ImageBackground } from "react-native";
 
 import { Icon, Image } from "@rneui/themed";
+import Hide from "@components/common/Hide";
 import BasicText from "@components/common/BasicText";
 import JumpInView from "@components/common/JumpInView";
 import ProgressBar from "@components/player/ProgressBar";
@@ -9,7 +10,9 @@ import Controls from "@components/player/Controls";
 
 import { PlayingTrackPageStyle } from "@styles/PageStyles";
 
+import { Playlist } from "@backend/types";
 import { navigate } from "@backend/navigation";
+import { currentPlaylist } from "@backend/playlist";
 import { favoriteTrack, favorites } from "@backend/user";
 import { getCurrentTrack, shuffleQueue, asData } from "@backend/audio";
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
@@ -23,6 +26,7 @@ interface IState {
     position: number;
     paused: boolean;
     favorite: boolean;
+    playlist: Playlist|null;
 }
 
 class PlayingTrackPage extends React.Component<IProps, IState> {
@@ -33,7 +37,8 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
             track: null,
             position: 0,
             paused: false,
-            favorite: false
+            favorite: false,
+            playlist: null
         };
     }
 
@@ -64,6 +69,20 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
     }
 
     /**
+     * Skips to the next or previous track.
+     * @param backwards Whether to skip backwards.
+     */
+    async skip(backwards: boolean): Promise<void> {
+        // Skip to the next or previous track.
+        if (backwards)
+            await TrackPlayer.skipToPrevious();
+        else await TrackPlayer.skipToNext();
+
+        // Update the component.
+        await this.update();
+    }
+
+    /**
      * Called when the track player updates.
      */
     async positionUpdate() {
@@ -84,7 +103,8 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
             track: track ?? this.state.track,
             position: await TrackPlayer.getPosition(),
             paused: await TrackPlayer.getState() == State.Paused,
-            favorite: track ? favorites.find(t => t.id == track.id) != null : false
+            favorite: track ? favorites.find(t => t.id == track.id) != null : false,
+            playlist: currentPlaylist
         });
     }
 
@@ -119,16 +139,18 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                             onPress={() => navigate("Home")}
                         />
 
-                        <View style={PlayingTrackPageStyle.topBarText}>
-                            <BasicText
-                                text={"Playing From Playlist"}
-                                style={{ textTransform: "uppercase" }}
-                            />
-                            <BasicText
-                                text={"Favorites"}
-                                style={{ fontWeight: "bold", color: "#FFFFFF" }}
-                            />
-                        </View>
+                        <Hide show={this.state.playlist != null}>
+                            <View style={PlayingTrackPageStyle.topBarText}>
+                                <BasicText
+                                    text={"Playing From Playlist"}
+                                    style={{ textTransform: "uppercase" }}
+                                />
+                                <BasicText
+                                    text={this.state.playlist?.name ?? "Unknown"}
+                                    style={{ fontWeight: "bold", color: "#FFFFFF" }}
+                                />
+                            </View>
+                        </Hide>
 
                         <Icon
                             name={"more-vert"}
@@ -168,9 +190,9 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                                 isPaused={this.state.paused}
                                 isFavorite={this.state.favorite}
                                 shuffleRepeatControl={() => shuffleQueue()}
-                                skipToPreviousControl={() => TrackPlayer.skipToPrevious()}
+                                skipToPreviousControl={() => this.skip(true)}
                                 playControl={async () => this.togglePlayback()}
-                                skipToNextControl={() => TrackPlayer.skipToNext()}
+                                skipToNextControl={() => this.skip(false)}
                                 makeFavoriteControl={() => this.favoriteTrack()} />
                         </View>
                     </View>
