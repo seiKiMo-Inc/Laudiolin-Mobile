@@ -140,8 +140,8 @@ class App extends React.Component<any, IState> {
                 <TabView
                     value={this.state.pageIndex}
                     onChange={(i) => this.setState({ pageIndex: i })}
-                    animationType="spring"
-                    animationConfig={{ useNativeDriver: true, speed: 100 }}
+                    animationType="timing"
+                    animationConfig={{ useNativeDriver: true, bounciness: 0, duration: 100 }}
                     disableSwipe={true}
                     containerStyle={{ backgroundColor: "#0c0f17" }}
                 >
