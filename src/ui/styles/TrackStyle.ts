@@ -13,7 +13,7 @@ export const TrackStyle = StyleSheet.create({
         color: "white",
         fontFamily: "Poppins",
         fontSize: 16,
-        width: 270
+        width: 240
     },
     artist: {
         fontSize: 12

@@ -45,7 +45,10 @@ class ListPlaylist extends React.Component<any, any> {
 
         return (
             <View style={PlaylistsPageStyle.playlist}>
-                <TouchableHighlight onPress={() => this.openPlaylist()}>
+                <TouchableHighlight
+                    onPress={() => this.openPlaylist()}
+                    style={{ borderRadius: 20 }}
+                >
                     <LinearGradient
                         style={PlaylistsPageStyle.playlistContent}
                         colors={["transparent", "#0c0f17"]}
