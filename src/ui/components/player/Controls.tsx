@@ -7,7 +7,8 @@ interface IProps {
     isPaused: boolean;
     isFavorite: boolean;
 
-    shuffleRepeatControl: () => void;
+    shuffleControl: () => void;
+    repeatControl: () => void;
     skipToPreviousControl: () => void;
     playControl: () => void;
     skipToNextControl: () => void;
@@ -29,7 +30,8 @@ class Controls extends React.Component<IProps, any> {
                     size={30}
                     color={"#FFFFFF"}
                     underlayColor={"#FFFFFF"}
-                    onPress={this.props.shuffleRepeatControl}
+                    onPress={this.props.shuffleControl}
+                    onLongPress={this.props.repeatControl}
                 />
 
                 <Icon

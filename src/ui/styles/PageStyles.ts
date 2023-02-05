@@ -252,6 +252,9 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         maxHeight: 400,
         maxWidth: 400,
     },
+    alert: {
+        alignSelf: "center"
+    }
 });
 
 export const PlaylistPageStyle = StyleSheet.create({

@@ -7,6 +7,7 @@ import { getStreamingUrl } from "@backend/gateway";
 import { setCurrentPlaylist } from "@backend/playlist";
 
 import TrackPlayer, { Event, State } from "react-native-track-player";
+import { RepeatMode } from "react-native-track-player/lib/interfaces";
 
 /**
  * Converts a local track data object to a track player object.
@@ -102,6 +103,27 @@ export async function shuffleQueue(): Promise<void> {
     await TrackPlayer.add(queue);
     // Resume the player.
     await TrackPlayer.play();
+}
+
+/**
+ * Toggles the repeat state of the player.
+ */
+export async function toggleRepeatState(): Promise<void> {
+    // Get the current repeat state.
+    const state = await TrackPlayer.getRepeatMode();
+
+    // Set the repeat state.
+    switch (state) {
+        case RepeatMode.Off:
+            await TrackPlayer.setRepeatMode(RepeatMode.Queue);
+            break;
+        case RepeatMode.Queue:
+            await TrackPlayer.setRepeatMode(RepeatMode.Track);
+            break;
+        case RepeatMode.Track:
+            await TrackPlayer.setRepeatMode(RepeatMode.Off);
+            break;
+    }
 }
 
 /**

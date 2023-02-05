@@ -17,9 +17,10 @@ import { Playlist } from "@backend/types";
 import { navigate } from "@backend/navigation";
 import { currentPlaylist } from "@backend/playlist";
 import { favoriteTrack, favorites } from "@backend/user";
-import { getCurrentTrack, shuffleQueue, asData, download } from "@backend/audio";
+import { getCurrentTrack, shuffleQueue, asData, download, toggleRepeatState } from "@backend/audio";
 
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
+import { RepeatMode } from "react-native-track-player/lib/interfaces";
 
 interface IProps {
     showPage: boolean;
@@ -31,6 +32,7 @@ interface IState {
     paused: boolean;
     favorite: boolean;
     playlist: Playlist|null;
+    alert: string;
 }
 
 class PlayingTrackPage extends React.Component<IProps, IState> {
@@ -42,7 +44,8 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
             position: 0,
             paused: false,
             favorite: false,
-            playlist: null
+            playlist: null,
+            alert: ""
         };
     }
 
@@ -110,6 +113,30 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
             favorite: track ? favorites.find(t => t.id == track.id) != null : false,
             playlist: currentPlaylist
         });
+    }
+
+    async toggleReplayState() {
+        await toggleRepeatState(); // Toggle the repeat state.
+
+        // Create a message to alert the user.
+        let message = "Repeat State: ";
+        switch (await TrackPlayer.getRepeatMode()) {
+            case RepeatMode.Off:
+                message += "Off";
+                break;
+            case RepeatMode.Queue:
+                message += "Queue";
+                break;
+            case RepeatMode.Track:
+                message += "Track";
+                break;
+        }
+
+        // Alert the user.
+        this.setState({ alert: message });
+        setTimeout(() => {
+            this.setState({ alert: "" });
+        }, 1000);
     }
 
     componentDidMount() {
@@ -204,11 +231,16 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                             <Controls
                                 isPaused={this.state.paused}
                                 isFavorite={this.state.favorite}
-                                shuffleRepeatControl={() => shuffleQueue()}
+                                shuffleControl={() => shuffleQueue()}
+                                repeatControl={() => this.toggleReplayState()}
                                 skipToPreviousControl={() => this.skip(true)}
                                 playControl={async () => this.togglePlayback()}
                                 skipToNextControl={() => this.skip(false)}
                                 makeFavoriteControl={() => this.favoriteTrack()} />
+
+                            <BasicText
+                                text={this.state.alert} style={PlayingTrackPageStyle.alert}
+                            />
                         </View>
                     </View>
                 </JumpInView>
