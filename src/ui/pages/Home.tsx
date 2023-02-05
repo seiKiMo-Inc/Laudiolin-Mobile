@@ -185,9 +185,14 @@ class Home extends React.Component<any, IState> {
                         <BasicText text={"More"} style={HomePageStyle.moreDownloads} />
                     </View>
 
-                    <List
-                        data={this.state.downloads}
-                        renderItem={(info) => this.renderTracks(info)} />
+                    {
+                        this.state.downloads.length > 0 ?
+                        (<List
+                            data={this.state.downloads}
+                            renderItem={(info) => this.renderTracks(info)}
+                        />) :
+                        (<BasicText text={"No downloads yet."} style={{ textAlign: "center", justifyContent: "center", padding: 40 }}  />)
+                    }
                 </View>
 
                 <View style={{ paddingBottom: 20 }}>
@@ -195,10 +200,14 @@ class Home extends React.Component<any, IState> {
                         <BasicText text={"Recent Plays"} style={HomePageStyle.headerText} />
                     </View>
 
-                    <List
-                        data={filter(recents)}
-                        renderItem={(info) => this.renderTracks(info)}
-                    />
+                    {
+                        recents.length > 0 ?
+                        (<List
+                            data={filter(recents)}
+                            renderItem={(info) => this.renderTracks(info)}
+                        />) :
+                        (<BasicText text={"No recent plays."} style={{ textAlign: "center", justifyContent: "center", padding: 40 }}  />)
+                    }
                 </View>
             </ScrollView>
         );
