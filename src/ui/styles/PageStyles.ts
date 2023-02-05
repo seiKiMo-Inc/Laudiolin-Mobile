@@ -245,6 +245,8 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         marginTop: 20,
     },
     trackImage: {
+        resizeMode: "contain",
+        flex: 1,
         width: screenWidth,
         height: screenHeight,
         maxHeight: 400,
