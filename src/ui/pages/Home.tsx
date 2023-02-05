@@ -151,7 +151,9 @@ class Home extends React.Component<any, any> {
                 <View style={{ paddingBottom: 20 }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Playlists"} style={HomePageStyle.headerText} />
-                        <BasicText text={"More"} style={HomePageStyle.morePlaylists} press={() => navigate("Playlists")} />
+                        <BasicText text={"More"} style={HomePageStyle.morePlaylists}
+                                   press={() => navigate("Playlists")}
+                        />
                     </View>
 
                     <FlatList

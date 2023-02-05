@@ -1,5 +1,8 @@
 import { Dimensions, StyleSheet } from "react-native";
 
+const screenWidth = Dimensions.get("window").width
+const screenHeight = Dimensions.get("window").height;
+
 export const LoginPageStyle = StyleSheet.create({
     top: {
         backgroundColor: "#0c0f17",
@@ -35,7 +38,7 @@ export const HomePageStyle = StyleSheet.create({
     text: {
         paddingLeft: 20,
         paddingTop: 20,
-        width: Dimensions.get("window").width,
+        width: screenWidth,
     },
     header: {
         flexDirection: "row",
@@ -90,7 +93,7 @@ export const HomePageStyle = StyleSheet.create({
 export const SettingsPageStyle = StyleSheet.create({
     text: {
         paddingLeft: 20,
-        width: Dimensions.get("window").width,
+        width: screenWidth,
     },
     title: {
         color: "white",
@@ -141,7 +144,7 @@ export const SettingsPageStyle = StyleSheet.create({
 export const SearchPageStyle = StyleSheet.create({
     container: {
         paddingTop: 40,
-        width: Dimensions.get("window").width,
+        width: screenWidth,
     },
     searchText: {
         color: "white",
@@ -193,9 +196,13 @@ export const PlaylistsPageStyle = StyleSheet.create({
     playlistTitle: {
         fontSize: 17,
         fontWeight: "bold",
+
+        width: screenWidth - 200,
+        color: "white"
     },
     playlistAuthor: {
-        fontSize: 16
+        fontSize: 16,
+        maxWidth: screenWidth - 200,
     },
     playlistMore: {
         position: "absolute",
@@ -238,8 +245,8 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         marginTop: 20,
     },
     trackImage: {
-        width: Dimensions.get("window").width,
-        height: Dimensions.get("window").height,
+        width: screenWidth,
+        height: screenHeight,
         maxHeight: 400,
         maxWidth: 400,
     },
@@ -271,7 +278,7 @@ export const PlaylistPageStyle = StyleSheet.create({
     actions: {
         paddingBottom: 20,
         flexDirection: "row",
-        width: Dimensions.get("window").width
+        width: screenWidth
     },
     text: {
         paddingLeft: 20,
