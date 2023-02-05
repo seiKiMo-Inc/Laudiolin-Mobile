@@ -18,6 +18,13 @@ export const defaultSettings: UserSettings = {
     token: ""
 };
 
+export const settingsKeys: {[key: string]: string} = {
+    "search.accuracy": "Search Accuracy",
+    "search.engine": "Preferred Search Engine",
+    "ui.background_color": "Background Color",
+    "ui.background_url": "Background URL"
+};
+
 /**
  * Loads settings from the settings file.
  */
@@ -94,6 +101,40 @@ export function ui(): UISettings {
 /*
  * Local storage utilities.
  */
+
+/**
+ * Returns the value of the specified path in local storage.
+ * @param path The path to get the value of. (ex. settings.search.accuracy)
+ * @param fallback The fallback value to return if the path does not exist.
+ */
+export function getFromPath(path: string, fallback: string | null = null): string | null {
+    // Get the correct object.
+    const parts = path.split(".");
+    const key = parts.pop() as string;
+    const obj = parts.reduce((a: any, b) => a[b], settings);
+
+    // Get the value.
+    if (obj) return obj[key] ?? fallback;
+    else return fallback;
+}
+
+/**
+ * Saves the specified value to the specified path in local storage.
+ * @param path The path to save the value to. (ex. settings.search.accuracy)
+ * @param value The value to save.
+ */
+export async function saveFromPath(path: string, value: string = ""): Promise<void> {
+    // Get the correct object.
+    const parts = path.split(".");
+    const key = parts.pop() as string;
+    const obj = parts.reduce((a: any, b) => a[b], settings);
+
+    // Set the value.
+    if (obj) {
+        obj[key] = value;
+        await saveSettings(settings as UserSettings);
+    }
+}
 
 /**
  * Returns the value of the specified key in local storage.

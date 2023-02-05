@@ -58,3 +58,4 @@ export type UISettings = {
     background_color: string;
     background_url: string;
 };
+export type SettingType = "boolean" | "input" | "select" | "color";

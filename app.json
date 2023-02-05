@@ -2,7 +2,7 @@
   "name": "laudiolin",
   "displayName": "Laudiolin",
 
-  "encrypted": false,
-  "address": "10.0.2.2",
-  "port": 3000
+  "encrypted": true,
+  "address": "app.seikimo.moe",
+  "port": 443
 }
