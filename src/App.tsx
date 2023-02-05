@@ -19,6 +19,7 @@ import QuickControl from "@components/player/QuickControl";
 import * as user from "@backend/user";
 import emitter from "@backend/events";
 import { registerListener } from "@backend/navigation";
+import { MenuProvider } from "react-native-popup-menu";
 
 interface IState {
     pageIndex: number;
@@ -159,7 +160,7 @@ class App extends React.Component<any, IState> {
 
     render() {
         return this.state.loggedIn ? (
-            <>
+            <MenuProvider>
                 <TabView
                     value={this.state.pageIndex}
                     onChange={(i) => this.setState({ pageIndex: i })}
@@ -201,7 +202,7 @@ class App extends React.Component<any, IState> {
                         isQuickControlVisible={(visible) => this.setState({ isQuickControlVisible: visible })}
                     />
                 </View>
-            </>
+            </MenuProvider>
         ) : (
             <>
                 <LoginPage />
