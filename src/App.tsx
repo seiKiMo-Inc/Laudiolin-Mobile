@@ -11,6 +11,7 @@ import SettingsPage from "@pages/SettingsPage";
 import PlaylistsPage from "@pages/PlaylistsPage";
 import PlayingTrackPage from "@pages/PlayingTrackPage";
 import PlaylistPage from "@pages/PlaylistPage";
+import DownloadsPage from "@pages/DownloadsPage";
 
 import NavBar from "@components/NavBar";
 import QuickControl from "@components/player/QuickControl";
@@ -26,6 +27,7 @@ interface IState {
     showPlayingTrackPage: boolean;
     showPlaylistsPage: boolean;
     showPlaylistPage: boolean;
+    showDownloadPage: boolean;
     isQuickControlVisible: boolean;
 }
 
@@ -49,6 +51,8 @@ class App extends React.Component<any, IState> {
             showPlayingTrackPage: false,
             showPlaylistsPage: false,
             showPlaylistPage: false,
+            showDownloadPage: false,
+
             isQuickControlVisible: false
         };
     }
@@ -70,7 +74,8 @@ class App extends React.Component<any, IState> {
                         loggedIn: true,
                         showPlayingTrackPage: false,
                         showPlaylistsPage: false,
-                        showPlaylistPage: false
+                        showPlaylistPage: false,
+                        showDownloadPage: false
                     });
                     return;
                 case "Login":
@@ -79,7 +84,8 @@ class App extends React.Component<any, IState> {
                         loggedIn: false,
                         showPlayingTrackPage: false,
                         showPlaylistsPage: false,
-                        showPlaylistPage: false
+                        showPlaylistPage: false,
+                        showDownloadPage: false
                     });
                     return;
                 case "Playlist":
@@ -87,7 +93,8 @@ class App extends React.Component<any, IState> {
                         pageIndex: 0,
                         showPlayingTrackPage: false,
                         showPlaylistsPage: false,
-                        showPlaylistPage: true
+                        showPlaylistPage: true,
+                        showDownloadPage: false
                     });
                     return;
                 case "Playing":
@@ -95,7 +102,8 @@ class App extends React.Component<any, IState> {
                         pageIndex: 0,
                         showPlayingTrackPage: true,
                         showPlaylistsPage: false,
-                        showPlaylistPage: false
+                        showPlaylistPage: false,
+                        showDownloadPage: false
                     });
                     return;
                 case "Playlists":
@@ -103,7 +111,17 @@ class App extends React.Component<any, IState> {
                         pageIndex: 0,
                         showPlayingTrackPage: false,
                         showPlaylistsPage: true,
-                        showPlaylistPage: false
+                        showPlaylistPage: false,
+                        showDownloadPage: false
+                    });
+                    return;
+                case "Downloads":
+                    this.setState({
+                        pageIndex: 0,
+                        showPlayingTrackPage: false,
+                        showPlaylistsPage: false,
+                        showPlaylistPage: false,
+                        showDownloadPage: true
                     });
                     return;
             }
@@ -122,6 +140,11 @@ class App extends React.Component<any, IState> {
 
             if (this.state.showPlayingTrackPage) {
                 this.setState({ showPlayingTrackPage: false });
+                return true;
+            }
+
+            if (this.state.showDownloadPage) {
+                this.setState({ showDownloadPage: false });
                 return true;
             }
 
@@ -170,6 +193,7 @@ class App extends React.Component<any, IState> {
                 <PlayingTrackPage showPage={this.state.showPlayingTrackPage} />
                 <PlaylistsPage showPage={this.state.showPlaylistsPage} />
                 <PlaylistPage showPage={this.state.showPlaylistPage} />
+                <DownloadsPage showPage={this.state.showDownloadPage} />
 
                 <View style={style.control}>
                     <QuickControl

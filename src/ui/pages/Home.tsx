@@ -120,7 +120,8 @@ class Home extends React.Component<any, IState> {
 
         // Load the downloads.
         const downloads = await fs.getDownloadedTracks();
-        const tracks = []; for (const track of downloads.splice(0, 4))
+        const tracks = [];
+        for (const track of downloads.splice(0, 4))
             tracks.push(await fs.loadLocalTrackData(track));
         this.setState({ downloads: filter(tracks) });
     }
@@ -182,7 +183,9 @@ class Home extends React.Component<any, IState> {
                 <View style={{ paddingBottom: 20 }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Downloads"} style={HomePageStyle.headerText} />
-                        <BasicText text={"More"} style={HomePageStyle.moreDownloads} />
+                        <BasicText text={"More"} style={HomePageStyle.moreDownloads}
+                                      press={() => navigate("Downloads")}
+                        />
                     </View>
 
                     {

@@ -318,3 +318,18 @@ export const PlaylistPageStyle = StyleSheet.create({
         fontWeight: "bold",
     }
 });
+
+export const DownloadPageStyle = StyleSheet.create({
+    container: {
+        padding: 20,
+        paddingTop: 10,
+        paddingBottom: 0,
+        backgroundColor: "#0c0f17",
+        height: "100%",
+        width: "100%",
+        zIndex: 99999,
+        position: "absolute",
+        top: 0,
+        left: 0,
+    }
+});
