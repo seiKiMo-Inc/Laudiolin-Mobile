@@ -58,7 +58,7 @@ class SearchPage extends React.Component<any, IState> {
 
             // Clear the timeout.
             this.timeout = null;
-        }, 100);
+        }, 1000);
     }
 
     /**
