@@ -10,9 +10,15 @@ let app: any = {
  */
 export function setAppData(data: any): void {
     app = data;
+
+    // Update the gateway.
+    Gateway = {
+        url: `${app.encrypted ? "https:" : "http:"}//${app.address}:${app.port}`,
+        socket: `${app.encrypted ? "wss:" : "ws:"}//${app.address}:${app.port}`
+    };
 }
 
-export const Gateway = {
+export let Gateway = {
     url: `${app.encrypted ? "https:" : "http:"}//${app.address}:${app.port}`,
     socket: `${app.encrypted ? "wss:" : "ws:"}//${app.address}:${app.port}`
 };
