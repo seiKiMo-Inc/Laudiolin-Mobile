@@ -243,6 +243,8 @@ export const PlayingTrackPageStyle = StyleSheet.create({
     trackInfo: {
         alignSelf: "center",
         marginTop: 20,
+        justifyContent: "center",
+        alignItems: "center"
     },
     trackImage: {
         resizeMode: "contain",
