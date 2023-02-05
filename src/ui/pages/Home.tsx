@@ -1,8 +1,9 @@
 import React from "react";
-import { FlatList, ImageBackground, ListRenderItemInfo, TouchableHighlight, View } from "react-native";
+import { FlatList, ImageBackground, ScrollView, TouchableHighlight, View } from "react-native";
 
 import Track from "@components/Track";
 import BasicText from "@components/common/BasicText";
+import List, { ListRenderItem } from "@components/common/List";
 
 import { HomePageStyle } from "@styles/PageStyles";
 
@@ -12,6 +13,7 @@ import { favorites, makePlaylist, playlists, recents } from "@backend/user";
 import emitter from "@backend/events";
 import { Gateway } from "@app/constants";
 import { navigate } from "@backend/navigation";
+import { playTrack } from "@backend/audio";
 
 /**
  * Gets the playlists for the user.
@@ -118,7 +120,7 @@ class Home extends React.Component<any, any> {
      * Renders a home playlist.
      * @param info The info of the playlist.
      */
-    renderPlaylist(info: ListRenderItemInfo<Playlist>) {
+    renderPlaylist(info: ListRenderItem<Playlist>) {
         const { item, index } = info;
         if (item == null) return <></>;
 
@@ -128,21 +130,24 @@ class Home extends React.Component<any, any> {
     }
 
     /**
-     * Renders a favorite track.
+     * Renders a collection of tracks.
      * @param info The info of the track.
      */
-    renderFavorite(info: ListRenderItemInfo<TrackData>) {
-        const { item, index } = info;
+    renderTracks(info: ListRenderItem<any>) {
+        const { item, index } = info as ListRenderItem<TrackData>;
         if (item == null) return <></>;
 
         return (
-            <Track key={index} track={item} padding={20} />
+            <Track
+                key={index} track={item} padding={20}
+                onClick={track => playTrack(track, true, true)}
+            />
         );
     }
 
     render() {
         return (
-            <View style={HomePageStyle.text}>
+            <ScrollView style={HomePageStyle.text}>
                 <View style={{ paddingBottom: 20 }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Playlists"} style={HomePageStyle.headerText} />
@@ -171,19 +176,17 @@ class Home extends React.Component<any, any> {
                     </View>
                 </View> */}
 
-                <View>
+                <View style={{ paddingBottom: 20 }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Recent Plays"} style={HomePageStyle.headerText} />
-                        <BasicText text={"More"} style={HomePageStyle.moreDownloads} />
                     </View>
 
-                    <FlatList
+                    <List
                         data={filter(recents)}
-                        renderItem={(info) => this.renderFavorite(info)}
-                        showsVerticalScrollIndicator={false}
+                        renderItem={(info) => this.renderTracks(info)}
                     />
                 </View>
-            </View>
+            </ScrollView>
         );
     }
 }
