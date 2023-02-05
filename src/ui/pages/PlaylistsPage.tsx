@@ -9,13 +9,22 @@ import LinearGradient from "react-native-linear-gradient";
 import { PlaylistsPageStyle } from "@styles/PageStyles";
 import JumpInView from "@components/common/JumpInView";
 import BasicButton from "@components/common/BasicButton";
+import TextTicker from "react-native-text-ticker";
 
+import { getPlaylistAuthor, playlists } from "@backend/user";
 import { navigate } from "@backend/navigation";
-import { playlists } from "@backend/user";
 import { Playlist } from "@backend/types";
 import emitter from "@backend/events";
 
 class ListPlaylist extends React.Component<any, any> {
+    constructor(props: any) {
+        super(props);
+
+        this.state = {
+            author: (props.playlist as Playlist).owner
+        };
+    }
+
     /**
      * Opens the playlist viewer.
      */
@@ -23,6 +32,12 @@ class ListPlaylist extends React.Component<any, any> {
         emitter.emit("showPlaylist",
             this.props.playlist);
         navigate("Playlist");
+    }
+
+    async componentDidMount() {
+        this.setState({
+            author: await getPlaylistAuthor(this.props.playlist)
+        });
     }
 
     render() {
@@ -49,14 +64,17 @@ class ListPlaylist extends React.Component<any, any> {
                         />
 
                         <View style={{ paddingLeft: 20, justifyContent: "center" }}>
-                            <BasicText
-                                text={playlist.name}
+                            <TextTicker
                                 style={PlaylistsPageStyle.playlistTitle}
-                            />
+                                loop duration={5000}
+                            >
+                                {playlist.name}
+                            </TextTicker>
 
                             <BasicText
-                                text={playlist.owner as string}
+                                text={this.state.author}
                                 style={PlaylistsPageStyle.playlistAuthor}
+                                numberOfLines={1}
                             />
                         </View>
 
