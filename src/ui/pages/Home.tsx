@@ -178,7 +178,7 @@ class Home extends React.Component<any, IState> {
     render() {
         return (
             <ScrollView style={HomePageStyle.text}>
-                <View style={{ paddingBottom: 20 }}>
+                <View style={{ paddingBottom: 20, width: "100%" }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Playlists"} style={HomePageStyle.headerText} />
                         <BasicText text={"More"} style={HomePageStyle.morePlaylists}

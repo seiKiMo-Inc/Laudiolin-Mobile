@@ -20,7 +20,10 @@ export const TrackStyle = StyleSheet.create({
     },
     more: {
         zIndex: 1,
-        paddingLeft: 10
+        position: "absolute",
+        right: 0,
+        alignSelf: "center",
+        justifyContent: "center",
     }
 });
 

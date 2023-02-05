@@ -56,7 +56,7 @@ class Track extends React.PureComponent<IProps, never> {
                         </View>
 
                         <Menu style={{ justifyContent: "center" }}>
-                            <MenuTrigger>
+                            <MenuTrigger style={{ justifyContent: "center" }}>
                                 <Icon
                                     color={"white"}
                                     type="material" name={"more-vert"}
