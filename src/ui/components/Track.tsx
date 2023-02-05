@@ -8,6 +8,8 @@ import BasicText from "@components/common/BasicText";
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
 import { TrackStyle } from "@styles/TrackStyle";
+import { TrackMenuStyle } from "@styles/MenuStyle";
+
 import { TrackData } from "@backend/types";
 import { download } from "@backend/audio";
 import { getIconUrl, openTrack } from "@app/utils";
@@ -65,9 +67,12 @@ class Track extends React.PureComponent<IProps, never> {
                             </MenuTrigger>
 
                             <MenuOptions>
-                                <MenuOption text={"Add to Playlist"} onSelect={() => null} />
-                                <MenuOption text={"Open Track Source"} onSelect={() => openTrack(track)} />
-                                <MenuOption text={"Download Track"} onSelect={() => download(track)} />
+                                <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
+                                            text={"Add to Playlist"} onSelect={() => null} />
+                                <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
+                                            text={"Open Track Source"} onSelect={() => openTrack(track)} />
+                                <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
+                                            text={"Download Track"} onSelect={() => download(track)} />
                             </MenuOptions>
                         </Menu>
                     </View>

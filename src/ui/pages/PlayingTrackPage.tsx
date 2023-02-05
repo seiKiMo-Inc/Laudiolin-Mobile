@@ -10,6 +10,7 @@ import Controls from "@components/player/Controls";
 
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
+import { TrackMenuStyle } from "@styles/MenuStyle";
 import { PlayingTrackPageStyle } from "@styles/PageStyles";
 
 import { openTrack } from "@app/utils";
@@ -195,10 +196,13 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
 
                             <MenuOptions>
                                 {this.state.playlist == null &&
-                                    <MenuOption text={"Add to Playlist"} onSelect={() => null} />}
+                                    <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
+                                                text={"Add to Playlist"} onSelect={() => null} />}
 
-                                <MenuOption text={"Open Track Source"} onSelect={() => openTrack(track!)} />
-                                <MenuOption text={"Download Track"} onSelect={() => download(asData(track!))} />
+                                <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
+                                            text={"Open Track Source"} onSelect={() => openTrack(track!)} />
+                                <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
+                                            text={"Download Track"} onSelect={() => download(asData(track!))} />
                             </MenuOptions>
                         </Menu>
                     </View>

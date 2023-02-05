@@ -1,6 +1,12 @@
 import { Dimensions, StyleSheet } from "react-native";
 
+const dimensions = Dimensions.get("window");
+const screenWidth = dimensions.width;
+
 export const TrackStyle = StyleSheet.create({
+    container: {
+
+    },
     image: {
         width: 64, height: 64,
         borderRadius: 12
@@ -13,7 +19,7 @@ export const TrackStyle = StyleSheet.create({
         color: "white",
         fontFamily: "Poppins",
         fontSize: 16,
-        width: 240
+        width: screenWidth * 0.73 - 40
     },
     artist: {
         fontSize: 12
