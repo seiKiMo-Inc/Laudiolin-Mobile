@@ -11,10 +11,13 @@ import JumpInView from "@components/common/JumpInView";
 import { PlaylistPageStyle } from "@styles/PageStyles";
 
 import { Playlist, TrackData } from "@backend/types";
-import { getPlaylistAuthor } from "@backend/user";
-import { navigate } from "@backend/navigation";
 import { playTrack } from "@backend/audio";
+import { navigate } from "@backend/navigation";
+import { getPlaylistAuthor } from "@backend/user";
+import { setCurrentPlaylist } from "@backend/playlist";
 import emitter from "@backend/events";
+
+import TrackPlayer from "react-native-track-player";
 
 interface IProps {
     showPage: boolean;
@@ -76,6 +79,29 @@ class PlaylistPage extends React.Component<IProps, IState> {
             });
     }
 
+    /**
+     * Plays the tracks in the playlist.
+     * @param shuffle Whether to shuffle the tracks.
+     */
+    async playTracks(shuffle: boolean): Promise<void> {
+        // Reset the queue.
+        await TrackPlayer.reset();
+
+        // Fetch the tracks.
+        let tracks = this.getPlaylistTracks();
+        // Shuffle the tracks.
+        shuffle && (tracks = tracks.sort(() => Math.random() - 0.5));
+        // Add all tracks in the playlist to the queue.
+        for (const track of tracks) {
+            await playTrack(track, false, false, true);
+        }
+
+        // Play the player.
+        await TrackPlayer.play();
+        // Set the current playlist.
+        setCurrentPlaylist(this.state.playlist!);
+    }
+
     render() {
         // Check for a valid playlist.
         const { playlist } = this.state;
@@ -132,9 +158,19 @@ class PlaylistPage extends React.Component<IProps, IState> {
                             />}
                         />
 
-                        <Icon
-                            type={"material"} name={"favorite"}
-                            iconStyle={PlaylistPageStyle.favoriteIcon}
+                        <BasicButton
+                            right={20}
+                            text={"Play"}
+                            color={"#59ac8f"}
+                            title={PlaylistPageStyle.playText}
+                            button={PlaylistPageStyle.playButton}
+                            container={{ position: "absolute", right: 130 }}
+                            icon={<Icon
+                                color={"white"}
+                                type={"material"} name={"play-arrow"}
+                                style={{ paddingRight: 5 }}
+                            />}
+                            press={() => this.playTracks(false)}
                         />
 
                         <BasicButton
@@ -148,6 +184,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
                                 type={"material"} name={"shuffle"}
                                 style={{ paddingRight: 5 }}
                             />}
+                            press={() => this.playTracks(true)}
                         />
                     </View>
 

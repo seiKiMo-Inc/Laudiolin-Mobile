@@ -2,6 +2,20 @@ import type { TrackData, Playlist } from "@backend/types";
 
 import { targetRoute, playlists, token } from "@backend/user";
 
+export let currentPlaylist: Playlist | null = null;
+
+/*
+ * Current playlist management.
+ */
+
+/**
+ * Sets the current playlist.
+ * @param playlist The playlist to set.
+ */
+export function setCurrentPlaylist(playlist: Playlist | null): void {
+    currentPlaylist = playlist;
+}
+
 /**
  * Fetches all loaded playlists.
  */

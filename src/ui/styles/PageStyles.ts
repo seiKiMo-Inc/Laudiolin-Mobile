@@ -294,10 +294,12 @@ export const PlaylistPageStyle = StyleSheet.create({
     playlistAuthor: {
         fontSize: 16
     },
-    favoriteIcon: {
-        color: "#d21d4f",
-        fontSize: 35,
-        paddingTop: 1
+    playButton: {
+        width: 90, height: 40,
+        borderRadius: 10,
+    },
+    playText: {
+        fontWeight: "bold",
     },
     editButton: {
         width: 90, height: 40,
