@@ -10,6 +10,7 @@ import { HomePageStyle } from "@styles/PageStyles";
 import { Playlist, TrackData } from "@backend/types";
 import { favorites, makePlaylist, playlists, recents } from "@backend/user";
 
+import * as fs from "@backend/fs";
 import emitter from "@backend/events";
 import { Gateway } from "@app/constants";
 import { navigate } from "@backend/navigation";
@@ -89,7 +90,11 @@ class HomePlaylist extends React.PureComponent<any, any> {
     }
 }
 
-class Home extends React.Component<any, any> {
+interface IState {
+    downloads: TrackData[];
+}
+
+class Home extends React.Component<any, IState> {
     /**
      * Force update listener.
      */
@@ -97,9 +102,13 @@ class Home extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props);
+
+        this.state = {
+            downloads: []
+        };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         setTimeout(() => {
             // Update the component.
             this.forceUpdate();
@@ -108,6 +117,12 @@ class Home extends React.Component<any, any> {
         emitter.on("login", this.update);
         emitter.on("recent", this.update);
         emitter.on("favorite", this.update);
+
+        // Load the downloads.
+        const downloads = await fs.getDownloadedTracks();
+        const tracks = []; for (const track of downloads.splice(0, 4))
+            tracks.push(await fs.loadLocalTrackData(track));
+        this.setState({ downloads: filter(tracks) });
     }
 
     componentWillUnmount() {
@@ -164,19 +179,16 @@ class Home extends React.Component<any, any> {
                     />
                 </View>
 
-                {/* <View style={{ paddingBottom: 20 }}>
+                <View style={{ paddingBottom: 20 }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Downloads"} style={HomePageStyle.headerText} />
                         <BasicText text={"More"} style={HomePageStyle.moreDownloads} />
                     </View>
 
-                    <View>
-                        <Track track={testTrack} padding={15} />
-                        <Track track={testTrack} padding={15} />
-                        <Track track={testTrack} padding={15} />
-                        <Track track={testTrack} padding={15} />
-                    </View>
-                </View> */}
+                    <List
+                        data={this.state.downloads}
+                        renderItem={(info) => this.renderTracks(info)} />
+                </View>
 
                 <View style={{ paddingBottom: 20 }}>
                     <View style={HomePageStyle.header}>
