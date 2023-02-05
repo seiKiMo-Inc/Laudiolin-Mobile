@@ -1,4 +1,4 @@
-import type { SearchEngine, SearchResult, SearchResults, TrackData } from "@backend/types";
+import type { SearchResult, SearchResults, TrackData } from "@backend/types";
 
 import { Gateway } from "@app/constants";
 import * as settings from "@backend/settings";
@@ -31,10 +31,9 @@ export async function doSearch(query: string): Promise<SearchResults> {
 /**
  * Fetches track data from a song URL.
  * @param id The URL of the song.
- * @param engine The search engine to use.
  */
-export async function fetchTrackById(id: string, engine: SearchEngine = "YouTube"): Promise<TrackData> {
-    const response = await fetch(`${Gateway.url}/fetch/${id}?query=${engine}`);
+export async function fetchTrackById(id: string): Promise<TrackData> {
+    const response = await fetch(`${Gateway.url}/fetch/${id}`);
     return (await response.json()) as TrackData;
 }
 
