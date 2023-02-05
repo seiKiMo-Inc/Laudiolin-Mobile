@@ -1,19 +1,19 @@
 import React from "react";
-import {ScrollView, View} from "react-native";
+import { ScrollView, View } from "react-native";
 
-import { TrackData } from "@backend/types";
-import { getDownloadedTracks, loadLocalTrackData } from "@backend/fs";
-import { playTrack } from "@backend/audio";
-
+import { Icon } from "@rneui/base";
 import Track from "@components/Track";
 import BasicText from "@components/common/BasicText";
 import List, { ListRenderItem } from "@components/common/List";
 import JumpInView from "@components/common/JumpInView";
 
-import {DownloadPageStyle, PlaylistsPageStyle} from "@styles/PageStyles";
-import {Icon} from "@rneui/base";
-import {navigate} from "@backend/navigation";
-import Hide from "@components/Hide";
+import { DownloadPageStyle, PlaylistsPageStyle } from "@styles/PageStyles";
+
+import { TrackData } from "@backend/types";
+import { playTrack } from "@backend/audio";
+import { navigate } from "@backend/navigation";
+import { getDownloadedTracks, loadLocalTrackData } from "@backend/fs";
+import emitter from "@backend/events";
 
 interface IProps {
     showPage: boolean;
@@ -24,6 +24,17 @@ interface IState {
 }
 
 class DownloadsPage extends React.Component<IProps, IState> {
+    /**
+     * Loads the downloads.
+     */
+    loadDownloads = async () => {
+        // Load the downloads.
+        const downloads = await getDownloadedTracks();
+        const tracks = []; for (const track of downloads)
+            tracks.push(await loadLocalTrackData(track));
+        this.setState({ downloads: tracks });
+    };
+
     constructor(props: IProps) {
         super(props);
 
@@ -45,13 +56,13 @@ class DownloadsPage extends React.Component<IProps, IState> {
     }
 
     async componentDidMount() {
-        // Load the downloads.
-        const downloads = await getDownloadedTracks();
-        const tracks = [];
-        for (const track of downloads)
-            tracks.push(await loadLocalTrackData(track));
+        emitter.on("download", this.loadDownloads);
 
-        this.setState({ downloads: tracks });
+        await this.loadDownloads(); // Load the downloads.
+    }
+
+    componentWillUnmount() {
+        emitter.removeListener("download", this.loadDownloads);
     }
 
     render() {

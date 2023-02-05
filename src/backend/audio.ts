@@ -2,6 +2,7 @@ import type { Track } from "react-native-track-player";
 import type { TrackData } from "@backend/types";
 
 import * as fs from "@backend/fs";
+import emitter from "@backend/events";
 import { doSearch } from "@backend/search";
 import { getStreamingUrl } from "@backend/gateway";
 import { setCurrentPlaylist } from "@backend/playlist";
@@ -61,6 +62,9 @@ export async function download(track: TrackData): Promise<void> {
     await fs.downloadUrl(track.icon, fs.getIconPath(track));
     // Save the track's data.
     await fs.saveData(track, fs.getDataPath(track));
+
+    // Emit the track downloaded event.
+    emitter.emit("download");
 }
 
 /**

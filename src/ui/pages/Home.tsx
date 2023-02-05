@@ -108,6 +108,17 @@ class Home extends React.Component<any, IState> {
         };
     }
 
+    /**
+     * Loads the downloaded tracks into the state.
+     */
+    async loadDownloads(): Promise<void> {
+        const downloads = await fs.getDownloadedTracks();
+        const tracks = [];
+        for (const track of downloads.splice(0, 4))
+            tracks.push(await fs.loadLocalTrackData(track));
+        this.setState({ downloads: filter(tracks) });
+    }
+
     async componentDidMount() {
         setTimeout(() => {
             // Update the component.
@@ -117,19 +128,22 @@ class Home extends React.Component<any, IState> {
         emitter.on("login", this.update);
         emitter.on("recent", this.update);
         emitter.on("favorite", this.update);
+        emitter.on("download", async () => {
+            // Load the downloads.
+            await this.loadDownloads();
+            // Update the component.
+            this.forceUpdate();
+        });
 
         // Load the downloads.
-        const downloads = await fs.getDownloadedTracks();
-        const tracks = [];
-        for (const track of downloads.splice(0, 4))
-            tracks.push(await fs.loadLocalTrackData(track));
-        this.setState({ downloads: filter(tracks) });
+        await this.loadDownloads();
     }
 
     componentWillUnmount() {
         emitter.removeListener("login", this.update);
         emitter.removeListener("recent", this.update);
         emitter.removeListener("favorite", this.update);
+        emitter.removeListener("download", this.update);
     }
 
     /**
