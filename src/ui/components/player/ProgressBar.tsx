@@ -41,6 +41,7 @@ class ProgressBar extends React.Component<IProps, any> {
                     maximumTrackTintColor={"#343d6b"}
                     thumbStyle={ProgressBarStyle.thumb}
                     trackStyle={ProgressBarStyle.track}
+                    allowTouchTrack={true}
                 />
 
                 <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>
