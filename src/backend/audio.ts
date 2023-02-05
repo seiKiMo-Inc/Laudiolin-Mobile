@@ -163,6 +163,8 @@ export async function playbackService(): Promise<void> {
     TrackPlayer.addEventListener(Event.PlaybackState, ({ state }) => {
         if (state == State.Stopped)
             TrackPlayer.reset();
+        if (state == State.Ready)
+            TrackPlayer.play();
     });
 
     TrackPlayer.addEventListener(Event.RemotePlay, () => TrackPlayer.play());
