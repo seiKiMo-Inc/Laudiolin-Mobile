@@ -6,7 +6,8 @@ import * as settings from "@backend/settings";
 
 import { Gateway } from "@app/constants";
 
-export let targetRoute = Gateway.url; // The base address for the backend.
+export const updateTargetRoute = () => targetRoute = Gateway.getUrl();
+export let targetRoute = Gateway.getUrl(); // The base address for the backend.
 export let userData: User | null = null; // The loaded user data.
 export let playlists: Playlist[] = []; // The loaded playlist data.
 export let favorites: TrackData[] = []; // The loaded favorite tracks.
