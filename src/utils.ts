@@ -38,11 +38,23 @@ export function getIconUrl(track: TrackData): string {
 }
 
 /**
+ * Gets the original URL of the track.
+ * @param id The ID of the track to get the URL for.
+ */
+export function getOriginalUrl(id: string): string {
+    switch (id.length) {
+        case 11: return `https://www.youtube.com/watch?v=${id}`;
+        case 12: return `https://open.spotify.com/track/${id}`;
+        default: return `https://laudiolin.seikimo.moe/track/${id}`;
+    }
+}
+
+/**
  * Attempts to open the track in the web browser.
  * @param track The track to open.
  */
 export function openTrack(track: Track|TrackData): void {
-    openUrl(track.url as string);
+    openUrl(getOriginalUrl(track.id as string));
 }
 
 /**
@@ -50,7 +62,6 @@ export function openTrack(track: Track|TrackData): void {
  * @param url The URL to open.
  */
 export function openUrl(url: string): void {
-    Linking.canOpenURL(url).then(supported => {
-        supported && Linking.openURL(url);
-    });
+    Linking.openURL(url)
+        .catch(error => console.error(`Failed to open URL: ${error}`));
 }
