@@ -12,6 +12,7 @@ import { TrackMenuStyle } from "@styles/MenuStyle";
 
 import { TrackData } from "@backend/types";
 import { download } from "@backend/audio";
+import { favorites, favoriteTrack } from "@backend/user";
 import { getIconUrl, openTrack } from "@app/utils";
 
 interface IProps {
@@ -71,6 +72,8 @@ class Track extends React.PureComponent<IProps, never> {
                                             text={"Add to Playlist"} onSelect={() => null} />
                                 <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
                                             text={"Open Track Source"} onSelect={() => openTrack(track)} />
+                                <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
+                                            text={"Favorite Track"} onSelect={() => favoriteTrack(track, !favorites.includes(track))} />
                                 <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
                                             text={"Download Track"} onSelect={() => download(track)} />
                             </MenuOptions>
