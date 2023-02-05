@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, BackHandler } from "react-native";
+import { StyleSheet, View, BackHandler, AppState } from "react-native";
 
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
@@ -15,11 +15,12 @@ import DownloadsPage from "@pages/DownloadsPage";
 
 import NavBar from "@components/NavBar";
 import QuickControl from "@components/player/QuickControl";
+import { MenuProvider } from "react-native-popup-menu";
 
 import * as user from "@backend/user";
 import emitter from "@backend/events";
 import { registerListener } from "@backend/navigation";
-import { MenuProvider } from "react-native-popup-menu";
+import { loadPlayerState, savePlayerState } from "@app/utils";
 
 interface IState {
     pageIndex: number;
@@ -152,6 +153,15 @@ class App extends React.Component<any, IState> {
             BackHandler.exitApp();
             return true;
         });
+        AppState.addEventListener("change", (state) => {
+            if (state == "inactive") {
+                // Save the current state.
+                savePlayerState();
+            }
+        });
+
+        // Check if the player has a state saved.
+        await loadPlayerState();
     }
 
     componentWillUnmount() {

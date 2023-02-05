@@ -1,10 +1,13 @@
 import { Linking } from "react-native";
 
+import * as settings from "@backend/settings";
 import { TrackData } from "@backend/types";
 import { Gateway } from "@app/constants";
 import { Track } from "react-native-track-player";
 
 import { logger } from "react-native-logs";
+import { getCurrentTrack, playTrack } from "@backend/audio";
+import { fetchTrackById } from "@backend/search";
 export const console = logger.createLogger();
 
 /**
@@ -67,4 +70,40 @@ export function openTrack(track: Track|TrackData): void {
 export function openUrl(url: string): void {
     Linking.openURL(url)
         .catch(error => console.error(`Failed to open URL: ${error}`));
+}
+
+/**
+ * Saves the current player state to the local storage.
+ */
+export async function savePlayerState(): Promise<void> {
+    // Get the current track.
+    const track = await getCurrentTrack();
+
+    // Check if the track is valid.
+    if (track)
+        // Save the current track.
+        await settings.save("player.currentTrack", track.id);
+    else
+        // Remove the current track.
+        await settings.remove("player.currentTrack");
+}
+
+/**
+ * Loads the player state from the local storage.
+ */
+export async function loadPlayerState(): Promise<void> {
+    // Check if a track is saved.
+    const track = await settings.get("player.currentTrack");
+    // Check if the track is valid.
+    if (!track) return;
+
+    // Get the track as a serialized data object.
+    const data = await fetchTrackById(track);
+    // Check if the track is valid.
+    if (!data) return;
+
+    // Add the track to the queue.
+    await playTrack(data, false, true);
+    // Remove the track from the local storage.
+    await settings.remove("player.currentTrack");
 }
