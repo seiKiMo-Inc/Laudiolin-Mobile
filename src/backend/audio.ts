@@ -4,6 +4,7 @@ import type { TrackData } from "@backend/types";
 import * as fs from "@backend/fs";
 import { doSearch } from "@backend/search";
 import { getStreamingUrl } from "@backend/gateway";
+import { setCurrentPlaylist } from "@backend/playlist";
 
 import TrackPlayer, { Event, State } from "react-native-track-player";
 
@@ -63,11 +64,13 @@ export async function download(track: TrackData): Promise<void> {
  * @param track The track to add.
  * @param play Should the track be played?
  * @param force Should this track be played now?
+ * @param fromPlaylist Is this track from a playlist?
  */
 export async function playTrack(
     track: TrackData,
     play = true,
-    force = false
+    force = false,
+    fromPlaylist = false,
 ): Promise<void> {
     // Add the track to the player.
     await TrackPlayer.add(asTrack(track));
@@ -76,6 +79,9 @@ export async function playTrack(
     // Skip to the track if specified.
     force && await TrackPlayer.skip((
         await TrackPlayer.getQueue()).length - 1);
+
+    // Reset the current playlist.
+    !fromPlaylist && setCurrentPlaylist(null);
 }
 
 /**
@@ -84,10 +90,10 @@ export async function playTrack(
 export async function shuffleQueue(): Promise<void> {
     // Pull the current queue and reset it.
     let queue = await TrackPlayer.getQueue();
-    await TrackPlayer.removeUpcomingTracks();
+    await TrackPlayer.remove(queue.length);
 
     // Shuffle the pulled queue.
-    queue.sort(() => Math.random () - 0.5);
+    queue = queue.sort(() => Math.random () - 0.5);
     // Re-queue the tracks.
     await TrackPlayer.add(queue);
 }
