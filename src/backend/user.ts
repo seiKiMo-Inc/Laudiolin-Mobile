@@ -332,5 +332,14 @@ export async function deletePlaylist(playlistId: string): Promise<boolean> {
         method: "DELETE", headers: { Authorization: await token() }
     });
 
-    return response.status == 200;
+    if (response.status != 200) return false;
+
+    try {
+        // Reload the playlist data.
+        await login("", false);
+        await loadPlaylists();
+        return true;
+    } catch {
+        return false;
+    }
 }

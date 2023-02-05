@@ -6,19 +6,24 @@ import { Icon, Image } from "@rneui/base";
 import BasicText from "@components/common/BasicText";
 import LinearGradient from "react-native-linear-gradient";
 
-import { PlaylistsPageStyle } from "@styles/PageStyles";
 import JumpInView from "@components/common/JumpInView";
 import BasicButton from "@components/common/BasicButton";
 import BasicModal from "@components/common/BasicModal";
+import BasicInput from "@components/common/BasicInput";
+import BasicCheckbox from "@components/common/BasicCheckbox";
 import TextTicker from "react-native-text-ticker";
 
-import { getPlaylistAuthor, createPlaylist, login } from "@backend/user";
+import { PlaylistMenuStyle } from "@styles/MenuStyle";
+import { PlaylistsPageStyle } from "@styles/PageStyles";
+
+import { getPlaylistAuthor, createPlaylist, login, deletePlaylist, loadPlaylists } from "@backend/user";
+import { importPlaylist, fetchAllPlaylists } from "@backend/playlist";
 import { navigate } from "@backend/navigation";
 import { Playlist } from "@backend/types";
 import emitter from "@backend/events";
-import BasicInput from "@components/common/BasicInput";
-import BasicCheckbox from "@components/common/BasicCheckbox";
-import { importPlaylist, fetchAllPlaylists } from "@backend/playlist";
+
+import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
+import { playPlaylist } from "@backend/audio";
 
 class ListPlaylist extends React.Component<any, any> {
     constructor(props: any) {
@@ -36,6 +41,20 @@ class ListPlaylist extends React.Component<any, any> {
         emitter.emit("showPlaylist",
             this.props.playlist);
         navigate("Playlist");
+    }
+
+    /**
+     * Queues the playlist.
+     */
+    async queue(): Promise<void> {
+        await playPlaylist(this.props.playlist, false);
+    }
+
+    /**
+     * Deletes the playlist.
+     */
+    async delete(): Promise<void> {
+        await deletePlaylist(this.props.playlist);
     }
 
     async componentDidMount() {
@@ -85,11 +104,22 @@ class ListPlaylist extends React.Component<any, any> {
                             />
                         </View>
 
-                        <Icon
-                            color={"white"}
-                            type="material" name={"more-vert"}
-                            containerStyle={PlaylistsPageStyle.playlistMore}
-                        />
+                        <Menu style={{ justifyContent: "center" }}>
+                            <MenuTrigger style={{ justifyContent: "center" }}>
+                                <Icon
+                                    color={"white"}
+                                    type="material" name={"more-vert"}
+                                    containerStyle={PlaylistsPageStyle.playlistMore}
+                                />
+                            </MenuTrigger>
+
+                            <MenuOptions>
+                                <MenuOption customStyles={{ optionText: PlaylistMenuStyle.text }}
+                                            text={"Add to Queue"} onSelect={() => this.queue()} />
+                                <MenuOption customStyles={{ optionText: PlaylistMenuStyle.text }}
+                                            text={"Delete Playlist"} onSelect={() => this.delete()} />
+                            </MenuOptions>
+                        </Menu>
                     </LinearGradient>
                 </TouchableHighlight>
             </View>
@@ -125,7 +155,7 @@ class PlaylistsPage extends React.Component<IProps, IState> {
             playlistIconUrlInputText: "",
             playlistIsPrivate: false,
             importPlaylistUrl: ""
-        }
+        };
     }
 
     createPlaylistAsync = async () => {
@@ -138,7 +168,10 @@ class PlaylistsPage extends React.Component<IProps, IState> {
         }
 
         await createPlaylist(playlist);
-        await login();
+        // Reload playlists.
+        await login("", false);
+        await loadPlaylists();
+
         this.setState({
             playlists: fetchAllPlaylists(),
             showCreatePlaylistModal: false,
@@ -151,7 +184,10 @@ class PlaylistsPage extends React.Component<IProps, IState> {
 
     importPlaylistAsync = async () => {
         await importPlaylist(this.state.importPlaylistUrl);
-        await login();
+        // Reload playlists.
+        await login("", false);
+        await loadPlaylists();
+
         this.setState({
             playlists: fetchAllPlaylists(),
             showImportPlaylistModal: false,

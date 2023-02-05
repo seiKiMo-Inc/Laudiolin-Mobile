@@ -1,5 +1,5 @@
 import type { Track } from "react-native-track-player";
-import type { TrackData } from "@backend/types";
+import type { Playlist, TrackData } from "@backend/types";
 
 import * as fs from "@backend/fs";
 import emitter from "@backend/events";
@@ -157,6 +157,34 @@ export async function syncToTrack(track: TrackData|null, progress: number): Prom
 
     // Set the progress.
     await TrackPlayer.seekTo(progress);
+}
+
+/**
+ * Plays the tracks in the playlist.
+ * @param playlist The playlist to play.
+ * @param shuffle Should the playlist be shuffled?
+ */
+export async function playPlaylist(playlist: Playlist, shuffle: boolean): Promise<void> {
+    // Reset the queue.
+    await TrackPlayer.reset();
+
+    // Fetch the tracks.
+    let tracks = playlist.tracks
+        // Remove duplicate tracks.
+        .filter((track, index, self) => {
+            return self.findIndex(t => t.id == track.id) == index;
+        });
+    // Shuffle the tracks.
+    shuffle && (tracks = tracks.sort(() => Math.random() - 0.5));
+    // Add all tracks in the playlist to the queue.
+    for (const track of tracks) {
+        await playTrack(track, false, false, true);
+    }
+
+    // Play the player.
+    await TrackPlayer.play();
+    // Set the current playlist.
+    setCurrentPlaylist(playlist);
 }
 
 /**

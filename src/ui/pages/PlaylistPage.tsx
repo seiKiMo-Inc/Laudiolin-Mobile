@@ -11,13 +11,10 @@ import JumpInView from "@components/common/JumpInView";
 import { PlaylistPageStyle } from "@styles/PageStyles";
 
 import { Playlist, TrackData } from "@backend/types";
-import { playTrack } from "@backend/audio";
+import { playPlaylist, playTrack } from "@backend/audio";
 import { navigate } from "@backend/navigation";
 import { getPlaylistAuthor } from "@backend/user";
-import { setCurrentPlaylist } from "@backend/playlist";
 import emitter from "@backend/events";
-
-import TrackPlayer from "react-native-track-player";
 
 interface IProps {
     showPage: boolean;
@@ -84,22 +81,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
      * @param shuffle Whether to shuffle the tracks.
      */
     async playTracks(shuffle: boolean): Promise<void> {
-        // Reset the queue.
-        await TrackPlayer.reset();
-
-        // Fetch the tracks.
-        let tracks = this.getPlaylistTracks();
-        // Shuffle the tracks.
-        shuffle && (tracks = tracks.sort(() => Math.random() - 0.5));
-        // Add all tracks in the playlist to the queue.
-        for (const track of tracks) {
-            await playTrack(track, false, false, true);
-        }
-
-        // Play the player.
-        await TrackPlayer.play();
-        // Set the current playlist.
-        setCurrentPlaylist(this.state.playlist!);
+        await playPlaylist(this.state.playlist!, shuffle);
     }
 
     render() {
