@@ -9,12 +9,16 @@ import LinearGradient from "react-native-linear-gradient";
 import { PlaylistsPageStyle } from "@styles/PageStyles";
 import JumpInView from "@components/common/JumpInView";
 import BasicButton from "@components/common/BasicButton";
+import BasicModal from "@components/common/BasicModal";
 import TextTicker from "react-native-text-ticker";
 
-import { getPlaylistAuthor, playlists } from "@backend/user";
+import { getPlaylistAuthor, createPlaylist, login } from "@backend/user";
 import { navigate } from "@backend/navigation";
 import { Playlist } from "@backend/types";
 import emitter from "@backend/events";
+import BasicInput from "@components/common/BasicInput";
+import BasicCheckbox from "@components/common/BasicCheckbox";
+import { importPlaylist, fetchAllPlaylists } from "@backend/playlist";
 
 class ListPlaylist extends React.Component<any, any> {
     constructor(props: any) {
@@ -93,13 +97,66 @@ class ListPlaylist extends React.Component<any, any> {
     }
 }
 
+interface IState {
+    playlists: Playlist[];
+    showCreatePlaylistModal: boolean;
+    showImportPlaylistModal: boolean;
+    playlistNameInputText: string;
+    playlistDescriptionInputText: string;
+    playlistIconUrlInputText: string;
+    playlistIsPrivate: boolean;
+    importPlaylistUrl: string;
+}
+
 interface IProps {
     showPage: boolean;
 }
 
-class PlaylistsPage extends React.Component<IProps, any> {
+class PlaylistsPage extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
+
+        this.state = {
+            playlists: fetchAllPlaylists(),
+            showCreatePlaylistModal: false,
+            showImportPlaylistModal: false,
+            playlistNameInputText: "",
+            playlistDescriptionInputText: "",
+            playlistIconUrlInputText: "",
+            playlistIsPrivate: false,
+            importPlaylistUrl: ""
+        }
+    }
+
+    createPlaylistAsync = async () => {
+        const playlist: Playlist = {
+            name: this.state.playlistNameInputText || "New Playlist",
+            description: this.state.playlistDescriptionInputText || "No description",
+            icon: this.state.playlistIconUrlInputText || "https://i.pinimg.com/564x/e2/26/98/e22698a130ad38d08d3b3d650c2cb4b3.jpg",
+            isPrivate: this.state.playlistIsPrivate,
+            tracks: [],
+        }
+
+        await createPlaylist(playlist);
+        await login();
+        this.setState({
+            playlists: fetchAllPlaylists(),
+            showCreatePlaylistModal: false,
+            playlistNameInputText: "",
+            playlistDescriptionInputText: "",
+            playlistIconUrlInputText: "",
+            playlistIsPrivate: false
+        });
+    }
+
+    importPlaylistAsync = async () => {
+        await importPlaylist(this.state.importPlaylistUrl);
+        await login();
+        this.setState({
+            playlists: fetchAllPlaylists(),
+            showImportPlaylistModal: false,
+            importPlaylistUrl: ""
+        });
     }
 
     renderPlaylist(info: ListRenderItemInfo<Playlist>) {
@@ -120,7 +177,7 @@ class PlaylistsPage extends React.Component<IProps, any> {
 
                 <View>
                     <FlatList
-                        data={playlists}
+                        data={this.state.playlists}
                         renderItem={(info) => this.renderPlaylist(info)}
                         showsVerticalScrollIndicator={false}
                     />
@@ -135,7 +192,49 @@ class PlaylistsPage extends React.Component<IProps, any> {
                             type={"material"} name={"add"}
                             style={{ paddingRight: 5 }}
                         />}
+                        press={() => this.setState({ showCreatePlaylistModal: true })}
                     />
+
+                    <BasicModal showModal={this.state.showCreatePlaylistModal} onSubmit={this.createPlaylistAsync} title={"Create Playlist"}>
+                        <BasicInput
+                            placeholder={"Driving playlist..."}
+                            onChangeText={(text) => this.setState({ playlistNameInputText: text })}
+                            label={"Playlist Name"}
+                        />
+                        <BasicInput
+                            placeholder={"The best songs for driving..."}
+                            label={"Playlist Description"}
+                            onChangeText={(text) => this.setState({ playlistDescriptionInputText: text })}
+                            multiline={true}
+                            numberOfLines={3}
+                        />
+                        <BasicInput
+                            placeholder={"https://i.imgur.com/..."}
+                            onChangeText={(text) => this.setState({ playlistIconUrlInputText: text })}
+                            label={"Playlist Icon URL"}
+                        />
+                        <BasicCheckbox
+                            checked={this.state.playlistIsPrivate}
+                            onPress={() => this.setState({ playlistIsPrivate: !this.state.playlistIsPrivate })}
+                            label={"Public Playlist"}
+                        />
+                        <BasicButton
+                            text={"Or Import A Playlist"}
+                            container={{ alignItems: "center", marginTop: 10 }}
+                            press={() => this.setState({ showImportPlaylistModal: true, showCreatePlaylistModal: false })}
+                            outline={"#5b67af"}
+                        />
+                    </BasicModal>
+
+                    <BasicModal showModal={this.state.showImportPlaylistModal} onSubmit={this.importPlaylistAsync} title={"Import Playlist"}>
+                        <BasicText text={"You can import a playlist from Spotify or YouTube."} style={{ fontSize: 15 }} />
+                        <BasicInput
+                            placeholder={"https://open.spotify.com/playlist/..."}
+                            label={"Playlist URL"}
+                            onChangeText={(text) => this.setState({ importPlaylistUrl: text })}
+                        />
+                    </BasicModal>
+
                 </View>
             </JumpInView>
         ) : null;
