@@ -8,6 +8,7 @@ import SplashScreen from 'react-native-splash-screen'
 import Home from "@pages/Home";
 import SearchPage from "@pages/SearchPage";
 import LoginPage from "@pages/LoginPage";
+import NotificationsPage from "@pages/NotificationsPage";
 import SettingsPage from "@pages/SettingsPage";
 import PlaylistsPage from "@pages/PlaylistsPage";
 import PlayingTrackPage from "@pages/PlayingTrackPage";
@@ -191,7 +192,7 @@ class App extends React.Component<any, IState> {
                         <SearchPage />
                     </TabView.Item>
                     <TabView.Item>
-                        <></>
+                        <NotificationsPage />
                     </TabView.Item>
                     <TabView.Item>
                         <SettingsPage />
