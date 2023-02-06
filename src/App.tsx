@@ -33,6 +33,7 @@ interface IState {
     showPlaylistPage: boolean;
     showDownloadPage: boolean;
     isQuickControlVisible: boolean;
+    reloadKey: "not-loaded" | "loaded";
 }
 
 const style = StyleSheet.create({
@@ -57,7 +58,8 @@ class App extends React.Component<any, IState> {
             showPlaylistPage: false,
             showDownloadPage: false,
 
-            isQuickControlVisible: false
+            isQuickControlVisible: false,
+            reloadKey: "not-loaded"
         };
     }
 
@@ -166,8 +168,11 @@ class App extends React.Component<any, IState> {
         // Check if the player has a state saved.
         await loadPlayerState();
 
+        // re-render the app.
+        this.setState({ reloadKey: "loaded" });
+
         // Hide the splash screen.
-        SplashScreen.hide();
+        setTimeout(() => SplashScreen.hide(), 1000);
     }
 
     componentWillUnmount() {
@@ -176,7 +181,7 @@ class App extends React.Component<any, IState> {
 
     render() {
         return this.state.loggedIn ? (
-            <MenuProvider>
+            <MenuProvider key={this.state.reloadKey}>
                 <TabView
                     value={this.state.pageIndex}
                     onChange={(i) => this.setState({ pageIndex: i })}
@@ -199,7 +204,7 @@ class App extends React.Component<any, IState> {
                     </TabView.Item>
                 </TabView>
 
-                <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 50, backgroundColor: "#0c0f17", zIndex: 0 }} />
+                <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 50, zIndex: 0 }} />
                 <LinearGradient
                     colors={["transparent", "#1f2442"]}
                     style={{ position: "absolute", bottom: 0, width: "100%", height: 50 }}
