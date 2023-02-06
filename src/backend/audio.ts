@@ -9,6 +9,7 @@ import { setCurrentPlaylist } from "@backend/playlist";
 
 import TrackPlayer, { Event, State } from "react-native-track-player";
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
+import { Platform } from "react-native";
 
 /**
  * Converts a local track data object to a track player object.
@@ -202,16 +203,18 @@ export async function playbackService(): Promise<void> {
     TrackPlayer.addEventListener(Event.RemotePlay, () => TrackPlayer.play());
     TrackPlayer.addEventListener(Event.RemotePause, () => TrackPlayer.pause());
     TrackPlayer.addEventListener(Event.RemoteStop, () => TrackPlayer.reset());
-    TrackPlayer.addEventListener(Event.RemoteSkip, () => TrackPlayer.skipToNext());
     TrackPlayer.addEventListener(Event.RemoteNext, () => TrackPlayer.skipToNext());
     TrackPlayer.addEventListener(Event.RemotePrevious, () => TrackPlayer.skipToPrevious());
     TrackPlayer.addEventListener(Event.RemoteSeek, ({ position }) => TrackPlayer.seekTo(position));
     TrackPlayer.addEventListener(Event.RemoteDuck, ({ paused }) => paused ? TrackPlayer.pause() : TrackPlayer.play());
 
-    TrackPlayer.addEventListener(Event.RemotePlaySearch, async ({ query }) => {
-        // Search for the song.
-        const track = await doSearch(query);
-        // Play the song if found.
-        track.top && await playTrack(track.top, true, true);
-    });
+    if (Platform.OS == "android") {
+        TrackPlayer.addEventListener(Event.RemoteSkip, () => TrackPlayer.skipToNext());
+        TrackPlayer.addEventListener(Event.RemotePlaySearch, async ({ query }) => {
+            // Search for the song.
+            const track = await doSearch(query);
+            // Play the song if found.
+            track.top && await playTrack(track.top, true, true);
+        });
+    }
 }
