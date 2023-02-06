@@ -3,6 +3,7 @@ import { StyleSheet, View, BackHandler, AppState } from "react-native";
 
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
+import SplashScreen from 'react-native-splash-screen'
 
 import Home from "@pages/Home";
 import SearchPage from "@pages/SearchPage";
@@ -153,6 +154,7 @@ class App extends React.Component<any, IState> {
             BackHandler.exitApp();
             return true;
         });
+
         AppState.addEventListener("change", (state) => {
             if (state == "inactive") {
                 // Save the current state.
@@ -162,6 +164,9 @@ class App extends React.Component<any, IState> {
 
         // Check if the player has a state saved.
         await loadPlayerState();
+
+        // Hide the splash screen.
+        SplashScreen.hide();
     }
 
     componentWillUnmount() {
