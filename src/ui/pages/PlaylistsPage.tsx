@@ -231,7 +231,12 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                         press={() => this.setState({ showCreatePlaylistModal: true })}
                     />
 
-                    <BasicModal showModal={this.state.showCreatePlaylistModal} onSubmit={this.createPlaylistAsync} title={"Create Playlist"}>
+                    <BasicModal
+                        showModal={this.state.showCreatePlaylistModal}
+                        onSubmit={this.createPlaylistAsync}
+                        title={"Create Playlist"}
+                        onBackdropPress={() => this.setState({ showCreatePlaylistModal: false })}
+                    >
                         <BasicInput
                             placeholder={"Driving playlist..."}
                             onChangeText={(text) => this.setState({ playlistNameInputText: text })}
@@ -262,7 +267,12 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                         />
                     </BasicModal>
 
-                    <BasicModal showModal={this.state.showImportPlaylistModal} onSubmit={this.importPlaylistAsync} title={"Import Playlist"}>
+                    <BasicModal
+                        showModal={this.state.showImportPlaylistModal}
+                        onSubmit={this.importPlaylistAsync}
+                        title={"Import Playlist"}
+                        onBackdropPress={() => this.setState({ showImportPlaylistModal: false })}
+                    >
                         <BasicText text={"You can import a playlist from Spotify or YouTube."} style={{ fontSize: 15 }} />
                         <BasicInput
                             placeholder={"https://open.spotify.com/playlist/..."}
