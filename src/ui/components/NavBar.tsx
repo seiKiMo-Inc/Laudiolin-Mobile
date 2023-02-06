@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Tab,  } from '@rneui/themed';
+import { Tab } from "@rneui/themed";
 
 import { NavBarStyle } from "@styles/NavBarStyle"
 

@@ -31,7 +31,7 @@ class Track extends React.PureComponent<IProps, never> {
 
         return (
             <View style={{
-                paddingBottom: this.props.padding ?? 0
+                paddingBottom: this.props.padding ?? 0,
             }}>
                 <TouchableHighlight
                     underlayColor={"transparent"}
@@ -55,11 +55,12 @@ class Track extends React.PureComponent<IProps, never> {
                             <BasicText
                                 text={track.artist}
                                 style={TrackStyle.artist}
+                                numberOfLines={1}
                             />
                         </View>
 
-                        <Menu style={{ justifyContent: "center" }}>
-                            <MenuTrigger style={{ justifyContent: "center" }}>
+                        <Menu style={{ position: "absolute", right: 20, top: 20 }}>
+                            <MenuTrigger>
                                 <Icon
                                     color={"white"}
                                     type="material" name={"more-vert"}

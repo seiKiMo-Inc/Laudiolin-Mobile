@@ -19,7 +19,7 @@ export const TrackStyle = StyleSheet.create({
         color: "white",
         fontFamily: "Poppins",
         fontSize: 16,
-        width: screenWidth * 0.73 - 40
+        width: screenWidth - 160
     },
     artist: {
         fontSize: 12

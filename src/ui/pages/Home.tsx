@@ -92,6 +92,7 @@ class HomePlaylist extends React.PureComponent<any, any> {
 
 interface IState {
     downloads: TrackData[];
+    playlists: Playlist[];
 }
 
 class Home extends React.Component<any, IState> {
@@ -104,7 +105,8 @@ class Home extends React.Component<any, IState> {
         super(props);
 
         this.state = {
-            downloads: []
+            downloads: [],
+            playlists: []
         };
     }
 
@@ -137,6 +139,8 @@ class Home extends React.Component<any, IState> {
 
         // Load the downloads.
         await this.loadDownloads();
+
+        this.setState({ playlists: getPlaylists() });
     }
 
     componentWillUnmount() {
@@ -186,12 +190,16 @@ class Home extends React.Component<any, IState> {
                         />
                     </View>
 
-                    <FlatList
-                        style={HomePageStyle.playlists}
-                        data={getPlaylists()}
-                        renderItem={(info) => this.renderPlaylist(info)}
-                        horizontal showsHorizontalScrollIndicator={false}
-                    />
+                    {
+                        this.state.playlists.length > 0 ?
+                            (<FlatList
+                                style={HomePageStyle.playlists}
+                                data={this.state.playlists}
+                                renderItem={(info) => this.renderPlaylist(info)}
+                                horizontal showsHorizontalScrollIndicator={false}
+                            />) :
+                            (<BasicText text={"No playlists yet."} style={{ textAlign: "center", justifyContent: "center", padding: 40 }}  />)
+                    }
                 </View>
 
                 <View style={{ paddingBottom: 20 }}>

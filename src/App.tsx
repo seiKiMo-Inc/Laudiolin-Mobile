@@ -3,10 +3,12 @@ import { StyleSheet, View, BackHandler, AppState } from "react-native";
 
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
+import SplashScreen from 'react-native-splash-screen'
 
 import Home from "@pages/Home";
 import SearchPage from "@pages/SearchPage";
 import LoginPage from "@pages/LoginPage";
+import NotificationsPage from "@pages/NotificationsPage";
 import SettingsPage from "@pages/SettingsPage";
 import PlaylistsPage from "@pages/PlaylistsPage";
 import PlayingTrackPage from "@pages/PlayingTrackPage";
@@ -31,6 +33,7 @@ interface IState {
     showPlaylistPage: boolean;
     showDownloadPage: boolean;
     isQuickControlVisible: boolean;
+    reloadKey: "not-loaded" | "loaded";
 }
 
 const style = StyleSheet.create({
@@ -55,7 +58,8 @@ class App extends React.Component<any, IState> {
             showPlaylistPage: false,
             showDownloadPage: false,
 
-            isQuickControlVisible: false
+            isQuickControlVisible: false,
+            reloadKey: "not-loaded"
         };
     }
 
@@ -153,6 +157,7 @@ class App extends React.Component<any, IState> {
             BackHandler.exitApp();
             return true;
         });
+
         AppState.addEventListener("change", (state) => {
             if (state == "inactive") {
                 // Save the current state.
@@ -162,6 +167,12 @@ class App extends React.Component<any, IState> {
 
         // Check if the player has a state saved.
         await loadPlayerState();
+
+        // re-render the app.
+        this.setState({ reloadKey: "loaded" });
+
+        // Hide the splash screen.
+        setTimeout(() => SplashScreen.hide(), 1000);
     }
 
     componentWillUnmount() {
@@ -170,7 +181,7 @@ class App extends React.Component<any, IState> {
 
     render() {
         return this.state.loggedIn ? (
-            <MenuProvider>
+            <MenuProvider key={this.state.reloadKey}>
                 <TabView
                     value={this.state.pageIndex}
                     onChange={(i) => this.setState({ pageIndex: i })}
@@ -186,14 +197,14 @@ class App extends React.Component<any, IState> {
                         <SearchPage />
                     </TabView.Item>
                     <TabView.Item>
-                        <></>
+                        <NotificationsPage />
                     </TabView.Item>
                     <TabView.Item>
                         <SettingsPage />
                     </TabView.Item>
                 </TabView>
 
-                <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 50, backgroundColor: "#0c0f17", zIndex: 0 }} />
+                <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 50, zIndex: 0 }} />
                 <LinearGradient
                     colors={["transparent", "#1f2442"]}
                     style={{ position: "absolute", bottom: 0, width: "100%", height: 50 }}
