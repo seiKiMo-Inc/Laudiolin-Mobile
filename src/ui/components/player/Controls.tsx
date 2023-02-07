@@ -5,7 +5,6 @@ import { Icon } from "@rneui/themed";
 
 interface IProps {
     isPaused: boolean;
-    isFavorite: boolean;
 
     shuffleControl: () => void;
     repeatControl: () => void;

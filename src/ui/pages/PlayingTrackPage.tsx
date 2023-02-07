@@ -194,7 +194,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                                 />
                             </MenuTrigger>
 
-                            <MenuOptions>
+                            <MenuOptions customStyles={{ optionsContainer: TrackMenuStyle.menu }}>
                                 {this.state.playlist == null &&
                                     <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
                                                 text={"Add to Playlist"} onSelect={() => null} />}
@@ -214,17 +214,29 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                         />
                     </View>
 
-                    <View style={PlayingTrackPageStyle.lowerContainer}>
-                        <BasicText
-                            numberOfLines={2}
-                            style={{ color: "#FFFFFF", fontSize: 25 }}
-                            text={track.title ?? ""}
-                        />
-                        <BasicText
-                            numberOfLines={1}
-                            style={{ color: "#a1a1a1", fontSize: 15 }}
-                            text={track.artist ?? ""}
-                        />
+                        <View style={PlayingTrackPageStyle.middleContainer}>
+                            <View>
+                                <BasicText
+                                    style={{ color: "#FFFFFF", fontSize: 25 }}
+                                    text={track.title ?? ""}
+                                    containerStyle={PlayingTrackPageStyle.title}
+                                />
+                                <BasicText
+                                    style={{ color: "#a1a1a1", fontSize: 15 }}
+                                    text={track.artist ?? ""}
+                                    containerStyle={PlayingTrackPageStyle.title}
+                                />
+                            </View>
+
+                            <Icon
+                                name={"favorite"}
+                                type={"material"}
+                                size={30}
+                                color={this.state.favorite ? "#d21d4f" : "#FFFFFF"}
+                                underlayColor={"#FFFFFF"}
+                                onPress={() => this.favoriteTrack()}
+                            />
+                        </View>
 
                         <ProgressBar
                             trackLength={track.duration ?? 0}
