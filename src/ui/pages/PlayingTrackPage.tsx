@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ImageBackground } from "react-native";
+import { View, ImageBackground, ScrollView } from "react-native";
 
 import { Icon, Image } from "@rneui/themed";
 import Hide from "@components/common/Hide";
@@ -207,12 +207,13 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                         </Menu>
                     </View>
 
-                    <View style={PlayingTrackPageStyle.trackInfo}>
-                        <Image
-                            style={PlayingTrackPageStyle.trackImage}
-                            source={{ uri: track.artwork as string }}
-                        />
-                    </View>
+                    <ScrollView>
+                        <View style={PlayingTrackPageStyle.trackInfo}>
+                            <Image
+                                style={PlayingTrackPageStyle.trackImage}
+                                source={{ uri: track.artwork as string }}
+                            />
+                        </View>
 
                         <View style={PlayingTrackPageStyle.middleContainer}>
                             <View>
@@ -238,27 +239,25 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                             />
                         </View>
 
-                        <ProgressBar
-                            trackLength={track.duration ?? 0}
-                            currentTime={this.state.position}
-                            onSeek={time => TrackPlayer.seekTo(time)}
-                            onSlidingStart={() => null}
-                        />
+                        <View style={PlayingTrackPageStyle.lowerContainer}>
+                            <ProgressBar
+                                trackLength={track.duration ?? 0}
+                                currentTime={this.state.position}
+                                onSeek={time => TrackPlayer.seekTo(time)}
+                                onSlidingStart={() => null}
+                            />
 
-                        <Controls
-                            isPaused={this.state.paused}
-                            isFavorite={this.state.favorite}
-                            shuffleControl={() => shuffleQueue()}
-                            repeatControl={() => this.toggleReplayState()}
-                            skipToPreviousControl={() => this.skip(true)}
-                            playControl={async () => this.togglePlayback()}
-                            skipToNextControl={() => this.skip(false)}
-                            makeFavoriteControl={() => this.favoriteTrack()} />
-
-                        <BasicText
-                            text={this.state.alert} style={PlayingTrackPageStyle.alert}
-                        />
-                    </View>
+                            <Controls
+                                isPaused={this.state.paused}
+                                shuffleControl={() => shuffleQueue()}
+                                repeatControl={() => this.toggleReplayState()}
+                                skipToPreviousControl={() => this.skip(true)}
+                                playControl={async () => this.togglePlayback()}
+                                skipToNextControl={() => this.skip(false)}
+                                repeatMode={this.state.repeatMode}
+                            />
+                        </View>
+                    </ScrollView>
                 </JumpInView>
             )
         : null;

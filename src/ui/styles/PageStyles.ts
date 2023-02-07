@@ -258,6 +258,16 @@ export const PlayingTrackPageStyle = StyleSheet.create({
     alert: {
         alignSelf: "center"
     },
+    title: {
+        width: screenWidth - 100,
+    },
+    middleContainer: {
+        padding: 25,
+        paddingBottom: 0,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "flex-end"
+    },
     lowerContainer: {
         padding: 25,
         flexDirection: "column",
