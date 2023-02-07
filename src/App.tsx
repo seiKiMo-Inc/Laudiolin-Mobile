@@ -23,6 +23,7 @@ import * as user from "@backend/user";
 import emitter from "@backend/events";
 import { registerListener, removeListeners } from "@backend/navigation";
 import { loadPlayerState, savePlayerState } from "@app/utils";
+import TrackPlayer from "react-native-track-player";
 
 interface IState {
     pageIndex: number;
@@ -181,9 +182,11 @@ class App extends React.Component<any, IState> {
         setTimeout(() => SplashScreen && SplashScreen.hide(), 1000);
     }
 
-    componentWillUnmount() {
+    async componentWillUnmount() {
         emitter.removeListener("login", this.onLogin);
         removeListeners(); // Remove navigation listeners.
+
+        await TrackPlayer.reset(); // Destroy the player.
     }
 
     onPageChange = (i: number) => {
