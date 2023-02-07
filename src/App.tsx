@@ -207,7 +207,7 @@ class App extends React.Component<any, IState> {
 
                 <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 50, zIndex: 0 }} />
                 <LinearGradient
-                    colors={["transparent", "#1f2442"]}
+                    colors={["#0c0f17", "#1f2442"]}
                     style={{ position: "absolute", bottom: 0, width: "100%", height: 50 }}
                     locations={[0, 0.9]}
                 />
