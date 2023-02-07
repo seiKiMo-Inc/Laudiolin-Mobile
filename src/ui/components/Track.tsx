@@ -42,6 +42,7 @@ class Track extends React.PureComponent<IProps, never> {
                         <Image
                             style={TrackStyle.image}
                             source={{ uri: getIconUrl(track) }}
+                            resizeMethod={"resize"}
                         />
 
                         <View style={TrackStyle.text}>

@@ -237,38 +237,38 @@ class Home extends React.Component<any, IState> {
                     }
                 </View>
 
-                <View style={{ paddingBottom: 20, paddingLeft: 20 }}>
-                    <View style={HomePageStyle.header}>
-                        <BasicText text={"Downloads"} style={HomePageStyle.headerText} />
-                        <BasicText text={"More"} style={HomePageStyle.moreDownloads}
-                                      press={() => navigate("Downloads")}
-                        />
-                    </View>
+                {
+                    this.state.downloads.length > 0 ? (
+                        <View style={{ paddingBottom: 20, paddingLeft: 20 }}>
+                            <View style={HomePageStyle.header}>
+                                <BasicText text={"Downloads"} style={HomePageStyle.headerText} />
+                                <BasicText text={"More"} style={HomePageStyle.moreDownloads}
+                                           press={() => navigate("Downloads")}
+                                />
+                            </View>
 
-                    {
-                        this.state.downloads.length > 0 ?
-                        (<List
-                            data={this.state.downloads}
-                            renderItem={(info) => this.renderTracks(info)}
-                        />) :
-                        (<BasicText text={"No downloads yet."} style={{ textAlign: "center", justifyContent: "center", padding: 40 }}  />)
-                    }
-                </View>
+                            <List
+                                data={this.state.downloads}
+                                renderItem={(info) => this.renderTracks(info)}
+                            />
+                        </View>
+                    ) : null
+                }
 
-                <View style={{ paddingBottom: 20, paddingLeft: 20 }}>
-                    <View style={HomePageStyle.header}>
-                        <BasicText text={"Recent Plays"} style={HomePageStyle.headerText} />
-                    </View>
+                {
+                    recents.length > 0 ? (
+                        <View style={{ paddingBottom: 20, paddingLeft: 20 }}>
+                            <View style={HomePageStyle.header}>
+                                <BasicText text={"Recent Plays"} style={HomePageStyle.headerText} />
+                            </View>
 
-                    {
-                        recents.length > 0 ?
-                        (<List
-                            data={filter(recents)}
-                            renderItem={(info) => this.renderTracks(info)}
-                        />) :
-                        (<BasicText text={"No recent plays."} style={{ textAlign: "center", justifyContent: "center", padding: 40 }}  />)
-                    }
-                </View>
+                            <List
+                                data={filter(recents)}
+                                renderItem={(info) => this.renderTracks(info)}
+                            />
+                        </View>
+                    ) : null
+                }
             </ScrollView>
         );
     }
