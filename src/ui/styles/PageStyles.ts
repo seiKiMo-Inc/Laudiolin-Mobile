@@ -36,8 +36,6 @@ export const LoginPageStyle = StyleSheet.create({
 
 export const HomePageStyle = StyleSheet.create({
     text: {
-        paddingLeft: 20,
-        paddingTop: 20,
         width: screenWidth
     },
     header: {

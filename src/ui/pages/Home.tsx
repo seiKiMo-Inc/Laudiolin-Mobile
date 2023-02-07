@@ -4,6 +4,7 @@ import { FlatList, ImageBackground, ScrollView, TouchableHighlight, View } from 
 import Track from "@components/Track";
 import BasicText from "@components/common/BasicText";
 import List, { ListRenderItem } from "@components/common/List";
+import LinearGradient from "react-native-linear-gradient";
 
 import { HomePageStyle } from "@styles/PageStyles";
 
@@ -179,10 +180,34 @@ class Home extends React.Component<any, IState> {
         );
     }
 
+    greetingText = (): string => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good Morning...";
+        if (hour < 18) return "Good Afternoon...";
+        return "Good Evening...";
+    }
+
     render() {
         return (
             <ScrollView style={HomePageStyle.text}>
-                <View style={{ paddingBottom: 20, width: "100%" }}>
+                <LinearGradient
+                    colors={["#354ab2", "transparent"]}
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        height: 100,
+                        zIndex: 0,
+                        width: "100%",
+                    }}
+                />
+
+                <BasicText
+                    text={this.greetingText()}
+                    style={{ fontSize: 20, color: "white", fontFamily: "Roboto-Light" }}
+                    containerStyle={{ width: "100%", padding: 40, justifyContent: "center", alignItems: "center" }}
+                />
+
+                <View style={{ paddingBottom: 20, width: "100%", paddingLeft: 20 }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Playlists"} style={HomePageStyle.headerText} />
                         <BasicText text={"More"} style={HomePageStyle.morePlaylists}
@@ -202,7 +227,7 @@ class Home extends React.Component<any, IState> {
                     }
                 </View>
 
-                <View style={{ paddingBottom: 20 }}>
+                <View style={{ paddingBottom: 20, paddingLeft: 20 }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Downloads"} style={HomePageStyle.headerText} />
                         <BasicText text={"More"} style={HomePageStyle.moreDownloads}
@@ -220,7 +245,7 @@ class Home extends React.Component<any, IState> {
                     }
                 </View>
 
-                <View style={{ paddingBottom: 20 }}>
+                <View style={{ paddingBottom: 20, paddingLeft: 20 }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Recent Plays"} style={HomePageStyle.headerText} />
                     </View>
