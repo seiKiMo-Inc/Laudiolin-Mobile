@@ -30,9 +30,15 @@ export const settingsKeys: {[key: string]: string} = {
  */
 export async function reloadSettings(from?: UserSettings | null) {
     if (!from) {
-        settings = !(await exists("settings")) ? defaultSettings :
-            JSON.parse(await EncryptedStorage.getItem("settings") as string);
+        // Check if settings exists in the storage.
+        const data = await exists("settings");
+        // Load the settings as JSON.
+        settings = data == undefined ? defaultSettings
+            : JSON.parse((await get("settings")) as string);
     } else settings = from;
+
+    // Check if the settings are undefined.
+    if (settings == undefined) settings = defaultSettings;
 
     // Save the user's authentication token.
     await save("user_token", settings?.token ?? "");
@@ -55,7 +61,10 @@ export function getSettings(): UserSettings | null {
  * @param token The token.
  */
 export async function setToken(token: string): Promise<void> {
-    if (!settings) return;
+    let settings = getSettings();
+    if (settings == undefined) {
+        settings = defaultSettings;
+    }
 
     // Set the token in the settings.
     settings.token = token;
