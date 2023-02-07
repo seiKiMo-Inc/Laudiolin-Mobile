@@ -21,7 +21,7 @@ import { MenuProvider } from "react-native-popup-menu";
 
 import * as user from "@backend/user";
 import emitter from "@backend/events";
-import { registerListener } from "@backend/navigation";
+import { registerListener, removeListeners } from "@backend/navigation";
 import { loadPlayerState, savePlayerState } from "@app/utils";
 
 interface IState {
@@ -177,6 +177,7 @@ class App extends React.Component<any, IState> {
 
     componentWillUnmount() {
         emitter.removeListener("login", this.onLogin);
+        removeListeners(); // Remove navigation listeners.
     }
 
     render() {
