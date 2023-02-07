@@ -32,6 +32,9 @@ function getPlaylists(): Playlist[] {
             "All your favorites!", favorites));
     }
 
+    // Shorten the list to 6.
+    if (lists.length > 6) lists.length = 6;
+
     return lists;
 }
 
@@ -41,12 +44,17 @@ function getPlaylists(): Playlist[] {
  * @param tracks The tracks to filter.
  */
 function filter(tracks: TrackData[]): TrackData[] {
-    return tracks
+    tracks
         // Remove duplicate tracks.
         .filter((track, index, self) => {
             if (track == null) return false;
             return self.findIndex(t => t.id == track.id) == index;
         });
+
+    // Shorten the list to 6.
+    if (tracks.length > 6) tracks.length = 6;
+
+    return tracks;
 }
 
 class HomePlaylist extends React.PureComponent<any, any> {
