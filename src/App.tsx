@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, BackHandler, AppState } from "react-native";
+import { BackHandler, StyleSheet, View } from "react-native";
 
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
@@ -165,18 +165,11 @@ class App extends React.Component<any, IState> {
             return true;
         });
 
-        AppState.addEventListener("change", (state) => {
-            if (state == "inactive") {
-                // Save the current state.
-                savePlayerState();
-            }
-        });
-
-        // Check if the player has a state saved.
-        await loadPlayerState();
-
         // Re-render the app.
         this.setState({ reloadKey: "loaded" });
+
+        // Load the player state.
+        await loadPlayerState();
 
         // Hide the splash screen.
         setTimeout(() => SplashScreen && SplashScreen.hide(), 1000);
@@ -185,6 +178,8 @@ class App extends React.Component<any, IState> {
     async componentWillUnmount() {
         emitter.removeListener("login", this.onLogin);
         removeListeners(); // Remove navigation listeners.
+
+        await savePlayerState(); // Save the player state.
 
         await TrackPlayer.reset(); // Destroy the player.
     }
@@ -232,7 +227,7 @@ class App extends React.Component<any, IState> {
                     </TabView.Item>
                 </TabView>
 
-                <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 50, backgroundColor: "#0c0f17", zIndex: 0 }} />
+                <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 140 : 50, backgroundColor: "#0c0f17", zIndex: 0 }} />
                 <LinearGradient
                     colors={["#0c0f17", "#1f2442"]}
                     style={{ position: "absolute", bottom: 0, width: "100%", height: 50 }}
