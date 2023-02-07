@@ -169,7 +169,7 @@ class App extends React.Component<any, IState> {
         this.setState({ reloadKey: "loaded" });
 
         // Load the player state.
-        await loadPlayerState();
+        // TODO: await loadPlayerState();
 
         // Hide the splash screen.
         setTimeout(() => SplashScreen && SplashScreen.hide(), 1000);

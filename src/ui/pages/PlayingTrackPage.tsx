@@ -33,7 +33,7 @@ interface IState {
     paused: boolean;
     favorite: boolean;
     playlist: Playlist|null;
-    alert: string;
+    repeatMode: RepeatMode;
 }
 
 class PlayingTrackPage extends React.Component<IProps, IState> {
@@ -46,7 +46,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
             paused: false,
             favorite: false,
             playlist: null,
-            alert: ""
+            repeatMode: RepeatMode.Off
         };
     }
 
@@ -120,24 +120,17 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
         await toggleRepeatState(); // Toggle the repeat state.
 
         // Create a message to alert the user.
-        let message = "Repeat State: ";
         switch (await TrackPlayer.getRepeatMode()) {
             case RepeatMode.Off:
-                message += "Off";
+                this.setState({ repeatMode: RepeatMode.Off });
                 break;
             case RepeatMode.Queue:
-                message += "Queue";
+                this.setState({ repeatMode: RepeatMode.Queue });
                 break;
             case RepeatMode.Track:
-                message += "Track";
+                this.setState({ repeatMode: RepeatMode.Track });
                 break;
         }
-
-        // Alert the user.
-        this.setState({ alert: message });
-        setTimeout(() => {
-            this.setState({ alert: "" });
-        }, 1000);
     }
 
     componentDidMount() {
