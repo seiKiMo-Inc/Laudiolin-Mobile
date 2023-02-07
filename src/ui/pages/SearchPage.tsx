@@ -3,9 +3,10 @@ import { ScrollView, View } from "react-native";
 
 import BasicTextInput from "@components/common/BasicTextInput";
 import Track from "@components/Track";
-
+import BasicText from "@components/common/BasicText";
 import { SearchPageStyle } from "@styles/PageStyles";
 import { Icon } from "@rneui/base";
+import ContentLoader from "@components/common/ContentLoader";
 
 import { TrackData } from "@backend/types";
 import { playTrack } from "@backend/audio";
@@ -13,6 +14,7 @@ import { doSearch } from "@backend/search";
 
 interface IState {
     results: TrackData[];
+    isLoading: boolean;
 }
 
 class SearchPage extends React.Component<any, IState> {
@@ -22,7 +24,8 @@ class SearchPage extends React.Component<any, IState> {
         super(props);
 
         this.state = {
-            results: []
+            results: [],
+            isLoading: false,
         };
     }
 
@@ -31,18 +34,21 @@ class SearchPage extends React.Component<any, IState> {
      * @param query The new search query.
      */
     updateQuery(query: string): void {
+        // Clear the results.
+        this.setState({ results: [] });
+
         // Check if the query is empty.
         if (query.trim().length == 0) {
-            // Clear the state.
-            this.setState({ results: [] });
             // Clear the timeout.
             if (this.timeout) {
                 clearTimeout(this.timeout);
                 this.timeout = null;
             }
-
+            this.setState({ isLoading: false });
             return;
         }
+
+        this.setState({ isLoading: true })
 
         // Check if there is an existing timeout.
         if (this.timeout) {
@@ -55,6 +61,7 @@ class SearchPage extends React.Component<any, IState> {
             const { results } = await doSearch(query);
             // Update the state.
             this.setState({ results });
+            this.setState({ isLoading: false });
 
             // Clear the timeout.
             this.timeout = null;
@@ -85,16 +92,22 @@ class SearchPage extends React.Component<any, IState> {
                     />
                 </View>
 
-                <View style={SearchPageStyle.results}>
-                    {
-                        this.state.results.map((track, index) => (
-                            <Track
-                                key={index} track={track} padding={10}
-                                onClick={track => this.playTrack(track)}
-                            />
-                        ))
-                    }
-                </View>
+                { this.state.results.length > 0 ? (
+                    <View style={SearchPageStyle.results}>
+                        {
+                            this.state.results.map((track, index) => (
+
+                                    <Track
+                                        key={index} track={track} padding={10}
+                                        onClick={track => this.playTrack(track)}
+                                    />
+
+                            ))
+                        }
+                    </View>
+                ) : !this.state.isLoading ? (
+                    <BasicText text={"No results."} containerStyle={{ padding: 50, alignItems: "center" }} />
+                ) : <ContentLoader style={{ padding: 50, alignItems: "center" }} />}
             </ScrollView>
         );
     }

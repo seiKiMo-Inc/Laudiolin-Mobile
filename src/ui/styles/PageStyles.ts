@@ -145,6 +145,7 @@ export const SearchPageStyle = StyleSheet.create({
     container: {
         paddingTop: 40,
         width: screenWidth,
+        height: screenHeight,
     },
     searchText: {
         color: "white",
