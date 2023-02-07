@@ -150,7 +150,7 @@ export const SearchPageStyle = StyleSheet.create({
     searchContainer: {
         width: "90%",
         height: 45,
-        borderColor: "white",
+        borderColor: "#0052ff",
         borderStyle: "solid",
         borderWidth: 1,
         borderRadius: 10
