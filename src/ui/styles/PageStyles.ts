@@ -251,7 +251,7 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         flex: 1,
         width: screenWidth,
         height: screenHeight,
-        maxHeight: 400,
+        maxHeight: screenHeight * 0.5,
         maxWidth: 400,
     },
     alert: {
