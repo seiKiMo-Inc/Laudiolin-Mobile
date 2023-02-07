@@ -168,11 +168,11 @@ class App extends React.Component<any, IState> {
         // Check if the player has a state saved.
         await loadPlayerState();
 
-        // re-render the app.
+        // Re-render the app.
         this.setState({ reloadKey: "loaded" });
 
         // Hide the splash screen.
-        setTimeout(() => SplashScreen.hide(), 1000);
+        setTimeout(() => SplashScreen && SplashScreen.hide(), 1000);
     }
 
     componentWillUnmount() {
