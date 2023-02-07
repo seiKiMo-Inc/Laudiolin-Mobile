@@ -10,6 +10,7 @@ import { setCurrentPlaylist } from "@backend/playlist";
 import TrackPlayer, { Event, State } from "react-native-track-player";
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
 import { Platform } from "react-native";
+import { getIconUrl } from "@app/utils";
 
 /**
  * Converts a local track data object to a track player object.
@@ -22,7 +23,7 @@ export function asTrack(trackData: TrackData, local = false): Track {
     return {
         id: trackData.id,
         url: local ? `file://${fs.getTrackPath(trackData)}` : getStreamingUrl(trackData),
-        artwork: local ? `file://${fs.getIconPath(trackData)}` : trackData.icon,
+        artwork: local ? `file://${fs.getIconPath(trackData)}` : getIconUrl(trackData),
         contentType: "audio/mpeg",
         title: trackData.title,
         artist: trackData.artist,
