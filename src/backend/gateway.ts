@@ -8,6 +8,7 @@ import emitter from "@backend/events";
 import TrackPlayer, { Event } from "react-native-track-player";
 
 import { console } from "@app/utils";
+import { Platform } from "react-native";
 
 let retryToken: any = null;
 let connected: boolean = false;
@@ -24,9 +25,9 @@ export function setupListeners(): void {
     TrackPlayer.addEventListener(Event.RemoteSeek, update);
     TrackPlayer.addEventListener(Event.RemoteNext, update);
     TrackPlayer.addEventListener(Event.RemoteDuck, update);
-    TrackPlayer.addEventListener(Event.RemoteSkip, update);
     TrackPlayer.addEventListener(Event.RemotePause, update);
     TrackPlayer.addEventListener(Event.RemotePrevious, update);
+    Platform.OS == "android" && TrackPlayer.addEventListener(Event.RemoteSkip, update);
 
     // Add playback event listeners.
     TrackPlayer.addEventListener(Event.PlaybackState, update);

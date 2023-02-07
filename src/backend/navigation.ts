@@ -20,3 +20,10 @@ export function navigate(page: Page) {
 export function registerListener(listener: (page: Page) => void) {
     navigationEmitter.on("navigate", listener);
 }
+
+/**
+ * Removes the specified listener from navigation events.
+ */
+export function removeListeners() {
+    navigationEmitter.removeAllListeners();
+}

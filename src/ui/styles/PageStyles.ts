@@ -51,14 +51,12 @@ export const HomePageStyle = StyleSheet.create({
     morePlaylists: {
         textDecorationLine: "underline",
         textAlign: "right",
-        paddingRight: 20,
-        paddingLeft: "58%"
+        paddingRight: 20
     },
     moreDownloads: {
         textDecorationLine: "underline",
         textAlign: "right",
-        paddingRight: 20,
-        paddingLeft: "50%"
+        paddingRight: 20
     },
     morePlays: {
         textDecorationLine: "underline",
@@ -102,6 +100,7 @@ export const SettingsPageStyle = StyleSheet.create({
         paddingBottom: 20
     },
     userContainer: {
+        width: screenWidth,
         flexDirection: "row",
     },
     userImage: {
@@ -112,11 +111,14 @@ export const SettingsPageStyle = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
     },
+    logOutContainer: {
+        position: "absolute",
+        top: 12,
+        left: screenWidth - 90
+    },
     logOut: {
         fontSize: 13,
-        textDecorationLine: "underline",
-        textAlign: "right",
-        paddingLeft: "45%"
+        textDecorationLine: "underline"
     },
     settingsContainer: {
         paddingTop: 30
@@ -249,7 +251,7 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         flex: 1,
         width: screenWidth,
         height: screenHeight,
-        maxHeight: 400,
+        maxHeight: screenHeight * 0.45,
         maxWidth: 400,
     },
     alert: {

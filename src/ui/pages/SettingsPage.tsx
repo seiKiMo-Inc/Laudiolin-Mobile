@@ -103,12 +103,11 @@ class SearchPage extends React.Component<any, IState> {
                             secondStyle={{ ...SettingsPageStyle.userText, color: "#888787" }}
                         />
                     </View>
-                    <View style={{ alignItems: "flex-end", justifyContent: "center" }}>
-                        <BasicText
-                            text={"Log out"} style={SettingsPageStyle.logOut}
-                            press={async () => await logout()}
-                        />
-                    </View>
+                    <BasicText
+                        containerStyle={SettingsPageStyle.logOutContainer}
+                        text={"Log out"} style={SettingsPageStyle.logOut}
+                        press={async () => await logout()}
+                    />
                 </View>
 
                 <View style={SettingsPageStyle.settingsContainer}>

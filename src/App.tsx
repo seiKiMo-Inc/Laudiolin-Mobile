@@ -21,7 +21,7 @@ import { MenuProvider } from "react-native-popup-menu";
 
 import * as user from "@backend/user";
 import emitter from "@backend/events";
-import { registerListener } from "@backend/navigation";
+import { registerListener, removeListeners } from "@backend/navigation";
 import { loadPlayerState, savePlayerState } from "@app/utils";
 
 interface IState {
@@ -168,15 +168,16 @@ class App extends React.Component<any, IState> {
         // Check if the player has a state saved.
         await loadPlayerState();
 
-        // re-render the app.
+        // Re-render the app.
         this.setState({ reloadKey: "loaded" });
 
         // Hide the splash screen.
-        setTimeout(() => SplashScreen.hide(), 1000);
+        setTimeout(() => SplashScreen && SplashScreen.hide(), 1000);
     }
 
     componentWillUnmount() {
         emitter.removeListener("login", this.onLogin);
+        removeListeners(); // Remove navigation listeners.
     }
 
     render() {
@@ -206,7 +207,7 @@ class App extends React.Component<any, IState> {
 
                 <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 50, zIndex: 0 }} />
                 <LinearGradient
-                    colors={["transparent", "#1f2442"]}
+                    colors={["#0c0f17", "#1f2442"]}
                     style={{ position: "absolute", bottom: 0, width: "100%", height: 50 }}
                     locations={[0, 0.9]}
                 />

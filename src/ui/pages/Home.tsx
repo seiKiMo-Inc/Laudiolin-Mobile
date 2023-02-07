@@ -131,6 +131,9 @@ class Home extends React.Component<any, IState> {
         emitter.on("login", this.update);
         emitter.on("recent", this.update);
         emitter.on("favorite", this.update);
+        emitter.on("playlist", () => {
+            this.setState({ playlists: getPlaylists() });
+        });
         emitter.on("download", async () => {
             // Load the downloads.
             await this.loadDownloads();
@@ -140,14 +143,13 @@ class Home extends React.Component<any, IState> {
 
         // Load the downloads.
         await this.loadDownloads();
-
-        this.setState({ playlists: getPlaylists() });
     }
 
     componentWillUnmount() {
         emitter.removeListener("login", this.update);
         emitter.removeListener("recent", this.update);
         emitter.removeListener("favorite", this.update);
+        emitter.removeListener("playlist", this.update);
         emitter.removeListener("download", this.update);
     }
 

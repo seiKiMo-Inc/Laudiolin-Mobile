@@ -74,9 +74,12 @@ export async function login(code: string = "", loadData: boolean = true) {
     emitter.emit("login", userData);
 
     if (loadData) {
-        await loadRecents(); // Load recent tracks.
-        await loadPlaylists(); // Load the playlists.
-        await loadFavorites(); // Load favorite tracks.
+        loadRecents() // Load recent tracks.
+            .catch(err => console.error(err));
+        loadPlaylists() // Load the playlists.
+            .catch(err => console.error(err));
+        loadFavorites() // Load favorite tracks.
+            .catch(err => console.error(err));
     }
 }
 
@@ -131,6 +134,7 @@ export async function loadPlaylists() {
     playlists = playlists.filter((playlist, index, self) =>
         self.findIndex(p => p.id == playlist.id) == index);
 
+    emitter.emit("playlist", playlists); // Emit the playlists event.
     console.info(`Loaded ${playlists.length} playlists.`); // Log the success.
 }
 
