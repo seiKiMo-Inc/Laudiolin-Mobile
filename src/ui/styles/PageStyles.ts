@@ -220,7 +220,7 @@ export const PlayingTrackPageStyle = StyleSheet.create({
     },
     view: {
         width: screenWidth,
-        height: screenHeight,
+        height: "100%",
         backgroundColor: "#0c0f17",
         zIndex: 99999,
         position: "absolute",
