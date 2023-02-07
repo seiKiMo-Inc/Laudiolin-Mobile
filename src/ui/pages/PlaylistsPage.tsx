@@ -113,7 +113,7 @@ class ListPlaylist extends React.Component<any, any> {
                                 />
                             </MenuTrigger>
 
-                            <MenuOptions>
+                            <MenuOptions customStyles={{ optionsContainer: PlaylistMenuStyle.menu }}>
                                 <MenuOption customStyles={{ optionText: PlaylistMenuStyle.text }}
                                             text={"Add to Queue"} onSelect={() => this.queue()} />
                                 <MenuOption customStyles={{ optionText: PlaylistMenuStyle.text }}
