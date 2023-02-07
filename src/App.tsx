@@ -205,7 +205,7 @@ class App extends React.Component<any, IState> {
                     </TabView.Item>
                 </TabView>
 
-                <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 50, zIndex: 0 }} />
+                <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 50, backgroundColor: "#0c0f17", zIndex: 0 }} />
                 <LinearGradient
                     colors={["#0c0f17", "#1f2442"]}
                     style={{ position: "absolute", bottom: 0, width: "100%", height: 50 }}
