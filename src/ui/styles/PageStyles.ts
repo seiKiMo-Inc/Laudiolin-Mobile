@@ -143,7 +143,7 @@ export const SettingsPageStyle = StyleSheet.create({
 
 export const SearchPageStyle = StyleSheet.create({
     container: {
-        paddingTop: 40,
+        paddingTop: 60,
         width: screenWidth,
         height: screenHeight,
     },
@@ -167,6 +167,7 @@ export const SearchPageStyle = StyleSheet.create({
 export const PlaylistsPageStyle = StyleSheet.create({
     container: {
         padding: 10,
+        paddingTop: 30,
         paddingBottom: 0,
         backgroundColor: "#0c0f17",
         height: "100%",
@@ -220,6 +221,7 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         zIndex: 0,
     },
     view: {
+        paddingTop: 10,
         width: screenWidth,
         height: "100%",
         backgroundColor: "#0c0f17",
@@ -278,7 +280,7 @@ export const PlayingTrackPageStyle = StyleSheet.create({
 export const PlaylistPageStyle = StyleSheet.create({
     container: {
         padding: 20,
-        paddingTop: 10,
+        paddingTop: 30,
         paddingBottom: 0,
         backgroundColor: "#0c0f17",
         height: "100%",
@@ -343,7 +345,7 @@ export const PlaylistPageStyle = StyleSheet.create({
 export const DownloadPageStyle = StyleSheet.create({
     container: {
         padding: 20,
-        paddingTop: 10,
+        paddingTop: 30,
         paddingBottom: 0,
         backgroundColor: "#0c0f17",
         height: "100%",

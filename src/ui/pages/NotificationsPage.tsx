@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "react-native";
+import { Dimensions, View } from "react-native";
 
 import BasicText from "@components/common/BasicText";
 
@@ -10,8 +10,9 @@ class NotificationsPage extends React.Component {
 
     render() {
         return (
-            <View>
+            <View style={{ height: "100%", width: Dimensions.get("window").width, justifyContent: "center", alignItems: "center" }}>
                 <BasicText text="Notifications" />
+                <BasicText text="Doesnt exist yet lol" />
             </View>
         );
     }

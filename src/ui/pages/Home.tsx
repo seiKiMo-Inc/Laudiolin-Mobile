@@ -205,7 +205,7 @@ class Home extends React.Component<any, IState> {
                     style={{
                         position: "absolute",
                         top: 0,
-                        height: 100,
+                        height: 120,
                         zIndex: 0,
                         width: "100%",
                     }}
@@ -214,7 +214,7 @@ class Home extends React.Component<any, IState> {
                 <BasicText
                     text={this.greetingText()}
                     style={{ fontSize: 20, color: "white", fontFamily: "Roboto-Light" }}
-                    containerStyle={{ width: "100%", padding: 40, justifyContent: "center", alignItems: "center" }}
+                    containerStyle={{ width: "100%", padding: 40, paddingTop: 60, justifyContent: "center", alignItems: "center" }}
                 />
 
                 <View style={{ paddingBottom: 20, width: "100%", paddingLeft: 20 }}>

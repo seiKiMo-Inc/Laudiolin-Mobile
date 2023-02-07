@@ -1,5 +1,5 @@
 import React from "react";
-import { BackHandler, StyleSheet, View } from "react-native";
+import { BackHandler, StyleSheet, View, StatusBar } from "react-native";
 
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
@@ -206,6 +206,8 @@ class App extends React.Component<any, IState> {
     render() {
         return this.state.loggedIn ? (
             <MenuProvider key={this.state.reloadKey}>
+                <StatusBar translucent backgroundColor="transparent" />
+
                 <TabView
                     value={this.state.pageIndex}
                     disableTransition={true}
