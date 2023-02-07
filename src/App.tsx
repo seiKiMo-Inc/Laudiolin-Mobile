@@ -28,6 +28,9 @@ interface IState {
     pageIndex: number;
     loggedIn: boolean;
 
+    searchPageKey: boolean;
+    notificationsPageKey: boolean;
+    settingsPageKey: boolean;
     showPlayingTrackPage: boolean;
     showPlaylistsPage: boolean;
     showPlaylistPage: boolean;
@@ -53,6 +56,9 @@ class App extends React.Component<any, IState> {
             pageIndex: 0,
             loggedIn: user.userData != null,
 
+            searchPageKey: false,
+            notificationsPageKey: false,
+            settingsPageKey: false,
             showPlayingTrackPage: false,
             showPlaylistsPage: false,
             showPlaylistPage: false,
@@ -180,14 +186,32 @@ class App extends React.Component<any, IState> {
         removeListeners(); // Remove navigation listeners.
     }
 
+    onPageChange = (i: number) => {
+        this.setState({ pageIndex: i });
+
+        switch (i) {
+            case 1:
+                this.setState({ searchPageKey: !this.state.searchPageKey });
+                return;
+            case 2:
+                this.setState({ notificationsPageKey: !this.state.notificationsPageKey });
+                return;
+            case 3:
+                this.setState({ settingsPageKey: !this.state.settingsPageKey });
+                return;
+            default:
+                this.setState({ searchPageKey: false, notificationsPageKey: false, settingsPageKey: false })
+                return;
+        }
+    }
+
     render() {
         return this.state.loggedIn ? (
             <MenuProvider key={this.state.reloadKey}>
                 <TabView
                     value={this.state.pageIndex}
-                    onChange={(i) => this.setState({ pageIndex: i })}
-                    animationType="timing"
-                    animationConfig={{ useNativeDriver: true, bounciness: 0, duration: 100 }}
+                    disableTransition={true}
+                    onChange={this.onPageChange}
                     disableSwipe={true}
                     containerStyle={{ backgroundColor: "#0c0f17" }}
                 >
@@ -195,13 +219,13 @@ class App extends React.Component<any, IState> {
                         <Home />
                     </TabView.Item>
                     <TabView.Item>
-                        <SearchPage />
+                        <SearchPage key={`${this.state.searchPageKey}`} />
                     </TabView.Item>
                     <TabView.Item>
-                        <NotificationsPage />
+                        <NotificationsPage key={`${this.state.notificationsPageKey}`} />
                     </TabView.Item>
                     <TabView.Item>
-                        <SettingsPage />
+                        <SettingsPage key={`${this.state.settingsPageKey}`} />
                     </TabView.Item>
                 </TabView>
 
@@ -211,7 +235,7 @@ class App extends React.Component<any, IState> {
                     style={{ position: "absolute", bottom: 0, width: "100%", height: 50 }}
                     locations={[0, 0.9]}
                 />
-                <NavBar pageIndex={this.state.pageIndex} setPageIndex={(i) => this.setState({ pageIndex: i })} />
+                <NavBar pageIndex={this.state.pageIndex} setPageIndex={(i) => this.onPageChange(i)} />
 
                 <PlayingTrackPage showPage={this.state.showPlayingTrackPage} />
                 <PlaylistsPage showPage={this.state.showPlaylistsPage} />
