@@ -38,7 +38,7 @@ export const HomePageStyle = StyleSheet.create({
     text: {
         paddingLeft: 20,
         paddingTop: 20,
-        width: screenWidth,
+        width: screenWidth
     },
     header: {
         flexDirection: "row",

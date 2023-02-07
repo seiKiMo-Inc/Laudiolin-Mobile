@@ -104,8 +104,8 @@ class ListPlaylist extends React.Component<any, any> {
                             />
                         </View>
 
-                        <Menu style={{ justifyContent: "center" }}>
-                            <MenuTrigger style={{ justifyContent: "center" }}>
+                        <Menu style={{ position: "absolute", right: 0, top: 35 }}>
+                            <MenuTrigger>
                                 <Icon
                                     color={"white"}
                                     type="material" name={"more-vert"}
