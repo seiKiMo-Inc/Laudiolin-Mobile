@@ -27,7 +27,7 @@ export const TrackStyle = StyleSheet.create({
     more: {
         zIndex: 1,
         position: "absolute",
-        right: 0,
+        right: 20,
         alignSelf: "center",
         justifyContent: "center",
     }

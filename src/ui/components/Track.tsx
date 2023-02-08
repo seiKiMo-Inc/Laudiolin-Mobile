@@ -60,7 +60,7 @@ class Track extends React.PureComponent<IProps, never> {
                             />
                         </View>
 
-                        <Menu style={{ position: "absolute", right: 20, top: 20 }}>
+                        <Menu style={{ position: "absolute", right: 0, top: 20 }}>
                             <MenuTrigger>
                                 <Icon
                                     color={"white"}

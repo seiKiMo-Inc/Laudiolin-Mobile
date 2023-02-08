@@ -344,9 +344,8 @@ export const PlaylistPageStyle = StyleSheet.create({
 
 export const DownloadPageStyle = StyleSheet.create({
     container: {
-        padding: 20,
+        paddingLeft: 20,
         paddingTop: 30,
-        paddingBottom: 0,
         backgroundColor: "#0c0f17",
         height: "100%",
         width: "100%",
