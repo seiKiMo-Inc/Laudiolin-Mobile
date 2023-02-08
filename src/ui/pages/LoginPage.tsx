@@ -99,7 +99,7 @@ class SearchPage extends React.Component<any, IState> {
                     </View>
 
                     <View style={{ paddingTop: 17 }}>
-                        <BasicText text={"Logging in with discord lets you create playlists, like \n" +
+                        <BasicText text={"Logging in with Discord lets you create playlists, like \n" +
                             "songs, connect with friends and more!"} style={{ textAlign: "center" }} />
                     </View>
                 </View>

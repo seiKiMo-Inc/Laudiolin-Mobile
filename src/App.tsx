@@ -172,7 +172,9 @@ class App extends React.Component<any, IState> {
         // TODO: await loadPlayerState();
 
         // Hide the splash screen.
-        setTimeout(() => SplashScreen && SplashScreen.hide(), 1000);
+        setTimeout(() => {
+            if (SplashScreen) SplashScreen.hide();
+        }, 1000);
     }
 
     async componentWillUnmount() {
