@@ -82,7 +82,7 @@ class SearchPage extends React.Component<any, IState> {
         const { user } = this.state;
 
         return (
-            <ScrollView contentContainerStyle={{ paddingLeft: 20 }}>
+            <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingTop: 20 }}>
                 <BasicText
                     text={"Settings"}
                     style={SettingsPageStyle.title}

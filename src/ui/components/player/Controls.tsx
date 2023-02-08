@@ -3,16 +3,18 @@ import { View } from "react-native";
 
 import { Icon } from "@rneui/themed";
 
+import { RepeatMode } from "react-native-track-player/lib/interfaces";
+
 interface IProps {
     isPaused: boolean;
-    isFavorite: boolean;
 
     shuffleControl: () => void;
     repeatControl: () => void;
     skipToPreviousControl: () => void;
     playControl: () => void;
     skipToNextControl: () => void;
-    makeFavoriteControl: () => void;
+
+    repeatMode: RepeatMode;
 }
 
 
@@ -23,7 +25,7 @@ class Controls extends React.Component<IProps, any> {
 
     render() {
         return (
-            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 30 }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 30, alignItems: "center" }}>
                 <Icon
                     name={"shuffle"}
                     type={"material"}
@@ -48,6 +50,7 @@ class Controls extends React.Component<IProps, any> {
                     type={"material"}
                     size={30}
                     color={"#FFFFFF"}
+                    containerStyle={{ backgroundColor: "#FFFFFF50", borderRadius: 50, padding: 10 }}
                     underlayColor={"#FFFFFF"}
                     onPress={this.props.playControl}
                 />
@@ -62,12 +65,12 @@ class Controls extends React.Component<IProps, any> {
                 />
 
                 <Icon
-                    name={"favorite"}
+                    name={this.props.repeatMode === RepeatMode.Track ? "repeat-one" : "repeat"}
                     type={"material"}
                     size={30}
-                    color={this.props.isFavorite ? "#d21d4f" : "#FFFFFF"}
+                    color={this.props.repeatMode === RepeatMode.Off ? "#FFFFFF" : "#00dfff"}
                     underlayColor={"#FFFFFF"}
-                    onPress={this.props.makeFavoriteControl}
+                    onPress={this.props.repeatControl}
                 />
             </View>
         );

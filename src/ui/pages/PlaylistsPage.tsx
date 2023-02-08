@@ -104,8 +104,8 @@ class ListPlaylist extends React.Component<any, any> {
                             />
                         </View>
 
-                        <Menu style={{ justifyContent: "center" }}>
-                            <MenuTrigger style={{ justifyContent: "center" }}>
+                        <Menu style={{ position: "absolute", right: 0, top: 35 }}>
+                            <MenuTrigger>
                                 <Icon
                                     color={"white"}
                                     type="material" name={"more-vert"}
@@ -113,7 +113,7 @@ class ListPlaylist extends React.Component<any, any> {
                                 />
                             </MenuTrigger>
 
-                            <MenuOptions>
+                            <MenuOptions customStyles={{ optionsContainer: PlaylistMenuStyle.menu }}>
                                 <MenuOption customStyles={{ optionText: PlaylistMenuStyle.text }}
                                             text={"Add to Queue"} onSelect={() => this.queue()} />
                                 <MenuOption customStyles={{ optionText: PlaylistMenuStyle.text }}
@@ -212,17 +212,27 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                 </View>
 
                 <View>
-                    <FlatList
-                        data={this.state.playlists}
-                        renderItem={(info) => this.renderPlaylist(info)}
-                        showsVerticalScrollIndicator={false}
-                    />
+                    {
+                        this.state.playlists.length > 0 ? (
+                            <FlatList
+                                data={this.state.playlists}
+                                renderItem={(info) => this.renderPlaylist(info)}
+                                showsVerticalScrollIndicator={false}
+                            />
+                        ) : (
+                            <View style={{ alignItems: "center", justifyContent: "center", height: "100%" }}>
+                                <BasicText text={"No playlists found."} style={{ fontSize: 20 }} />
+                            </View>
+                        )
+                    }
 
                     <BasicButton
                         text={"Add Playlist"}
                         color={"#4e7abe"}
                         button={{ borderRadius: 10, width: 150, height: 40 }}
-                        container={{ alignItems: "flex-end" }}
+                        container={{
+                            alignItems: this.state.playlists.length > 0 ? "flex-end" : "center",
+                        }}
                         icon={<Icon
                             color={"white"}
                             type={"material"} name={"add"}

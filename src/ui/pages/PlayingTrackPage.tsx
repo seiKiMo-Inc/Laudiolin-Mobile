@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ImageBackground } from "react-native";
+import { View, ImageBackground, ScrollView } from "react-native";
 
 import { Icon, Image } from "@rneui/themed";
 import Hide from "@components/common/Hide";
@@ -33,7 +33,7 @@ interface IState {
     paused: boolean;
     favorite: boolean;
     playlist: Playlist|null;
-    alert: string;
+    repeatMode: RepeatMode;
 }
 
 class PlayingTrackPage extends React.Component<IProps, IState> {
@@ -46,7 +46,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
             paused: false,
             favorite: false,
             playlist: null,
-            alert: ""
+            repeatMode: RepeatMode.Off
         };
     }
 
@@ -120,24 +120,17 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
         await toggleRepeatState(); // Toggle the repeat state.
 
         // Create a message to alert the user.
-        let message = "Repeat State: ";
         switch (await TrackPlayer.getRepeatMode()) {
             case RepeatMode.Off:
-                message += "Off";
+                this.setState({ repeatMode: RepeatMode.Off });
                 break;
             case RepeatMode.Queue:
-                message += "Queue";
+                this.setState({ repeatMode: RepeatMode.Queue });
                 break;
             case RepeatMode.Track:
-                message += "Track";
+                this.setState({ repeatMode: RepeatMode.Track });
                 break;
         }
-
-        // Alert the user.
-        this.setState({ alert: message });
-        setTimeout(() => {
-            this.setState({ alert: "" });
-        }, 1000);
     }
 
     componentDidMount() {
@@ -194,7 +187,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                                 />
                             </MenuTrigger>
 
-                            <MenuOptions>
+                            <MenuOptions customStyles={{ optionsContainer: TrackMenuStyle.menu }}>
                                 {this.state.playlist == null &&
                                     <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
                                                 text={"Add to Playlist"} onSelect={() => null} />}
@@ -207,46 +200,57 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                         </Menu>
                     </View>
 
-                    <View style={PlayingTrackPageStyle.trackInfo}>
-                        <Image
-                            style={PlayingTrackPageStyle.trackImage}
-                            source={{ uri: track.artwork as string }}
-                        />
-                    </View>
+                    <ScrollView>
+                        <View style={PlayingTrackPageStyle.trackInfo}>
+                            <Image
+                                style={PlayingTrackPageStyle.trackImage}
+                                source={{ uri: track.artwork as string }}
+                            />
+                        </View>
 
-                    <View style={PlayingTrackPageStyle.lowerContainer}>
-                        <BasicText
-                            numberOfLines={2}
-                            style={{ color: "#FFFFFF", fontSize: 25 }}
-                            text={track.title ?? ""}
-                        />
-                        <BasicText
-                            numberOfLines={1}
-                            style={{ color: "#a1a1a1", fontSize: 15 }}
-                            text={track.artist ?? ""}
-                        />
+                        <View style={PlayingTrackPageStyle.middleContainer}>
+                            <View>
+                                <BasicText
+                                    style={{ color: "#FFFFFF", fontSize: 25 }}
+                                    text={track.title ?? ""}
+                                    containerStyle={PlayingTrackPageStyle.title}
+                                />
+                                <BasicText
+                                    style={{ color: "#a1a1a1", fontSize: 15 }}
+                                    text={track.artist ?? ""}
+                                    containerStyle={PlayingTrackPageStyle.title}
+                                />
+                            </View>
 
-                        <ProgressBar
-                            trackLength={track.duration ?? 0}
-                            currentTime={this.state.position}
-                            onSeek={time => TrackPlayer.seekTo(time)}
-                            onSlidingStart={() => null}
-                        />
+                            <Icon
+                                name={"favorite"}
+                                type={"material"}
+                                size={30}
+                                color={this.state.favorite ? "#d21d4f" : "#FFFFFF"}
+                                underlayColor={"#FFFFFF"}
+                                onPress={() => this.favoriteTrack()}
+                            />
+                        </View>
 
-                        <Controls
-                            isPaused={this.state.paused}
-                            isFavorite={this.state.favorite}
-                            shuffleControl={() => shuffleQueue()}
-                            repeatControl={() => this.toggleReplayState()}
-                            skipToPreviousControl={() => this.skip(true)}
-                            playControl={async () => this.togglePlayback()}
-                            skipToNextControl={() => this.skip(false)}
-                            makeFavoriteControl={() => this.favoriteTrack()} />
+                        <View style={PlayingTrackPageStyle.lowerContainer}>
+                            <ProgressBar
+                                trackLength={track.duration ?? 0}
+                                currentTime={this.state.position}
+                                onSeek={time => TrackPlayer.seekTo(time)}
+                                onSlidingStart={() => null}
+                            />
 
-                        <BasicText
-                            text={this.state.alert} style={PlayingTrackPageStyle.alert}
-                        />
-                    </View>
+                            <Controls
+                                isPaused={this.state.paused}
+                                shuffleControl={() => shuffleQueue()}
+                                repeatControl={() => this.toggleReplayState()}
+                                skipToPreviousControl={() => this.skip(true)}
+                                playControl={async () => this.togglePlayback()}
+                                skipToNextControl={() => this.skip(false)}
+                                repeatMode={this.state.repeatMode}
+                            />
+                        </View>
+                    </ScrollView>
                 </JumpInView>
             )
         : null;

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, BackHandler, AppState } from "react-native";
+import { BackHandler, StyleSheet, View, StatusBar } from "react-native";
 
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
@@ -23,11 +23,15 @@ import * as user from "@backend/user";
 import emitter from "@backend/events";
 import { registerListener, removeListeners } from "@backend/navigation";
 import { loadPlayerState, savePlayerState } from "@app/utils";
+import TrackPlayer from "react-native-track-player";
 
 interface IState {
     pageIndex: number;
     loggedIn: boolean;
 
+    searchPageKey: boolean;
+    notificationsPageKey: boolean;
+    settingsPageKey: boolean;
     showPlayingTrackPage: boolean;
     showPlaylistsPage: boolean;
     showPlaylistPage: boolean;
@@ -53,6 +57,9 @@ class App extends React.Component<any, IState> {
             pageIndex: 0,
             loggedIn: user.userData != null,
 
+            searchPageKey: false,
+            notificationsPageKey: false,
+            settingsPageKey: false,
             showPlayingTrackPage: false,
             showPlaylistsPage: false,
             showPlaylistPage: false,
@@ -158,36 +165,53 @@ class App extends React.Component<any, IState> {
             return true;
         });
 
-        AppState.addEventListener("change", (state) => {
-            if (state == "inactive") {
-                // Save the current state.
-                savePlayerState();
-            }
-        });
-
-        // Check if the player has a state saved.
-        await loadPlayerState();
-
         // Re-render the app.
         this.setState({ reloadKey: "loaded" });
+
+        // Load the player state.
+        // TODO: await loadPlayerState();
 
         // Hide the splash screen.
         setTimeout(() => SplashScreen && SplashScreen.hide(), 1000);
     }
 
-    componentWillUnmount() {
+    async componentWillUnmount() {
         emitter.removeListener("login", this.onLogin);
         removeListeners(); // Remove navigation listeners.
+
+        await savePlayerState(); // Save the player state.
+
+        await TrackPlayer.reset(); // Destroy the player.
+    }
+
+    onPageChange = (i: number) => {
+        this.setState({ pageIndex: i });
+
+        switch (i) {
+            case 1:
+                this.setState({ searchPageKey: !this.state.searchPageKey });
+                return;
+            case 2:
+                this.setState({ notificationsPageKey: !this.state.notificationsPageKey });
+                return;
+            case 3:
+                this.setState({ settingsPageKey: !this.state.settingsPageKey });
+                return;
+            default:
+                this.setState({ searchPageKey: false, notificationsPageKey: false, settingsPageKey: false })
+                return;
+        }
     }
 
     render() {
         return this.state.loggedIn ? (
             <MenuProvider key={this.state.reloadKey}>
+                <StatusBar translucent backgroundColor="transparent" />
+
                 <TabView
                     value={this.state.pageIndex}
-                    onChange={(i) => this.setState({ pageIndex: i })}
-                    animationType="timing"
-                    animationConfig={{ useNativeDriver: true, bounciness: 0, duration: 100 }}
+                    disableTransition={true}
+                    onChange={this.onPageChange}
                     disableSwipe={true}
                     containerStyle={{ backgroundColor: "#0c0f17" }}
                 >
@@ -195,23 +219,23 @@ class App extends React.Component<any, IState> {
                         <Home />
                     </TabView.Item>
                     <TabView.Item>
-                        <SearchPage />
+                        <SearchPage key={`${this.state.searchPageKey}`} />
                     </TabView.Item>
                     <TabView.Item>
-                        <NotificationsPage />
+                        <NotificationsPage key={`${this.state.notificationsPageKey}`} />
                     </TabView.Item>
                     <TabView.Item>
-                        <SettingsPage />
+                        <SettingsPage key={`${this.state.settingsPageKey}`} />
                     </TabView.Item>
                 </TabView>
 
-                <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 130 : 50, zIndex: 0 }} />
+                <View style={{ width: "100%", height: this.state.isQuickControlVisible ? 140 : 50, backgroundColor: "#0c0f17", zIndex: 0 }} />
                 <LinearGradient
                     colors={["#0c0f17", "#1f2442"]}
                     style={{ position: "absolute", bottom: 0, width: "100%", height: 50 }}
                     locations={[0, 0.9]}
                 />
-                <NavBar pageIndex={this.state.pageIndex} setPageIndex={(i) => this.setState({ pageIndex: i })} />
+                <NavBar pageIndex={this.state.pageIndex} setPageIndex={(i) => this.onPageChange(i)} />
 
                 <PlayingTrackPage showPage={this.state.showPlayingTrackPage} />
                 <PlaylistsPage showPage={this.state.showPlaylistsPage} />

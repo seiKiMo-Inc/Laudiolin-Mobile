@@ -42,6 +42,7 @@ class Track extends React.PureComponent<IProps, never> {
                         <Image
                             style={TrackStyle.image}
                             source={{ uri: getIconUrl(track) }}
+                            resizeMethod={"resize"}
                         />
 
                         <View style={TrackStyle.text}>
@@ -68,7 +69,7 @@ class Track extends React.PureComponent<IProps, never> {
                                 />
                             </MenuTrigger>
 
-                            <MenuOptions>
+                            <MenuOptions customStyles={{ optionsContainer: TrackMenuStyle.menu }}>
                                 <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
                                             text={"Add to Playlist"} onSelect={() => null} />
                                 <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
