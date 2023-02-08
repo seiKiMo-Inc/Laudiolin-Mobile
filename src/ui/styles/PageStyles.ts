@@ -355,3 +355,14 @@ export const DownloadPageStyle = StyleSheet.create({
         left: 0,
     }
 });
+
+export const NotificationsPageStyle = StyleSheet.create({
+    container: {
+        height: "100%",
+        width: screenWidth,
+    },
+    tab: {
+        backgroundColor: "#081126",
+        paddingTop: 30,
+    }
+});

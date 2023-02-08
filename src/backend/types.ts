@@ -59,3 +59,10 @@ export type UISettings = {
     background_url: string;
 };
 export type SettingType = "boolean" | "input" | "select" | "color";
+
+export type InAppNotificationData = {
+    message: string;
+    date: Date;
+    icon: string;
+    onPress?: () => void;
+}
