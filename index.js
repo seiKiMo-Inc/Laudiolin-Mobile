@@ -3,7 +3,7 @@
  */
 
 import { AppRegistry } from "react-native";
-import TrackPlayer from "react-native-track-player";
+import TrackPlayer, { Capability } from "react-native-track-player";
 
 import App from "@app/App";
 import { setAppData } from "@app/constants";
@@ -42,7 +42,20 @@ async function initialize() {
         // Initialize the track player.
         await TrackPlayer.setupPlayer();
         await TrackPlayer.updateOptions({
-            progressUpdateEventInterval: 1
+            progressUpdateEventInterval: 1,
+            stoppingAppPausesPlayback: true,
+            capabilities: [
+                Capability.Play,
+                Capability.Pause,
+                Capability.SkipToNext,
+                Capability.SkipToPrevious,
+                Capability.Stop,
+                Capability.SeekTo,
+            ],
+            compactCapabilities: [
+                Capability.Play,
+                Capability.Pause,
+            ],
         });
     } catch (err) {
         console.error("Failed to initialize the track player.", err);
