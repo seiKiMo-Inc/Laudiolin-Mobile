@@ -8,6 +8,10 @@
     {
       "path": "resources/fonts/Poppins-Regular.ttf",
       "sha1": "fdd3002e7d814ee47c1c1b8487c72c6bbb3a2d00"
+    },
+    {
+      "path": "resources/fonts/Roboto-Light.ttf",
+      "sha1": "18788c5d630fa695f9283f6393bfa541b2031508"
     }
   ]
 }
