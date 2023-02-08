@@ -1,4 +1,12 @@
 {
+  "images": [
+    {
+      "idiom": "iphone",
+      "size": "3000x3000",
+      "scale": "1x",
+      "filename": "splash-background.png"
+    }
+  ],
   "info" : {
     "version" : 1,
     "author" : "xcode"
