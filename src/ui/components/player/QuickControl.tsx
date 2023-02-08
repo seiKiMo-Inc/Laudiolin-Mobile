@@ -31,22 +31,29 @@ class QuickControl extends React.Component<IProps, IState> {
         };
 
         // Register track player listeners.
-        TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => this.update());
+        TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => this.setTrackProgressPercentage(TrackPlayer.getPosition()));
         TrackPlayer.addEventListener(Event.PlaybackTrackChanged, () => this.update());
         TrackPlayer.addEventListener(Event.PlaybackQueueEnded, () => this.update());
+        TrackPlayer.addEventListener(Event.PlaybackState, () => this.update());
     }
 
     /**
      * Updates the quick control center.
      */
     async update(): Promise<void> {
+        const playerState = await TrackPlayer.getState();
+
+        // Clear state if playerState is None.
+        if (playerState == State.None) {
+            await TrackPlayer.reset();
+            this.setState({ track: null });
+        }
+
         // Update the state.
         this.setState({
             track: await getCurrentTrack(),
             paused: await TrackPlayer.getState() == State.Paused
         });
-
-        this.forceUpdate(); // Update the component.
     }
 
     /**
@@ -75,8 +82,6 @@ class QuickControl extends React.Component<IProps, IState> {
 
         if (this.state.track != null)
             this.props.isQuickControlVisible(true);
-
-        TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => this.setTrackProgressPercentage(TrackPlayer.getPosition()));
     }
 
     setTrackProgressPercentage = async (progress: Promise<number>) => {
@@ -84,6 +89,7 @@ class QuickControl extends React.Component<IProps, IState> {
         const percentage = (await progress / duration) * 100;
 
         this.setState({ trackProgressPercentage: percentage });
+        await this.update();
     }
 
     componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
