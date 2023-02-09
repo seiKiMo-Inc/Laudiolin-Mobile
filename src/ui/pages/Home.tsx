@@ -213,7 +213,7 @@ class Home extends React.Component<any, IState> {
 
                 <BasicText
                     text={this.greetingText()}
-                    style={{ fontSize: 20, color: "white", fontFamily: "Roboto", fontWeight: "300" }}
+                    style={{ fontSize: 20, color: "white", fontFamily: "System", fontWeight: "300" }}
                     containerStyle={{ width: "100%", padding: 40, paddingTop: 60, justifyContent: "center", alignItems: "center" }}
                 />
 
