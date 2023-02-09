@@ -41,8 +41,13 @@ class SearchPage extends React.Component<any, IState> {
     /**
      * Sends the user to the home page.
      */
-    ignoreLogin(): void {
+    async ignoreLogin(): Promise<void> {
+        // Set the user as not authenticated.
+        await settings.save("authenticated", "guest");
 
+        // Navigate to the home page.
+        navigate("Home");
+        this.setState({ showLogin: false });
     }
 
     /**
@@ -68,7 +73,7 @@ class SearchPage extends React.Component<any, IState> {
                     navigate("Home");
                     this.setState({ showLogin: false });
                 })
-                .catch(console.error);
+                .catch(err => console.error(err));
         } else if (url.includes("?error=")) {
             // Remove the login page.
             this.setState({ showLogin: false });

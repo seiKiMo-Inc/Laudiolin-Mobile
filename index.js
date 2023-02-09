@@ -22,25 +22,23 @@ import * as app from "./app.json";
 AppRegistry.registerComponent(app.name, () => App);
 TrackPlayer.registerPlaybackService(() => playbackService);
 
-// Run the initialization.
-(async() => initialize())();
-async function initialize() {
-    setAppData(app); // Set the app data.
+// Set the app data.
+setAppData(app);
 
-    // Fetch the application settings.
-    settings.reloadSettings()
-        .catch(err => console.error("Failed to load settings.", err));
-    // Create folders if needed.
-    fs.createFolders()
-        .catch(err => console.error("Failed to create folders.", err));
+// Fetch the application settings.
+settings.reloadSettings()
+    .catch(err => console.error("Failed to load settings.", err));
+// Create folders if needed.
+fs.createFolders()
+    .catch(err => console.error("Failed to create folders.", err));
 
-    // Initialize the gateway.
-    gateway.setupListeners();
-    gateway.connect();
+// Initialize the gateway.
+gateway.setupListeners();
+gateway.connect();
 
-    try {
-        // Initialize the track player.
-        await TrackPlayer.setupPlayer();
+// Initialize the track player.
+TrackPlayer.setupPlayer()
+    .then(async () => {
         await TrackPlayer.updateOptions({
             progressUpdateEventInterval: 1,
             stoppingAppPausesPlayback: true,
@@ -57,7 +55,5 @@ async function initialize() {
                 Capability.Pause,
             ],
         });
-    } catch (err) {
-        console.error("Failed to initialize the track player.", err);
-    }
-}
+    })
+    .catch(err => console.error(err));

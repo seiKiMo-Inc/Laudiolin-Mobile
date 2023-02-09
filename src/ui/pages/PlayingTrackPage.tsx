@@ -22,6 +22,7 @@ import { getCurrentTrack, shuffleQueue, asData, download, toggleRepeatState } fr
 
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
+import TextTicker from "react-native-text-ticker";
 
 interface IProps {
     showPage: boolean;
@@ -210,11 +211,15 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
 
                         <View style={PlayingTrackPageStyle.middleContainer}>
                             <View>
-                                <BasicText
-                                    style={{ color: "#FFFFFF", fontSize: 25 }}
-                                    text={track.title ?? ""}
-                                    containerStyle={PlayingTrackPageStyle.title}
-                                />
+                                <View style={PlayingTrackPageStyle.title}>
+                                    <TextTicker
+                                        style={{ color: "#FFFFFF", fontSize: 25 }}
+                                        loop duration={5000}
+                                    >
+                                        {track.title ?? ""}
+                                    </TextTicker>
+                                </View>
+
                                 <BasicText
                                     style={{ color: "#a1a1a1", fontSize: 15 }}
                                     text={track.artist ?? ""}

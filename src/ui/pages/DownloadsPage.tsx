@@ -9,11 +9,13 @@ import JumpInView from "@components/common/JumpInView";
 
 import { DownloadPageStyle, PlaylistsPageStyle } from "@styles/PageStyles";
 
+import emitter from "@backend/events";
 import { TrackData } from "@backend/types";
 import { playTrack } from "@backend/audio";
 import { navigate } from "@backend/navigation";
 import { getDownloadedTracks, loadLocalTrackData } from "@backend/fs";
-import emitter from "@backend/events";
+
+import { console } from "@app/utils";
 
 interface IProps {
     showPage: boolean;
@@ -55,10 +57,11 @@ class DownloadsPage extends React.Component<IProps, IState> {
         );
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         emitter.on("download", this.loadDownloads);
 
-        await this.loadDownloads(); // Load the downloads.
+        this.loadDownloads()
+            .catch(err => console.error(err)); // Load the downloads.
     }
 
     componentWillUnmount() {

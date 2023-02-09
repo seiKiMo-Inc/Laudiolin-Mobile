@@ -33,7 +33,6 @@ class Controls extends React.Component<IProps, any> {
                     color={"#FFFFFF"}
                     underlayColor={"#FFFFFF"}
                     onPress={this.props.shuffleControl}
-                    onLongPress={this.props.repeatControl}
                 />
 
                 <Icon

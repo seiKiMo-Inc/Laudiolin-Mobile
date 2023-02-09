@@ -152,11 +152,11 @@ export const SearchPageStyle = StyleSheet.create({
     },
     searchContainer: {
         width: "90%",
-        height: 45,
+        height: 46,
         borderColor: "#0052ff",
         borderStyle: "solid",
         borderWidth: 1,
-        borderRadius: 10
+        borderRadius: 10,
     },
     results: {
         paddingTop: 30,

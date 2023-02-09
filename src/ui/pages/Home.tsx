@@ -17,6 +17,8 @@ import { Gateway } from "@app/constants";
 import { navigate } from "@backend/navigation";
 import { playTrack } from "@backend/audio";
 
+import { console } from "@app/utils";
+
 /**
  * Gets the playlists for the user.
  * Adds the Favorites playlist if it exists.
@@ -130,7 +132,7 @@ class Home extends React.Component<any, IState> {
         this.setState({ downloads: filter(tracks) });
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         setTimeout(() => {
             // Update the component.
             this.forceUpdate();
@@ -150,7 +152,8 @@ class Home extends React.Component<any, IState> {
         });
 
         // Load the downloads.
-        await this.loadDownloads();
+        this.loadDownloads()
+            .catch(err => console.error(err));
     }
 
     componentWillUnmount() {

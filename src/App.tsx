@@ -70,12 +70,35 @@ class App extends React.Component<any, IState> {
         };
     }
 
+    onPageChange = (i: number) => {
+        this.setState({ pageIndex: i });
+
+        switch (i) {
+            case 1:
+                this.setState({ searchPageKey: !this.state.searchPageKey });
+                return;
+            case 2:
+                this.setState({ notificationsPageKey: !this.state.notificationsPageKey });
+                return;
+            case 3:
+                this.setState({ settingsPageKey: !this.state.settingsPageKey });
+                return;
+            default:
+                this.setState({ searchPageKey: false, notificationsPageKey: false, settingsPageKey: false })
+                return;
+        }
+    };
+
+    async continueLoading(): Promise<void> {
+        // Re-render the app.
+        this.setState({ reloadKey: "loaded" });
+    }
+
     async componentDidMount() {
         // Listen for the login event.
         emitter.on("login", this.onLogin);
-
         // Login to laudiolin.
-        await user.login();
+        user.login().then(() => this.continueLoading());
 
         registerListener(page => {
             switch (page) {
@@ -165,16 +188,11 @@ class App extends React.Component<any, IState> {
             return true;
         });
 
-        // Re-render the app.
-        this.setState({ reloadKey: "loaded" });
-
         // Load the player state.
         // TODO: await loadPlayerState();
 
         // Hide the splash screen.
-        setTimeout(() => {
-            if (SplashScreen) SplashScreen.hide();
-        }, 1000);
+        if (SplashScreen) SplashScreen.hide();
     }
 
     async componentWillUnmount() {
@@ -182,27 +200,7 @@ class App extends React.Component<any, IState> {
         removeListeners(); // Remove navigation listeners.
 
         await savePlayerState(); // Save the player state.
-
         await TrackPlayer.reset(); // Destroy the player.
-    }
-
-    onPageChange = (i: number) => {
-        this.setState({ pageIndex: i });
-
-        switch (i) {
-            case 1:
-                this.setState({ searchPageKey: !this.state.searchPageKey });
-                return;
-            case 2:
-                this.setState({ notificationsPageKey: !this.state.notificationsPageKey });
-                return;
-            case 3:
-                this.setState({ settingsPageKey: !this.state.settingsPageKey });
-                return;
-            default:
-                this.setState({ searchPageKey: false, notificationsPageKey: false, settingsPageKey: false })
-                return;
-        }
     }
 
     render() {
