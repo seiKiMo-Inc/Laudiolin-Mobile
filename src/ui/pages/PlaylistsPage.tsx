@@ -226,8 +226,8 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                                 showsVerticalScrollIndicator={false}
                             />
                         ) : (
-                            <View style={{ alignItems: "center", justifyContent: "center", height: "100%" }}>
-                                <BasicText text={"No playlists found."} style={{ fontSize: 20 }} />
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <BasicText text={"No playlists found."} style={{ fontSize: 15, paddingBottom: 20 }} />
                             </View>
                         )
                     }
