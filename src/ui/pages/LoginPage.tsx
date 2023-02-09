@@ -89,30 +89,32 @@ class SearchPage extends React.Component<any, IState> {
                     style={LoginPageStyle.image}
                 />
 
-                <View style={LoginPageStyle.top}>
-                    <BasicButton text={"Log in with Discord"}
-                                 color={"#5b67af"} bold={true}
+
+                <BasicButton text={"Log in with Discord"}
+                             color={"#5b67af"} bold={true}
+                             width={300} height={40} radius={10}
+                             transform={"uppercase"}
+                             press={() => this.login()}
+                />
+
+                <View style={LoginPageStyle.divider}>
+                    <View style={{ height: 2, width: 100, backgroundColor: "#fff" }} />
+                    <BasicText text={"OR"} style={{ fontWeight: "bold" }} />
+                    <View style={{ height: 2, width: 100, backgroundColor: "#fff"  }} />
+                </View>
+
+                <View style={{ gap: 15 }}>
+                    <BasicButton text={"Continue as Guest"}
+                                 color={"#FFFFFF"} outline={"#5b67af"}
                                  width={300} height={40} radius={10}
-                                 transform={"uppercase"}
-                                 press={() => this.login()}
+                                 transform={"uppercase"} bold={true}
+                                 press={() => this.ignoreLogin()}
                     />
+
+                    <BasicText text={"Logging in with Discord lets you create playlists, like \n" +
+                        "songs, connect with friends and more!"} style={{ textAlign: "center" }} />
                 </View>
 
-                <View style={LoginPageStyle.bottom}>
-                    <View style={{ zIndex: 1 }}>
-                        <BasicButton text={"Continue as Guest"}
-                                     color={"#FFFFFF"} outline={"#5b67af"}
-                                     width={300} height={40} radius={10}
-                                     transform={"uppercase"} bold={true}
-                                     press={() => this.ignoreLogin()}
-                        />
-                    </View>
-
-                    <View style={{ paddingTop: 17 }}>
-                        <BasicText text={"Logging in with Discord lets you create playlists, like \n" +
-                            "songs, connect with friends and more!"} style={{ textAlign: "center" }} />
-                    </View>
-                </View>
             </View>
         ) : (
             <WebView

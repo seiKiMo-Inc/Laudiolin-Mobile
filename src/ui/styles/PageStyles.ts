@@ -8,25 +8,15 @@ export const LoginPageStyle = StyleSheet.create({
         height: "100%",
         width: screenWidth,
         backgroundColor: "#0c0f17",
-    },
-    top: {
-        width: "100%",
-
         alignItems: "center",
-        justifyContent: "flex-end",
-
-        flex: 4,
-        zIndex: 1
+        justifyContent: "center",
+        gap: 20
     },
-    bottom: {
-        width: "100%",
-
+    divider: {
+        flexDirection: "row",
         alignItems: "center",
-        justifyContent: "flex-start",
-        paddingTop: 20,
-
-        flex: 4,
-        zIndex: 1
+        justifyContent: "center",
+        gap: 10
     },
     image: {
         bottom: 0,
