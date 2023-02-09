@@ -22,7 +22,8 @@ export const LoginPageStyle = StyleSheet.create({
         justifyContent: "flex-start",
         paddingTop: 20,
 
-        flex: 4
+        flex: 4,
+        zIndex: 1
     },
     image: {
         bottom: 0,
