@@ -4,6 +4,7 @@ import { BackHandler, StyleSheet, View, StatusBar } from "react-native";
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
 import SplashScreen from 'react-native-splash-screen'
+import TrackPlayer from "react-native-track-player";
 
 import Home from "@pages/Home";
 import SearchPage from "@pages/SearchPage";
@@ -23,7 +24,7 @@ import * as user from "@backend/user";
 import emitter from "@backend/events";
 import { registerListener, removeListeners } from "@backend/navigation";
 import { loadPlayerState, savePlayerState } from "@app/utils";
-import TrackPlayer from "react-native-track-player";
+import { get } from "@backend/settings";
 
 interface IState {
     pageIndex: number;
@@ -90,6 +91,11 @@ class App extends React.Component<any, IState> {
     };
 
     async continueLoading(): Promise<void> {
+        get("authenticated").then((authenticated) => {
+            if (authenticated === "guest") {
+                this.setState({ loggedIn: true });
+            }
+        });
         // Re-render the app.
         this.setState({ reloadKey: "loaded" });
     }
