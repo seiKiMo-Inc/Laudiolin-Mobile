@@ -147,7 +147,7 @@ class PlaylistsPage extends React.Component<IProps, IState> {
         super(props);
 
         this.state = {
-            playlists: fetchAllPlaylists(),
+            playlists: [],
             showCreatePlaylistModal: false,
             showImportPlaylistModal: false,
             playlistNameInputText: "",
@@ -201,6 +201,12 @@ class PlaylistsPage extends React.Component<IProps, IState> {
         return (
             <ListPlaylist key={index} playlist={item} />
         );
+    }
+
+    componentDidMount() {
+        this.setState({
+            playlists: fetchAllPlaylists()
+        });
     }
 
     render() {
