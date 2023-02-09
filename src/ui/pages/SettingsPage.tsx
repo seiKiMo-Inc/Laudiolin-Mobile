@@ -1,5 +1,5 @@
 import React from "react";
-import {Dimensions, ScrollView, View} from "react-native";
+import { Dimensions, ScrollView, View } from "react-native";
 
 import BasicText from "@components/common/BasicText";
 import MixedText from "@components/common/MixedText";

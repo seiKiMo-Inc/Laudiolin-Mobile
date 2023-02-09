@@ -16,10 +16,10 @@ import TextTicker from "react-native-text-ticker";
 import { PlaylistMenuStyle } from "@styles/MenuStyle";
 import { PlaylistsPageStyle } from "@styles/PageStyles";
 
-import { getPlaylistAuthor, createPlaylist, login, deletePlaylist, loadPlaylists } from "@backend/user";
+import { getPlaylistAuthor, createPlaylist, login, deletePlaylist, loadPlaylists, userData } from "@backend/user";
 import { importPlaylist, fetchAllPlaylists } from "@backend/playlist";
 import { navigate } from "@backend/navigation";
-import { Playlist } from "@backend/types";
+import { Playlist, User } from "@backend/types";
 import emitter from "@backend/events";
 
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
@@ -129,6 +129,7 @@ class ListPlaylist extends React.Component<any, any> {
 
 interface IState {
     playlists: Playlist[];
+    user: User|null;
     showCreatePlaylistModal: boolean;
     showImportPlaylistModal: boolean;
     playlistNameInputText: string;
@@ -148,6 +149,7 @@ class PlaylistsPage extends React.Component<IProps, IState> {
 
         this.state = {
             playlists: [],
+            user: null,
             showCreatePlaylistModal: false,
             showImportPlaylistModal: false,
             playlistNameInputText: "",
@@ -205,7 +207,8 @@ class PlaylistsPage extends React.Component<IProps, IState> {
 
     componentDidMount() {
         this.setState({
-            playlists: fetchAllPlaylists()
+            playlists: fetchAllPlaylists(),
+            user: userData
         });
     }
 
@@ -232,20 +235,28 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                         )
                     }
 
-                    <BasicButton
-                        text={"Add Playlist"}
-                        color={"#4e7abe"}
-                        button={{ borderRadius: 10, width: 150, height: 40 }}
-                        container={{
-                            alignItems: this.state.playlists.length > 0 ? "flex-end" : "center",
-                        }}
-                        icon={<Icon
-                            color={"white"}
-                            type={"material"} name={"add"}
-                            style={{ paddingRight: 5 }}
-                        />}
-                        press={() => this.setState({ showCreatePlaylistModal: true })}
-                    />
+                    {
+                        this.state.user != null ? (
+                            <BasicButton
+                                text={"Add Playlist"}
+                                color={"#4e7abe"}
+                                button={{ borderRadius: 10, width: 150, height: 40 }}
+                                container={{
+                                    alignItems: this.state.playlists.length > 0 ? "flex-end" : "center",
+                                }}
+                                icon={<Icon
+                                    color={"white"}
+                                    type={"material"} name={"add"}
+                                    style={{ paddingRight: 5 }}
+                                />}
+                                press={() => this.setState({ showCreatePlaylistModal: true })}
+                            />
+                        ) : (
+                            <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                <BasicText text={"Sign in to create playlists."} style={{ fontSize: 15, paddingBottom: 20 }} />
+                            </View>
+                        )
+                    }
 
                     <BasicModal
                         showModal={this.state.showCreatePlaylistModal}
