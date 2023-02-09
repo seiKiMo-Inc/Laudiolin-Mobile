@@ -92,22 +92,21 @@ class SearchPage extends React.Component<any, IState> {
                     />
                 </View>
 
-                { this.state.results.length > 0 ? (
-                    <View style={SearchPageStyle.results}>
-                        {
-                            this.state.results.map((track, index) => (
+                {
+                    this.state.results.length > 0 ? this.state.results.map((track, index) => (
+                        <Track
+                            key={index} track={track} padding={10}
+                            onClick={track => this.playTrack(track)}
+                        />
 
-                                    <Track
-                                        key={index} track={track} padding={10}
-                                        onClick={track => this.playTrack(track)}
-                                    />
-
-                            ))
-                        }
-                    </View>
-                ) : !this.state.isLoading ? (
-                    <BasicText text={"No results."} containerStyle={{ padding: 50, alignItems: "center" }} />
-                ) : <ContentLoader style={{ padding: 50, alignItems: "center" }} />}
+                    )) : (
+                        <View style={SearchPageStyle.results}>
+                            { !this.state.isLoading ? (
+                                <BasicText text={"No results."} containerStyle={{ padding: 50, alignItems: "center" }} />
+                            ) : <ContentLoader style={{ padding: 50, alignItems: "center" }} />}
+                        </View>
+                    )
+                }
             </ScrollView>
         );
     }
