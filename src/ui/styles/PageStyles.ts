@@ -4,8 +4,12 @@ const screenWidth = Dimensions.get("window").width
 const screenHeight = Dimensions.get("window").height;
 
 export const LoginPageStyle = StyleSheet.create({
-    top: {
+    container: {
+        height: "100%",
+        width: screenWidth,
         backgroundColor: "#0c0f17",
+    },
+    top: {
         width: "100%",
 
         alignItems: "center",
@@ -15,7 +19,6 @@ export const LoginPageStyle = StyleSheet.create({
         zIndex: 1
     },
     bottom: {
-        backgroundColor: "#0c0f17",
         width: "100%",
 
         alignItems: "center",
