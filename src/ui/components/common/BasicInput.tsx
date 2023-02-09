@@ -4,6 +4,7 @@ import { StyleProp,  ViewStyle, TextStyle } from "react-native";
 import { Input } from "@rneui/themed";
 
 interface IProps {
+    text?: string;
     multiline?: boolean;
     numberOfLines?: number;
     ref?: React.RefObject<any>;
@@ -22,6 +23,7 @@ class BasicInput extends React.Component<IProps, any> {
     render() {
         return (
             <Input
+                value={this.props.text ?? ""}
                 label={this.props.label ?? ""}
                 ref={this.props.ref ?? null}
                 placeholder={this.props.placeholder ?? ""}

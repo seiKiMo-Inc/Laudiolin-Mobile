@@ -121,6 +121,7 @@ export const SettingsPageStyle = StyleSheet.create({
         left: screenWidth - 90
     },
     logOut: {
+        color: "#ff3c3c",
         fontSize: 13,
         textDecorationLine: "underline"
     },
