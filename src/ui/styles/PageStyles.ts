@@ -41,6 +41,7 @@ export const HomePageStyle = StyleSheet.create({
     headerText: {
         fontSize: 28,
         fontWeight: "bold",
+        paddingLeft: 20
     },
     morePlaylists: {
         textDecorationLine: "underline",
@@ -59,6 +60,7 @@ export const HomePageStyle = StyleSheet.create({
         paddingLeft: "44%"
     },
     playlists: {
+        paddingLeft: 20,
         flexDirection: "row"
     },
     playlist: {
@@ -77,6 +79,9 @@ export const HomePageStyle = StyleSheet.create({
         bottom: 0,
         padding: 10,
         alignSelf: "center",
+    },
+    tracks: {
+        paddingHorizontal: 20,
     }
 });
 
@@ -158,14 +163,14 @@ export const SearchPageStyle = StyleSheet.create({
     },
     results: {
         paddingTop: 30,
-        paddingLeft: 20,
-        paddingBottom: 10
-    }
+        paddingBottom: 10,
+        paddingHorizontal: 20
+    },
 });
 
 export const PlaylistsPageStyle = StyleSheet.create({
     container: {
-        padding: 10,
+        paddingHorizontal: 20,
         paddingTop: 30,
         paddingBottom: 0,
         backgroundColor: "#0c0f17",
@@ -191,7 +196,7 @@ export const PlaylistsPageStyle = StyleSheet.create({
     },
     playlistContent: {
         flexDirection: "row",
-        borderRadius: 21,
+        borderRadius: 0,
         width: "100%",
     },
     playlistTitle: {
@@ -343,7 +348,7 @@ export const PlaylistPageStyle = StyleSheet.create({
 
 export const DownloadPageStyle = StyleSheet.create({
     container: {
-        paddingLeft: 20,
+        paddingHorizontal: 20,
         paddingTop: 30,
         backgroundColor: "#0c0f17",
         height: "100%",

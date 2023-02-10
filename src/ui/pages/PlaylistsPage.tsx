@@ -80,7 +80,7 @@ class ListPlaylist extends React.Component<any, any> {
                     >
                         <ImageBackground
                             source={{ uri: playlist.icon }}
-                            style={{ width: "99%", height: "100%", position: "absolute", top: 0, left: 0, zIndex: -1 }}
+                            style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0, zIndex: -1 }}
                             imageStyle={{ borderRadius: 20 }}
                             blurRadius={80}
                         />
@@ -243,7 +243,7 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                                 color={"#4e7abe"}
                                 button={{ borderRadius: 10, width: 150, height: 40 }}
                                 container={{
-                                    alignItems: this.state.playlists.length > 0 ? "flex-end" : "center",
+                                    alignItems: this.state.playlists.length > 0 ? "flex-end" : "center"
                                 }}
                                 icon={<Icon
                                     color={"white"}
