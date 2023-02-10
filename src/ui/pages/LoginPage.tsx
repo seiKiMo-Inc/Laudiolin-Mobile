@@ -9,13 +9,18 @@ import { LoginPageStyle } from "@styles/PageStyles";
 
 import * as settings from "@backend/settings";
 import { navigate } from "@backend/navigation";
-import { getLoginUrl, login } from "@backend/user";
+import { getLoginUrl, getToken, login } from "@backend/user";
 
 import { console } from "@app/utils";
+import BasicModal from "@components/common/BasicModal";
+import BasicTextInput from "@components/common/BasicTextInput";
 
 interface IState {
+    showCode: boolean;
     showLogin: boolean;
     webViewUrl: string;
+
+    authCode: string;
 }
 
 class SearchPage extends React.Component<any, IState> {
@@ -23,8 +28,10 @@ class SearchPage extends React.Component<any, IState> {
         super(props);
 
         this.state = {
+            showCode: false,
             showLogin: false,
-            webViewUrl: ""
+            webViewUrl: "",
+            authCode: ""
         };
     }
 
@@ -39,6 +46,16 @@ class SearchPage extends React.Component<any, IState> {
     }
 
     /**
+     * Prompts the user for an authorization code.
+     */
+    authCode(): void {
+        this.setState({
+            showCode: true,
+            showLogin: false
+        });
+    }
+
+    /**
      * Sends the user to the home page.
      */
     async ignoreLogin(): Promise<void> {
@@ -48,6 +65,28 @@ class SearchPage extends React.Component<any, IState> {
         // Navigate to the home page.
         navigate("Home");
         this.setState({ showLogin: false });
+    }
+
+    /**
+     * Invoked when the authorization code modal is submitted.
+     */
+    onSubmit(): void {
+        // Login with the specified code.
+        getToken(this.state.authCode)
+            .then(async () => {
+                // Set the user as authenticated.
+                await settings.save("authenticated", "discord");
+                // Login with the account.
+                await login();
+
+                // Navigate to the home page.
+                navigate("Home");
+                this.setState({
+                    showLogin: false,
+                    showCode: false
+                });
+            })
+            .catch(err => console.error(err));
     }
 
     /**
@@ -95,6 +134,7 @@ class SearchPage extends React.Component<any, IState> {
                              width={300} height={40} radius={10}
                              transform={"uppercase"}
                              press={() => this.login()}
+                             hold={() => this.authCode()}
                 />
 
                 <View style={LoginPageStyle.divider}>
@@ -103,7 +143,7 @@ class SearchPage extends React.Component<any, IState> {
                     <View style={{ height: 2, width: 100, backgroundColor: "#fff"  }} />
                 </View>
 
-                <View style={{ gap: 15 }}>
+                <View style={{ alignSelf: "center", gap: 15 }}>
                     <BasicButton text={"Continue as Guest"}
                                  color={"#FFFFFF"} outline={"#5b67af"}
                                  width={300} height={40} radius={10}
@@ -115,6 +155,17 @@ class SearchPage extends React.Component<any, IState> {
                         "songs, connect with friends and more!"} style={{ textAlign: "center" }} />
                 </View>
 
+                <BasicModal
+                    title={"Enter an Authorization Code"}
+                    showModal={this.state.showCode} onSubmit={() => this.onSubmit()}
+                    onBackdropPress={() => this.setState({ showCode: false })}
+                >
+                    <BasicTextInput
+                        containerStyle={LoginPageStyle.authContainer}
+                        default={"123456"} maxLength={6} content={"none"}
+                        onChange={authCode => this.setState({ authCode })}
+                    />
+                </BasicModal>
             </View>
         ) : (
             <WebView

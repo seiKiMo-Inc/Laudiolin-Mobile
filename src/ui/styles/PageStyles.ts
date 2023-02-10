@@ -25,6 +25,10 @@ export const LoginPageStyle = StyleSheet.create({
         alignSelf: "center",
         opacity: 0.3,
         zIndex: 0
+    },
+    authContainer: {
+        alignSelf: "center",
+        width: 256,
     }
 });
 

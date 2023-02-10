@@ -7,6 +7,7 @@ import * as settings from "@backend/settings";
 import { Gateway } from "@app/constants";
 
 import { console } from "@app/utils";
+import { setToken } from "@backend/settings";
 
 export const updateTargetRoute = () => targetRoute = Gateway.getUrl();
 export let targetRoute = Gateway.getUrl(); // The base address for the backend.
@@ -45,11 +46,40 @@ export function userId(): string {
  */
 
 /**
+ * Attempts to get a token from an authentication code.
+ * @param code The authentication code.
+ * @returns Whether the token was successfully retrieved.
+ */
+export async function getToken(code: string): Promise<boolean> {
+    // Validate the authentication code.
+    if (code == "" || code.length != 6 || isNaN(Number(code))) return false;
+
+    const route = `${targetRoute}/user/auth`;
+    const response = await fetch(route, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
+    });
+
+    // Check the response code.
+    if (response.status != 200) {
+        console.error(`Failed to get token from the backend. Status code: ${response.status}`);
+        return false;
+    }
+
+    // Fetch the token from the response.
+    const { token } = await response.json();
+    // Save the token.
+    await setToken(token);
+
+    return true;
+}
+
+/**
  * Attempts to get user data from the backend.
  * @param code The user's authentication token.
  * @param loadData Whether to load the user data.
  */
-export async function login(code: string = "", loadData: boolean = true) {
+export async function login(code: string = "", loadData: boolean = true): Promise<void> {
     if (code == "") code = await token(); // If no code is provided, use the token.
     if (!code || code == "") return; // If no code is provided, exit.
 
