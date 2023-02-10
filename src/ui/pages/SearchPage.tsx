@@ -78,7 +78,7 @@ class SearchPage extends React.Component<any, IState> {
 
     render() {
         return (
-            <ScrollView contentContainerStyle={SearchPageStyle.container}>
+            <View style={SearchPageStyle.container}>
                 <View style={{ alignItems: "center" }}>
                     <BasicTextInput
                         default={"Search"}
@@ -92,22 +92,21 @@ class SearchPage extends React.Component<any, IState> {
                     />
                 </View>
 
-                {
-                    this.state.results.length > 0 ? this.state.results.map((track, index) => (
-                        <Track
-                            key={index} track={track} padding={10}
-                            onClick={track => this.playTrack(track)}
-                        />
-
-                    )) : (
-                        <View style={SearchPageStyle.results}>
-                            { !this.state.isLoading ? (
+                <ScrollView contentContainerStyle={SearchPageStyle.results}>
+                    {
+                        this.state.results.length > 0 ?
+                            this.state.results.map((track, index) => (
+                                <Track
+                                    key={index} track={track} padding={10}
+                                    onClick={track => this.playTrack(track)}
+                                />
+                            ))
+                            : !this.state.isLoading ? (
                                 <BasicText text={"No results."} containerStyle={{ padding: 50, alignItems: "center" }} />
-                            ) : <ContentLoader style={{ padding: 50, alignItems: "center" }} />}
-                        </View>
-                    )
-                }
-            </ScrollView>
+                            ) : <ContentLoader style={{ padding: 50, alignItems: "center" }} />
+                    }
+                </ScrollView>
+            </View>
         );
     }
 }

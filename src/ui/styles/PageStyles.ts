@@ -161,6 +161,7 @@ export const SearchPageStyle = StyleSheet.create({
     results: {
         paddingTop: 30,
         paddingLeft: 20,
+        paddingBottom: 10
     }
 });
 
