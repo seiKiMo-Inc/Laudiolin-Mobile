@@ -1,8 +1,9 @@
 import React from "react";
-import { ScrollView, View } from "react-native";
+import { Dimensions, ScrollView, View } from "react-native";
 
 import BasicText from "@components/common/BasicText";
 import MixedText from "@components/common/MixedText";
+import BasicButton from "@components/common/BasicButton";
 
 import { Image } from "@rneui/base";
 
@@ -11,6 +12,7 @@ import { SettingsPageStyle } from "@styles/PageStyles";
 import * as settings from "@backend/settings";
 import { logout, userData } from "@backend/user";
 import type { User, SettingType } from "@backend/types";
+import { navigate } from "@backend/navigation";
 
 class Setting extends React.Component<
     { setting: string, type: SettingType, options?: string[] }, { value: string }
@@ -74,10 +76,6 @@ class SearchPage extends React.Component<any, IState> {
     }
 
     render() {
-        // Check if the user is valid.
-        if (this.state.user == null)
-            return null;
-
         // Pull the user.
         const { user } = this.state;
 
@@ -89,25 +87,40 @@ class SearchPage extends React.Component<any, IState> {
                 />
 
                 <View style={SettingsPageStyle.userContainer}>
-                    <View style={{ paddingRight: 10 }}>
-                        <Image
-                            style={SettingsPageStyle.userImage}
-                            source={{ uri: user?.avatar ?? "" }}
-                        />
-                    </View>
-                    <View style={{ justifyContent: "center" }}>
-                        <BasicText text={"Logged in as"} style={{ fontSize: 13 }} />
-                        <MixedText
-                            first={user?.username ?? ""} second={"#" + (user?.discriminator ?? "0000")}
-                            firstStyle={{ ...SettingsPageStyle.userText, color: "white" }}
-                            secondStyle={{ ...SettingsPageStyle.userText, color: "#888787" }}
-                        />
-                    </View>
-                    <BasicText
-                        containerStyle={SettingsPageStyle.logOutContainer}
-                        text={"Log out"} style={SettingsPageStyle.logOut}
-                        press={async () => await logout()}
-                    />
+                    {
+                        user != null ? (
+                            <>
+                                <View style={{ paddingRight: 10 }}>
+                                    <Image
+                                        style={SettingsPageStyle.userImage}
+                                        source={{ uri: user?.avatar ?? "" }}
+                                    />
+                                </View>
+                                <View style={{ justifyContent: "center" }}>
+                                    <BasicText text={"Logged in as"} style={{ fontSize: 13 }} />
+                                    <MixedText
+                                        first={user?.username ?? ""} second={"#" + (user?.discriminator ?? "0000")}
+                                        firstStyle={{ ...SettingsPageStyle.userText, color: "white" }}
+                                        secondStyle={{ ...SettingsPageStyle.userText, color: "#888787" }}
+                                    />
+                                </View>
+                                <BasicText
+                                    containerStyle={SettingsPageStyle.logOutContainer}
+                                    text={"Log out"} style={SettingsPageStyle.logOut}
+                                    press={async () => await logout()}
+                                />
+                            </>
+                        ) : (
+                            <View style={{ alignItems: "center", width: Dimensions.get("window").width - 20 }}>
+                                <BasicButton text={"Log in with Discord"}
+                                             color={"#5b67af"} bold={true}
+                                             width={200} height={40} radius={10}
+                                             transform={"uppercase"}
+                                             press={() => navigate("Login")}
+                                />
+                            </View>
+                        )
+                    }
                 </View>
 
                 <View style={SettingsPageStyle.settingsContainer}>

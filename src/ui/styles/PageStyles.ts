@@ -4,8 +4,12 @@ const screenWidth = Dimensions.get("window").width
 const screenHeight = Dimensions.get("window").height;
 
 export const LoginPageStyle = StyleSheet.create({
-    top: {
+    container: {
+        height: "100%",
+        width: screenWidth,
         backgroundColor: "#0c0f17",
+    },
+    top: {
         width: "100%",
 
         alignItems: "center",
@@ -15,14 +19,14 @@ export const LoginPageStyle = StyleSheet.create({
         zIndex: 1
     },
     bottom: {
-        backgroundColor: "#0c0f17",
         width: "100%",
 
         alignItems: "center",
         justifyContent: "flex-start",
         paddingTop: 20,
 
-        flex: 4
+        flex: 4,
+        zIndex: 1
     },
     image: {
         bottom: 0,
@@ -117,6 +121,7 @@ export const SettingsPageStyle = StyleSheet.create({
         left: screenWidth - 90
     },
     logOut: {
+        color: "#ff3c3c",
         fontSize: 13,
         textDecorationLine: "underline"
     },

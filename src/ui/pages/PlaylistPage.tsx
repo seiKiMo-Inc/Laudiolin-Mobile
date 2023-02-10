@@ -2,14 +2,18 @@ import React from "react";
 import { FlatList, View, ListRenderItemInfo } from "react-native";
 
 import { Icon, Image } from "@rneui/base";
+import BasicModal from "@components/common/BasicModal";
 import Hide from "@components/Hide";
 import Track from "@components/Track";
 import BasicText from "@components/common/BasicText";
 import BasicButton from "@components/common/BasicButton";
 import JumpInView from "@components/common/JumpInView";
+import BasicInput from "@components/common/BasicInput";
+import BasicCheckbox from "@components/common/BasicCheckbox";
 
 import { PlaylistPageStyle } from "@styles/PageStyles";
 
+import { editPlaylist } from "@backend/playlist";
 import { Playlist, TrackData } from "@backend/types";
 import { playPlaylist, playTrack } from "@backend/audio";
 import { navigate } from "@backend/navigation";
@@ -23,12 +27,21 @@ interface IProps {
 interface IState {
     playlist: Playlist|null;
     author: string;
+    showEditPlaylistModal: boolean;
+    playlistEditName: string;
+    playlistEditDescription: string;
+    playlistEditIcon: string;
+    playlistEditIsPrivate: boolean;
 }
 
 class PlaylistPage extends React.Component<IProps, IState> {
     onPlaylist = async (playlist: Playlist) => {
         this.setState({
-            playlist, author: await getPlaylistAuthor(playlist)
+            playlist, author: await getPlaylistAuthor(playlist),
+            playlistEditName: playlist.name,
+            playlistEditDescription: playlist.description,
+            playlistEditIcon: playlist.icon,
+            playlistEditIsPrivate: playlist.isPrivate,
         });
     };
 
@@ -37,7 +50,12 @@ class PlaylistPage extends React.Component<IProps, IState> {
 
         this.state = {
             playlist: null,
-            author: ""
+            author: "",
+            showEditPlaylistModal: false,
+            playlistEditName: "",
+            playlistEditDescription: "",
+            playlistEditIcon: "",
+            playlistEditIsPrivate: false,
         };
     }
 
@@ -82,6 +100,22 @@ class PlaylistPage extends React.Component<IProps, IState> {
      */
     async playTracks(shuffle: boolean): Promise<void> {
         await playPlaylist(this.state.playlist!, shuffle);
+    }
+
+    /**
+     * Edits the playlist.
+     */
+    editPlaylistAsync = async (): Promise<void> => {
+        const playlist: Playlist = {
+            name: this.state.playlistEditName,
+            description: this.state.playlistEditDescription,
+            icon: this.state.playlistEditIcon,
+            isPrivate: this.state.playlistEditIsPrivate,
+            tracks: this.state.playlist?.tracks ?? [],
+        }
+
+        await editPlaylist(playlist);
+        this.setState({ playlist, showEditPlaylistModal: false });
     }
 
     render() {
@@ -138,6 +172,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
                                 type={"material"} name={"edit"}
                                 style={{ paddingRight: 10 }}
                             />}
+                            press={() => this.setState({ showEditPlaylistModal: true })}
                         />
 
                         <BasicButton
@@ -177,6 +212,39 @@ class PlaylistPage extends React.Component<IProps, IState> {
                         showsHorizontalScrollIndicator={false}
                     />
                 </Hide>
+
+                <BasicModal
+                    showModal={this.state.showEditPlaylistModal}
+                    onSubmit={this.editPlaylistAsync}
+                    title={"Create Playlist"}
+                    onBackdropPress={() => this.setState({ showEditPlaylistModal: false })}
+                >
+                    <BasicInput
+                        text={this.state.playlistEditName}
+                        placeholder={"Driving playlist..."}
+                        onChangeText={(text) => this.setState({ playlistEditName: text })}
+                        label={"Playlist Name"}
+                    />
+                    <BasicInput
+                        text={this.state.playlistEditDescription}
+                        placeholder={"The best songs for driving..."}
+                        label={"Playlist Description"}
+                        onChangeText={(text) => this.setState({ playlistEditDescription: text })}
+                        multiline={true}
+                        numberOfLines={3}
+                    />
+                    <BasicInput
+                        text={this.state.playlistEditIcon}
+                        placeholder={"https://i.imgur.com/..."}
+                        onChangeText={(text) => this.setState({ playlistEditIcon: text })}
+                        label={"Playlist Icon URL"}
+                    />
+                    <BasicCheckbox
+                        checked={this.state.playlistEditIsPrivate}
+                        onPress={() => this.setState({ playlistEditIsPrivate: !this.state.playlistEditIsPrivate })}
+                        label={"Public Playlist"}
+                    />
+                </BasicModal>
             </JumpInView>
         ) : null;
     }

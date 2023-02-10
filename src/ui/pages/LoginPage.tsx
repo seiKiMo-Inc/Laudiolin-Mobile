@@ -83,7 +83,12 @@ class SearchPage extends React.Component<any, IState> {
 
     render() {
         return !this.state.showLogin ? (
-            <>
+            <View style={LoginPageStyle.container}>
+                <ImageBackground
+                    source={require("../../../resources/images/icon-transparent.png")}
+                    style={LoginPageStyle.image}
+                />
+
                 <View style={LoginPageStyle.top}>
                     <BasicButton text={"Log in with Discord"}
                                  color={"#5b67af"} bold={true}
@@ -108,12 +113,7 @@ class SearchPage extends React.Component<any, IState> {
                             "songs, connect with friends and more!"} style={{ textAlign: "center" }} />
                     </View>
                 </View>
-
-                <ImageBackground
-                    source={require("../../../resources/images/icon-transparent.png")}
-                    style={LoginPageStyle.image}
-                />
-            </>
+            </View>
         ) : (
             <WebView
                 source={{ uri: this.state.webViewUrl }}
