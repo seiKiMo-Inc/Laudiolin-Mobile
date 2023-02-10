@@ -46,6 +46,28 @@ export function userId(): string {
  */
 
 /**
+ * Attempts to generate a code for the user to authenticate with.
+ * @returns The generated code.
+ */
+export async function getCode(): Promise<string | null> {
+    const code = await token(); // Get the token.
+    if (code == "") return null; // Check if the user is authenticated.
+
+    const route = `${targetRoute}/user/auth`;
+    const response = await fetch(route, {
+        method: "GET", headers: { Authorization: code }
+    });
+
+    // Check the response code.
+    if (response.status != 200) {
+        console.error(`Failed to get code from the backend. Status code: ${response.status}`);
+        return null;
+    }
+
+    return (await response.json()).authCode;
+}
+
+/**
  * Attempts to get a token from an authentication code.
  * @param code The authentication code.
  * @returns Whether the token was successfully retrieved.

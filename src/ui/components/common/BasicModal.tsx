@@ -8,8 +8,11 @@ import BasicButton from "@components/common/BasicButton";
 interface IProps {
     showModal: boolean;
     children: React.ReactNode;
-    onSubmit: () => void;
+
     title?: string;
+    buttonText?: string;
+
+    onSubmit: () => void;
     onBackdropPress?: () => void;
 }
 
@@ -39,7 +42,7 @@ class BasicModal extends React.Component<IProps, any> {
                 ) : null}
                 {this.props.children}
                 <BasicButton
-                    text={"Submit"}
+                    text={this.props.buttonText ?? "Submit"}
                     press={this.props.onSubmit}
                     container={{ marginTop: 20, padding: 10 }}
                     button={{ width: "100%", height: 50 }}
