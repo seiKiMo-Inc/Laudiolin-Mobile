@@ -134,7 +134,7 @@ export async function loadPlaylists() {
     playlists = playlists.filter((playlist, index, self) =>
         self.findIndex(p => p.id == playlist.id) == index);
 
-    emitter.emit("playlist", playlists); // Emit the playlists event.
+    emitter.emit("playlist", playlists); // Emit the 'playlist' event.
     console.info(`Loaded ${playlists.length} playlists.`); // Log the success.
 }
 

@@ -7,6 +7,8 @@ export const PlaylistSelectStyle = StyleSheet.create({
         backgroundColor: "#0c0f33",
     },
     button: {
+        width: "80%",
+
         borderWidth: 1,
         borderRadius: 5,
         borderColor: "#0f1ed3",

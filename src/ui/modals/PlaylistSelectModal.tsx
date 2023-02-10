@@ -33,7 +33,7 @@ class PlaylistSelectModal extends React.Component<any, IState> {
      * Select a playlist.
      */
     select = (data: PlaylistSelectInfo) => {
-        this.show(data); console.info("Selecting playlist");
+        this.show(data);
     };
 
     constructor(props: any) {

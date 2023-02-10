@@ -1,13 +1,17 @@
 import { Linking } from "react-native";
 
+import emitter from "@backend/events";
 import * as settings from "@backend/settings";
-import { TrackData } from "@backend/types";
 import { Gateway } from "@app/constants";
-import { Track } from "react-native-track-player";
-
-import { logger } from "react-native-logs";
 import { getCurrentTrack, playTrack } from "@backend/audio";
 import { fetchTrackById } from "@backend/search";
+import { addTrackToPlaylist } from "@backend/playlist";
+import { loadPlaylists } from "@backend/user";
+
+import type { TrackData, PlaylistSelectInfo, Playlist } from "@backend/types";
+import type { Track } from "react-native-track-player";
+
+import { logger } from "react-native-logs";
 export const console = logger.createLogger();
 
 /**
@@ -122,4 +126,23 @@ export async function loadPlayerState(): Promise<void> {
     await playTrack(data, false, true);
     // Remove the track from the local storage.
     await settings.remove("player.currentTrack");
+}
+
+/**
+ * Prompts the user to add a track to a playlist.
+ * @param track The track to add to a playlist.
+ */
+export function promptPlaylistTrackAdd(track: TrackData): void {
+    emitter.emit("selectPlaylist", <PlaylistSelectInfo> {
+        title: "Add Track to Playlist",
+        callback: (playlist: Playlist) => {
+            addTrackToPlaylist(playlist?.id ?? "", track)
+                .then(async result => {
+                    // TODO: Send success notification.
+                    // Reload all playlists.
+                    await loadPlaylists();
+                })
+                .catch(err => console.error(err));
+        }
+    });
 }

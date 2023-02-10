@@ -13,10 +13,10 @@ import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-m
 import { TrackMenuStyle } from "@styles/MenuStyle";
 import { PlayingTrackPageStyle } from "@styles/PageStyles";
 
-import { openTrack } from "@app/utils";
-import { Playlist } from "@backend/types";
-import { navigate } from "@backend/navigation";
+import type { Playlist } from "@backend/types";
 import { currentPlaylist } from "@backend/playlist";
+import { openTrack, promptPlaylistTrackAdd } from "@app/utils";
+import { navigate } from "@backend/navigation";
 import { favoriteTrack, favorites } from "@backend/user";
 import { getCurrentTrack, shuffleQueue, asData, download, toggleRepeatState } from "@backend/audio";
 
@@ -191,7 +191,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                             <MenuOptions customStyles={{ optionsContainer: TrackMenuStyle.menu }}>
                                 {this.state.playlist == null &&
                                     <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
-                                                text={"Add to Playlist"} onSelect={() => null} />}
+                                                text={"Add to Playlist"} onSelect={() => promptPlaylistTrackAdd(asData(track!))} />}
 
                                 <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
                                             text={"Open Track Source"} onSelect={() => openTrack(track!)} />
