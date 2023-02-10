@@ -11,7 +11,7 @@ import { console } from "@app/utils";
 import { Platform } from "react-native";
 
 let retryToken: any = null;
-let connected: boolean = false;
+export let connected: boolean = false;
 export let gateway: WebSocket | null = null;
 const messageQueue: object[] = [];
 

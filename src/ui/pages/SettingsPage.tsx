@@ -1,6 +1,7 @@
 import React from "react";
 import { Dimensions, ScrollView, View } from "react-native";
 
+import Hide from "@components/common/Hide";
 import BasicText from "@components/common/BasicText";
 import MixedText from "@components/common/MixedText";
 import BasicButton from "@components/common/BasicButton";
@@ -9,10 +10,11 @@ import { Image } from "@rneui/base";
 
 import { SettingsPageStyle } from "@styles/PageStyles";
 
-import * as settings from "@backend/settings";
-import { logout, userData } from "@backend/user";
 import type { User, SettingType } from "@backend/types";
+import * as settings from "@backend/settings";
 import { navigate } from "@backend/navigation";
+import { logout, userData } from "@backend/user";
+import { connect, connected } from "@backend/gateway";
 
 class Setting extends React.Component<
     { setting: string, type: SettingType, options?: string[] }, { value: string }
@@ -75,6 +77,13 @@ class SearchPage extends React.Component<any, IState> {
         };
     }
 
+    /**
+     * Reconnects to the gateway.
+     */
+    reconnect(): void {
+        connect();
+    }
+
     render() {
         // Pull the user.
         const { user } = this.state;
@@ -133,6 +142,16 @@ class SearchPage extends React.Component<any, IState> {
                         <Setting setting={"search.engine"} type={"select"}
                                  options={["All", "YouTube", "Spotify"]} />
                     </View>
+                </View>
+
+                <View style={SettingsPageStyle.actionsContainer}>
+                    <Hide show={!connected}>
+                        <BasicButton
+                            color={"#c75450"}
+                            text={"Reconnect to Gateway"}
+                            hold={() => this.reconnect()}
+                        />
+                    </Hide>
                 </View>
             </ScrollView>
         );
