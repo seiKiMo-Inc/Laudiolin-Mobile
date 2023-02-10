@@ -219,7 +219,8 @@ class App extends React.Component<any, IState> {
 
                 <TabView
                     value={this.state.pageIndex}
-                    disableTransition={true}
+                    animationType={"timing"}
+                    animationConfig={{ duration: 300, useNativeDriver: true, bounciness: 0 }}
                     onChange={this.onPageChange}
                     disableSwipe={true}
                     containerStyle={{ backgroundColor: "#0c0f17" }}
