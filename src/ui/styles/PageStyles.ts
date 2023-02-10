@@ -133,6 +133,9 @@ export const SettingsPageStyle = StyleSheet.create({
     },
     value: {
         color: "#64676b"
+    },
+    actionsContainer: {
+        alignSelf: "center"
     }
 });
 
@@ -156,6 +159,7 @@ export const SearchPageStyle = StyleSheet.create({
     results: {
         paddingTop: 30,
         paddingLeft: 20,
+        paddingBottom: 10
     }
 });
 

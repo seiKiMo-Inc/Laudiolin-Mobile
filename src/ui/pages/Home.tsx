@@ -232,7 +232,7 @@ class Home extends React.Component<any, IState> {
                         this.state.playlists.length > 0 ?
                             (<FlatList
                                 style={HomePageStyle.playlists}
-                                data={this.state.playlists}
+                                data={this.state.playlists.slice(0, 6)}
                                 renderItem={(info) => this.renderPlaylist(info)}
                                 horizontal showsHorizontalScrollIndicator={false}
                             />) :

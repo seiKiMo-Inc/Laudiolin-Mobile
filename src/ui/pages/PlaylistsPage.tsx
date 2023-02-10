@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, ImageBackground, ListRenderItemInfo, View, TouchableHighlight } from "react-native";
 
-import { Icon, Image } from "@rneui/base";
+import { Icon } from "@rneui/base";
 
 import BasicText from "@components/common/BasicText";
 import LinearGradient from "react-native-linear-gradient";
@@ -24,6 +24,7 @@ import emitter from "@backend/events";
 
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 import { playPlaylist } from "@backend/audio";
+import FastImage from "react-native-fast-image";
 
 class ListPlaylist extends React.Component<any, any> {
     constructor(props: any) {
@@ -84,7 +85,7 @@ class ListPlaylist extends React.Component<any, any> {
                             blurRadius={80}
                         />
 
-                        <Image
+                        <FastImage
                             source={{ uri: playlist.icon }}
                             style={PlaylistsPageStyle.playlistImage}
                         />
@@ -307,7 +308,6 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                             onChangeText={(text) => this.setState({ importPlaylistUrl: text })}
                         />
                     </BasicModal>
-
                 </View>
             </JumpInView>
         ) : null;

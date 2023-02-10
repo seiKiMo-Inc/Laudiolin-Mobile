@@ -1,15 +1,16 @@
 import React from "react";
 import { FlatList, View, ListRenderItemInfo } from "react-native";
 
-import { Icon, Image } from "@rneui/base";
-import BasicModal from "@components/common/BasicModal";
-import Hide from "@components/Hide";
+import { Icon } from "@rneui/base";
 import Track from "@components/Track";
+import Hide from "@components/common/Hide";
 import BasicText from "@components/common/BasicText";
-import BasicButton from "@components/common/BasicButton";
 import JumpInView from "@components/common/JumpInView";
 import BasicInput from "@components/common/BasicInput";
+import BasicModal from "@components/common/BasicModal";
+import BasicButton from "@components/common/BasicButton";
 import BasicCheckbox from "@components/common/BasicCheckbox";
+import FastImage from "react-native-fast-image";
 
 import { PlaylistPageStyle } from "@styles/PageStyles";
 
@@ -60,10 +61,12 @@ class PlaylistPage extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
+        emitter.on("reloadPlaylist", this.onPlaylist);
         emitter.on("showPlaylist", this.onPlaylist);
     }
 
     componentWillUnmount() {
+        emitter.removeListener("reloadPlaylist", this.onPlaylist);
         emitter.removeListener("showPlaylist", this.onPlaylist);
     }
 
@@ -74,7 +77,8 @@ class PlaylistPage extends React.Component<IProps, IState> {
     renderPlaylist(item: ListRenderItemInfo<TrackData>) {
         return (
             <Track
-                key={item.index} track={item.item} padding={20}
+                key={item.index} padding={20}
+                track={item.item} playlist={this.state.playlist!}
                 onClick={track => playTrack(track, true, true)}
             />
         );
@@ -143,7 +147,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
 
                 <Hide show={playlist != null}>
                     <View style={PlaylistPageStyle.info}>
-                        <Image
+                        <FastImage
                             source={{ uri: playlist?.icon }}
                             style={PlaylistPageStyle.playlistIcon}
                         />
@@ -208,7 +212,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
                     <FlatList
                         style={PlaylistPageStyle.tracks}
                         data={this.getPlaylistTracks()}
-                        renderItem={this.renderPlaylist}
+                        renderItem={item => this.renderPlaylist(item)}
                         showsHorizontalScrollIndicator={false}
                     />
                 </Hide>
