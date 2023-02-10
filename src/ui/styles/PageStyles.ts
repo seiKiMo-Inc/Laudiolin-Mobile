@@ -143,6 +143,9 @@ export const SettingsPageStyle = StyleSheet.create({
     },
     value: {
         color: "#64676b"
+    },
+    actionsContainer: {
+        alignSelf: "center"
     }
 });
 
