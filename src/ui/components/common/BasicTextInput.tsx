@@ -10,6 +10,9 @@ interface IProps {
     textStyle?: StyleProp<TextStyle>;
     containerStyle?: StyleProp<ViewStyle>;
 
+    maxLength?: number;
+    content?: any;
+
     onChange?: (text: string) => void;
 }
 
@@ -32,6 +35,8 @@ class BasicTextInput extends React.Component<IProps, any> {
                     ...(this.props.containerStyle as object)
                 }}
                 onChangeText={this.props.onChange}
+                maxLength={this.props.maxLength}
+                textContentType={this.props.content}
             />
         );
     }
