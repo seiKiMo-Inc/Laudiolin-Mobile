@@ -65,4 +65,9 @@ export type InAppNotificationData = {
     date: Date;
     icon: string;
     onPress?: () => void;
-}
+};
+
+export type PlaylistSelectInfo = {
+    title: string;
+    callback: (playlist?: Playlist) => void;
+};

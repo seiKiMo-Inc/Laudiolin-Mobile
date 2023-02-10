@@ -15,6 +15,8 @@ import PlayingTrackPage from "@pages/PlayingTrackPage";
 import PlaylistPage from "@pages/PlaylistPage";
 import DownloadsPage from "@pages/DownloadsPage";
 
+import PlaylistSelectModal from "@modals/PlaylistSelectModal";
+
 import NavBar from "@components/NavBar";
 import QuickControl from "@components/player/QuickControl";
 import { MenuProvider } from "react-native-popup-menu";
@@ -36,6 +38,7 @@ interface IState {
     showPlaylistsPage: boolean;
     showPlaylistPage: boolean;
     showDownloadPage: boolean;
+
     isQuickControlVisible: boolean;
     reloadKey: "not-loaded" | "loaded";
 }
@@ -241,6 +244,8 @@ class App extends React.Component<any, IState> {
                 <PlaylistsPage showPage={this.state.showPlaylistsPage} />
                 <PlaylistPage showPage={this.state.showPlaylistPage} />
                 <DownloadsPage showPage={this.state.showDownloadPage} />
+
+                <PlaylistSelectModal />
 
                 <View style={style.control}>
                     <QuickControl

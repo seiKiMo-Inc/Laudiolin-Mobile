@@ -307,7 +307,6 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                             onChangeText={(text) => this.setState({ importPlaylistUrl: text })}
                         />
                     </BasicModal>
-
                 </View>
             </JumpInView>
         ) : null;
