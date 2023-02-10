@@ -31,7 +31,7 @@ import { get } from "@backend/settings";
 interface IState {
     pageIndex: number;
     loggedIn: boolean;
-
+    
     searchPageKey: boolean;
     notificationsPageKey: boolean;
     settingsPageKey: boolean;
@@ -219,8 +219,8 @@ class App extends React.Component<any, IState> {
 
                 <TabView
                     value={this.state.pageIndex}
-                    animationType={"timing"}
-                    animationConfig={{ duration: 300, useNativeDriver: true, bounciness: 0 }}
+                    animationType={"spring"}
+                    animationConfig={{ bounciness: 0 , useNativeDriver: true }}
                     onChange={this.onPageChange}
                     disableSwipe={true}
                     containerStyle={{ backgroundColor: "#0c0f17" }}

@@ -22,14 +22,10 @@ export const TrackStyle = StyleSheet.create({
         width: screenWidth - 160
     },
     artist: {
-        fontSize: 12
+        fontSize: 12,
     },
     more: {
         zIndex: 1,
-        position: "absolute",
-        right: 20,
-        alignSelf: "center",
-        justifyContent: "center",
     }
 });
 

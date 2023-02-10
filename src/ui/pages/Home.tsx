@@ -218,10 +218,10 @@ class Home extends React.Component<any, IState> {
                 <BasicText
                     text={this.greetingText()}
                     style={{ fontSize: 20, color: "white", fontFamily: "System", fontWeight: "300" }}
-                    containerStyle={{ width: "100%", padding: 40, paddingTop: 60, justifyContent: "center", alignItems: "center" }}
+                    containerStyle={{ width: "100%", padding: 40, paddingTop: 60, paddingLeft: 20 }}
                 />
 
-                <View style={{ paddingBottom: 20, width: "100%", paddingLeft: 20 }}>
+                <View style={{ paddingBottom: 20, width: "100%" }}>
                     <View style={HomePageStyle.header}>
                         <BasicText text={"Playlists"} style={HomePageStyle.headerText} />
                         <BasicText text={"More"} style={HomePageStyle.morePlaylists}
@@ -243,7 +243,7 @@ class Home extends React.Component<any, IState> {
 
                 {
                     this.state.downloads.length > 0 ? (
-                        <View style={{ paddingBottom: 20, paddingLeft: 20 }}>
+                        <View style={{ paddingBottom: 20 }}>
                             <View style={HomePageStyle.header}>
                                 <BasicText text={"Downloads"} style={HomePageStyle.headerText} />
                                 <BasicText text={"More"} style={HomePageStyle.moreDownloads}
@@ -252,6 +252,7 @@ class Home extends React.Component<any, IState> {
                             </View>
 
                             <List
+                                style={HomePageStyle.tracks}
                                 data={this.state.downloads}
                                 renderItem={(info) => this.renderTracks(info, true)}
                             />
@@ -261,12 +262,13 @@ class Home extends React.Component<any, IState> {
 
                 {
                     recents.length > 0 ? (
-                        <View style={{ paddingBottom: 20, paddingLeft: 20 }}>
+                        <View style={{ paddingBottom: 20 }}>
                             <View style={HomePageStyle.header}>
                                 <BasicText text={"Recent Plays"} style={HomePageStyle.headerText} />
                             </View>
 
                             <List
+                                style={HomePageStyle.tracks}
                                 data={filter(recents)}
                                 renderItem={(info) => this.renderTracks(info)}
                             />
