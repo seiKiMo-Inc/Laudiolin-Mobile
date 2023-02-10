@@ -21,6 +21,7 @@ interface IProps {
     transform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase';
 
     press?: () => void;
+    hold?: () => void;
 
     container?: StyleProp<FlexStyle>;
     button?: StyleProp<TextStyle>;
@@ -64,6 +65,7 @@ class BasicButton extends React.Component<IProps, any> {
                 }}
                 iconContainerStyle={this.props.iconStyle}
                 onPress={this.props.press}
+                onLongPress={this.props.hold}
             />
         );
     }
