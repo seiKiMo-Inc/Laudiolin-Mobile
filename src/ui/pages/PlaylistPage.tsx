@@ -61,10 +61,12 @@ class PlaylistPage extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
+        emitter.on("reloadPlaylist", this.onPlaylist);
         emitter.on("showPlaylist", this.onPlaylist);
     }
 
     componentWillUnmount() {
+        emitter.removeListener("reloadPlaylist", this.onPlaylist);
         emitter.removeListener("showPlaylist", this.onPlaylist);
     }
 
@@ -75,7 +77,8 @@ class PlaylistPage extends React.Component<IProps, IState> {
     renderPlaylist(item: ListRenderItemInfo<TrackData>) {
         return (
             <Track
-                key={item.index} track={item.item} padding={20}
+                key={item.index} padding={20}
+                track={item.item} playlist={this.state.playlist!}
                 onClick={track => playTrack(track, true, true)}
             />
         );
@@ -209,7 +212,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
                     <FlatList
                         style={PlaylistPageStyle.tracks}
                         data={this.getPlaylistTracks()}
-                        renderItem={this.renderPlaylist}
+                        renderItem={item => this.renderPlaylist(item)}
                         showsHorizontalScrollIndicator={false}
                     />
                 </Hide>

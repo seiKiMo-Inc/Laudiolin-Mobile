@@ -11,13 +11,18 @@ import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-m
 import { TrackStyle } from "@styles/TrackStyle";
 import { TrackMenuStyle } from "@styles/MenuStyle";
 
-import { TrackData } from "@backend/types";
+import type { Playlist, TrackData } from "@backend/types";
+import emitter from "@backend/events";
 import { download } from "@backend/audio";
-import { favoriteTrack, favorites } from "@backend/user";
+import { favoriteTrack, favorites, loadPlaylists, playlists } from "@backend/user";
 import { getIconUrl, openTrack, promptPlaylistTrackAdd } from "@app/utils";
+import { removeTrackFromPlaylist } from "@backend/playlist";
+
+import { console } from "@app/utils";
 
 interface IProps {
     track: TrackData;
+    playlist?: Playlist;
     padding?: number;
     onClick?: (track: TrackData) => void;
 }
@@ -25,6 +30,28 @@ interface IProps {
 class Track extends React.PureComponent<IProps, never> {
     constructor(props: IProps) {
         super(props);
+    }
+
+    /**
+     * Removes this track from the playlist.
+     */
+    async removeFromPlaylist(): Promise<void> {
+        const { track, playlist } = this.props;
+        if (!playlist) return;
+
+        // Get the index of the track.
+        const index = playlist.tracks.findIndex(t => t.id == track.id);
+        if (index == -1) return;
+
+        // Remove the track from the playlist.
+        removeTrackFromPlaylist(playlist.id ?? "", index)
+            .then(async () => {
+                // Reload the playlists.
+                await loadPlaylists();
+                // Emit an event to update the playlist.
+                emitter.emit("reloadPlaylist", playlists.find(p => p.id == playlist.id));
+            })
+            .catch(err => console.error(err));
     }
 
     render() {
@@ -71,8 +98,15 @@ class Track extends React.PureComponent<IProps, never> {
                             </MenuTrigger>
 
                             <MenuOptions customStyles={{ optionsContainer: TrackMenuStyle.menu }}>
-                                <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
-                                            text={"Add to Playlist"} onSelect={() => promptPlaylistTrackAdd(track)} />
+                                {
+                                    this.props.playlist == null ?
+                                        <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
+                                                    text={"Add to Playlist"} onSelect={() => promptPlaylistTrackAdd(track)} />
+                                        :
+                                        <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
+                                                    text={"Remove from Playlist"} onSelect={() => this.removeFromPlaylist()} />
+                                }
+
                                 <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
                                             text={"Open Track Source"} onSelect={() => openTrack(track)} />
                                 <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
