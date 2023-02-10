@@ -1,15 +1,16 @@
 import React from "react";
 import { FlatList, View, ListRenderItemInfo } from "react-native";
 
-import { Icon, Image } from "@rneui/base";
-import BasicModal from "@components/common/BasicModal";
-import Hide from "@components/Hide";
+import { Icon } from "@rneui/base";
 import Track from "@components/Track";
+import Hide from "@components/common/Hide";
 import BasicText from "@components/common/BasicText";
-import BasicButton from "@components/common/BasicButton";
 import JumpInView from "@components/common/JumpInView";
 import BasicInput from "@components/common/BasicInput";
+import BasicModal from "@components/common/BasicModal";
+import BasicButton from "@components/common/BasicButton";
 import BasicCheckbox from "@components/common/BasicCheckbox";
+import FastImage from "react-native-fast-image";
 
 import { PlaylistPageStyle } from "@styles/PageStyles";
 
@@ -143,7 +144,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
 
                 <Hide show={playlist != null}>
                     <View style={PlaylistPageStyle.info}>
-                        <Image
+                        <FastImage
                             source={{ uri: playlist?.icon }}
                             style={PlaylistPageStyle.playlistIcon}
                         />

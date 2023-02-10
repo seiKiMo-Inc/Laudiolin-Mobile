@@ -1,7 +1,8 @@
 import React from "react";
 import { TouchableHighlight, View } from "react-native";
-import { Icon, Image } from "@rneui/base";
+import { Icon } from "@rneui/base";
 
+import FastImage from "react-native-fast-image";
 import TextTicker from "react-native-text-ticker";
 import BasicText from "@components/common/BasicText";
 
@@ -39,10 +40,10 @@ class Track extends React.PureComponent<IProps, never> {
                     onPress={() => this.props.onClick?.(track)}
                 >
                     <View style={{ flexDirection: "row" }}>
-                        <Image
+                        <FastImage
                             style={TrackStyle.image}
                             source={{ uri: getIconUrl(track) }}
-                            resizeMethod={"resize"}
+                            resizeMode={"cover"}
                         />
 
                         <View style={TrackStyle.text}>
