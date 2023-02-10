@@ -63,6 +63,7 @@ export async function download(track: TrackData): Promise<void> {
     await fs.downloadUrl(track.url, fs.getTrackPath(track));
     await fs.downloadUrl(track.icon, fs.getIconPath(track));
     // Save the track's data.
+    track.icon = `file://${fs.getIconPath(track)}`;
     await fs.saveData(track, fs.getDataPath(track));
 
     // Emit the track downloaded event.
@@ -75,16 +76,18 @@ export async function download(track: TrackData): Promise<void> {
  * @param track The track to add.
  * @param play Should the track be played?
  * @param force Should this track be played now?
+ * @param local Is this track local?
  * @param fromPlaylist Is this track from a playlist?
  */
 export async function playTrack(
     track: TrackData,
     play = true,
     force = false,
+    local = false,
     fromPlaylist = false,
 ): Promise<void> {
     // Add the track to the player.
-    await TrackPlayer.add(asTrack(track));
+    await TrackPlayer.add(asTrack(track, local));
     // Play the track if specified.
     play && await TrackPlayer.play();
     // Skip to the track if specified.

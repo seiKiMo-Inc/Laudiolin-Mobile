@@ -52,7 +52,7 @@ class DownloadsPage extends React.Component<IProps, IState> {
         return (
             <Track
                 key={index} track={item} padding={20}
-                onClick={(track) => playTrack(track, true, true)}
+                onClick={(track) => playTrack(track, true, true, true)}
             />
         );
     }

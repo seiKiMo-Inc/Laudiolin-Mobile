@@ -180,8 +180,9 @@ class Home extends React.Component<any, IState> {
     /**
      * Renders a collection of tracks.
      * @param info The info of the track.
+     * @param local Is the track a local track?
      */
-    renderTracks(info: ListRenderItem<any>) {
+    renderTracks(info: ListRenderItem<any>, local = false) {
         const { item, index } = info as ListRenderItem<TrackData>;
         if (item == null) return <></>;
 
@@ -252,7 +253,7 @@ class Home extends React.Component<any, IState> {
 
                             <List
                                 data={this.state.downloads}
-                                renderItem={(info) => this.renderTracks(info)}
+                                renderItem={(info) => this.renderTracks(info, true)}
                             />
                         </View>
                     ) : null
