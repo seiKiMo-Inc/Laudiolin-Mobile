@@ -2,7 +2,7 @@ import React from "react";
 import { ScrollView, View } from "react-native";
 
 import { Icon } from "@rneui/base";
-import Track from "@components/Track";
+import Track from "@components/widgets/Track";
 import BasicText from "@components/common/BasicText";
 import List, { ListRenderItem } from "@components/common/List";
 import JumpInView from "@components/common/JumpInView";

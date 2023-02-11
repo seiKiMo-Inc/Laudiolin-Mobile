@@ -2,7 +2,7 @@ import React from "react";
 import { ScrollView, View } from "react-native";
 
 import BasicTextInput from "@components/common/BasicTextInput";
-import Track from "@components/Track";
+import Track from "@components/widgets/Track";
 import BasicText from "@components/common/BasicText";
 import { SearchPageStyle } from "@styles/PageStyles";
 import { Icon } from "@rneui/base";

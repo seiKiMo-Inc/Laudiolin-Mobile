@@ -4,7 +4,7 @@ import { Dimensions, TouchableWithoutFeedback, View } from "react-native";
 import { Icon, Image } from "@rneui/base";
 import BasicText from "@components/common/BasicText";
 
-import { ControlStyle } from "@styles/TrackStyle";
+import { ControlStyle } from "@styles/WidgetStyle";
 
 import { getCurrentTrack } from "@app/backend/audio";
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
