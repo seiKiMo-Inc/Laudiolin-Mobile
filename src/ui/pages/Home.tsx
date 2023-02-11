@@ -133,10 +133,7 @@ class Home extends React.Component<any, IState> {
     }
 
     componentDidMount() {
-        setTimeout(() => {
-            // Update the component.
-            this.forceUpdate();
-        }, 1000);
+        this.setState({ playlists: getPlaylists() });
 
         emitter.on("login", this.update);
         emitter.on("recent", this.update);
