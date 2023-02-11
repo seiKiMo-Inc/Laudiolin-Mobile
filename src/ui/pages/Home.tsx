@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, ImageBackground, ScrollView, TouchableHighlight, View } from "react-native";
 
-import Track from "@components/Track";
+import Track from "@widgets/Track";
 import BasicText from "@components/common/BasicText";
 import List, { ListRenderItem } from "@components/common/List";
 import LinearGradient from "react-native-linear-gradient";
