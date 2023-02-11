@@ -383,19 +383,11 @@ export async function createPlaylist(playlist: Playlist): Promise<Playlist|null>
  * @param playlistId The playlist's ID.
  */
 export async function deletePlaylist(playlistId: string): Promise<boolean> {
+    playlists = playlists.filter(playlist => playlist.id != playlistId); // Remove the playlist from the array.
     const route = `${targetRoute}/playlist/${playlistId}`;
     const response = await fetch(route, {
         method: "DELETE", headers: { Authorization: await token() }
     });
 
-    if (response.status != 200) return false;
-
-    try {
-        // Reload the playlist data.
-        await login("", false);
-        await loadPlaylists();
-        return true;
-    } catch {
-        return false;
-    }
+    return response.status == 200;
 }
