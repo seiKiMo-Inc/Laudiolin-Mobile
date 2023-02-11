@@ -160,10 +160,15 @@ export const SearchPageStyle = StyleSheet.create({
     searchContainer: {
         width: "90%",
         height: 46,
-        borderColor: "#0052ff",
+        borderColor: "#354ab2",
         borderStyle: "solid",
-        borderWidth: 1,
+        borderWidth: 2,
         borderRadius: 10,
+        backgroundColor: "#070f26",
+        alignSelf: "center",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
     },
     results: {
         paddingTop: 30,
@@ -262,8 +267,9 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         flex: 1,
         width: screenWidth,
         height: screenHeight,
-        maxHeight: screenHeight * 0.45,
-        maxWidth: 400,
+        maxHeight: screenWidth * 0.9,
+        maxWidth: screenWidth * 0.9,
+        borderRadius: 10,
     },
     alert: {
         alignSelf: "center"

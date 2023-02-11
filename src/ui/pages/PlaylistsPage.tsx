@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, ImageBackground, ListRenderItemInfo, View, TouchableHighlight } from "react-native";
+import { ImageBackground, View, TouchableHighlight, ScrollView } from "react-native";
 
 import { Icon } from "@rneui/base";
 
@@ -55,7 +55,8 @@ class ListPlaylist extends React.Component<any, any> {
      * Deletes the playlist.
      */
     async delete(): Promise<void> {
-        await deletePlaylist(this.props.playlist);
+        await deletePlaylist(this.props.playlist.id);
+        this.props.onDelete();
     }
 
     async componentDidMount() {
@@ -161,6 +162,12 @@ class PlaylistsPage extends React.Component<IProps, IState> {
         };
     }
 
+    deletePlaylist = () => {
+        this.setState({
+            playlists: fetchAllPlaylists()
+        });
+    }
+
     createPlaylistAsync = async () => {
         const playlist: Playlist = {
             name: this.state.playlistNameInputText || "New Playlist",
@@ -198,14 +205,6 @@ class PlaylistsPage extends React.Component<IProps, IState> {
         });
     }
 
-    renderPlaylist(info: ListRenderItemInfo<Playlist>) {
-        const { item, index } = info;
-
-        return (
-            <ListPlaylist key={index} playlist={item} />
-        );
-    }
-
     componentDidMount() {
         this.setState({
             playlists: fetchAllPlaylists(),
@@ -221,14 +220,14 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                     <BasicText text={"Playlists"} style={{ fontSize: 25, fontWeight: "bold", marginLeft: 10 }} />
                 </View>
 
-                <View>
+                <ScrollView showsVerticalScrollIndicator={false}>
                     {
                         this.state.playlists.length > 0 ? (
-                            <FlatList
-                                data={this.state.playlists}
-                                renderItem={(info) => this.renderPlaylist(info)}
-                                showsVerticalScrollIndicator={false}
-                            />
+                            this.state.playlists.map((playlist, index) => {
+                                return (
+                                    <ListPlaylist key={index} playlist={playlist} onDelete={() => this.deletePlaylist()} />
+                                );
+                            })
                         ) : (
                             <View style={{ alignItems: "center", justifyContent: "center" }}>
                                 <BasicText text={"No playlists found."} style={{ fontSize: 15, paddingBottom: 20 }} />
@@ -243,7 +242,8 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                                 color={"#4e7abe"}
                                 button={{ borderRadius: 10, width: 150, height: 40 }}
                                 container={{
-                                    alignItems: this.state.playlists.length > 0 ? "flex-end" : "center"
+                                    alignItems: this.state.playlists.length > 0 ? "flex-end" : "center",
+                                    paddingBottom: 20
                                 }}
                                 icon={<Icon
                                     color={"white"}
@@ -308,7 +308,7 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                             onChangeText={(text) => this.setState({ importPlaylistUrl: text })}
                         />
                     </BasicModal>
-                </View>
+                </ScrollView>
             </JumpInView>
         ) : null;
     }

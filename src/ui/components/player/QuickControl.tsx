@@ -8,6 +8,7 @@ import { ControlStyle } from "@styles/WidgetStyle";
 
 import { getCurrentTrack } from "@app/backend/audio";
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
+import LinearGradient from "react-native-linear-gradient";
 
 interface IProps {
     showPlayingTrackPage: () => void;
@@ -115,13 +116,19 @@ class QuickControl extends React.Component<IProps, IState> {
                             borderRadius: 22,
                             overflow: "hidden"
                         }}>
-                            {/* TODO: Adjust the width of this inner view to show progress */}
-                            <View style={{
-                                height: 65,
-                                width: `${this.state.trackProgressPercentage}%`,
-                                position: "absolute",
-                                backgroundColor: "#1e85ad"
-                            }}/>
+                            <LinearGradient
+                                colors={["#1e85ad", "transparent"]}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                angle={90}
+                                angleCenter={{ x: 0.5, y: 0.5 }}
+                                useAngle={true}
+                                style={{
+                                    height: 65,
+                                    width: `${this.state.trackProgressPercentage}%`,
+                                    position: "absolute"
+                                }}
+                            />
                         </View>
 
                         <Image

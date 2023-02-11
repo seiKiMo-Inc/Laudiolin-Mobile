@@ -87,7 +87,7 @@ class SearchPage extends React.Component<any, IState> {
                         containerStyle={SearchPageStyle.searchContainer}
                         icon={<Icon
                             type="material" name={"search"}
-                            iconStyle={{ color: "white", paddingBottom: 5, paddingLeft: 5 }}
+                            iconStyle={{ color: "white", paddingLeft: 5 }}
                         />}
                     />
                 </View>
