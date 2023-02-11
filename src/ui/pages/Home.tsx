@@ -112,6 +112,16 @@ class Home extends React.Component<any, IState> {
      */
     update = () => this.forceUpdate();
 
+    /**
+     * Reloads all local tracks.
+     */
+    reloadLocal = async () => {
+        // Load the downloads.
+        await this.loadDownloads();
+        // Update the component.
+        this.forceUpdate();
+    };
+
     constructor(props: any) {
         super(props);
 
@@ -141,12 +151,8 @@ class Home extends React.Component<any, IState> {
         emitter.on("playlist", () => {
             this.setState({ playlists: getPlaylists() });
         });
-        emitter.on("download", async () => {
-            // Load the downloads.
-            await this.loadDownloads();
-            // Update the component.
-            this.forceUpdate();
-        });
+        emitter.on("download", this.reloadLocal);
+        emitter.on("delete", this.reloadLocal);
 
         // Load the downloads.
         this.loadDownloads()
@@ -156,6 +162,7 @@ class Home extends React.Component<any, IState> {
     componentWillUnmount() {
         emitter.removeListener("login", this.update);
         emitter.removeListener("recent", this.update);
+        emitter.removeListener("delete", this.update);
         emitter.removeListener("favorite", this.update);
         emitter.removeListener("playlist", this.update);
         emitter.removeListener("download", this.update);
@@ -185,8 +192,8 @@ class Home extends React.Component<any, IState> {
 
         return (
             <Track
-                key={index} track={item} padding={20}
-                onClick={track => playTrack(track, true, true)}
+                key={index} track={item} local={local} padding={20}
+                onClick={track => playTrack(track, true, true, local)}
             />
         );
     }

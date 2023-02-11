@@ -5,7 +5,7 @@ import type { DownloadResult } from "react-native-fs";
 import { asTrack } from "@backend/audio";
 
 import { DocumentDirectoryPath } from "react-native-fs";
-import { downloadFile, writeFile, readFile, mkdir, readDir, exists } from "react-native-fs";
+import { downloadFile, writeFile, readFile, mkdir, unlink, readDir, exists } from "react-native-fs";
 
 /**
  * Creates the folders needed for Laudiolin.
@@ -20,6 +20,14 @@ export async function createFolders(): Promise<void> {
  */
 export async function createTrackFolder(track: TrackData): Promise<void> {
     await mkdir(`${DocumentDirectoryPath}/tracks/${track.id}`);
+}
+
+/**
+ * Deletes the folder for a track.
+ * @param track A track data object.
+ */
+export async function deleteTrackFolder(track: TrackData): Promise<void> {
+    await unlink(`${DocumentDirectoryPath}/tracks/${track.id}`);
 }
 
 /**

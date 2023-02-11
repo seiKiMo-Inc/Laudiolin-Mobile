@@ -59,6 +59,7 @@ class DownloadsPage extends React.Component<IProps, IState> {
 
     componentDidMount() {
         emitter.on("download", this.loadDownloads);
+        emitter.on("delete", this.loadDownloads);
 
         this.loadDownloads()
             .catch(err => console.error(err)); // Load the downloads.
@@ -66,6 +67,7 @@ class DownloadsPage extends React.Component<IProps, IState> {
 
     componentWillUnmount() {
         emitter.removeListener("download", this.loadDownloads);
+        emitter.removeListener("delete", this.loadDownloads);
     }
 
     render() {

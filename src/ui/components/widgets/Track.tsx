@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableHighlight, View } from "react-native";
-import { Icon } from "@rneui/base";
+import { Icon, Image } from "@rneui/base";
 
 import FastImage from "react-native-fast-image";
 import TextTicker from "react-native-text-ticker";
@@ -13,8 +13,8 @@ import { TrackMenuStyle } from "@styles/MenuStyle";
 
 import type { Playlist, TrackData } from "@backend/types";
 import emitter from "@backend/events";
-import { download } from "@backend/audio";
-import { favoriteTrack, favorites, loadPlaylists, playlists } from "@backend/user";
+import { downloadTrack, deleteTrack } from "@backend/audio";
+import { favoriteTrack, loadPlaylists, favorites, playlists } from "@backend/user";
 import { getIconUrl, openTrack, promptPlaylistTrackAdd } from "@app/utils";
 import { removeTrackFromPlaylist } from "@backend/playlist";
 
@@ -22,7 +22,10 @@ import { console } from "@app/utils";
 
 interface IProps {
     track: TrackData;
+
     playlist?: Playlist;
+    local?: boolean;
+
     padding?: number;
     onClick?: (track: TrackData) => void;
 }
@@ -55,7 +58,7 @@ class Track extends React.PureComponent<IProps, never> {
     }
 
     render() {
-        const { track } = this.props;
+        const { track, local } = this.props;
 
         return (
             <View style={{
@@ -67,11 +70,20 @@ class Track extends React.PureComponent<IProps, never> {
                     onPress={() => this.props.onClick?.(track)}
                 >
                     <View style={{ flexDirection: "row" }}>
-                        <FastImage
-                            style={TrackStyle.image}
-                            source={{ uri: getIconUrl(track) }}
-                            resizeMode={"cover"}
-                        />
+                        {
+                            local ?
+                                <Image
+                                    style={TrackStyle.image}
+                                    source={{ uri: track.icon }}
+                                    resizeMode={"cover"}
+                                />
+                                :
+                                <FastImage
+                                    style={TrackStyle.image}
+                                    source={{ uri: getIconUrl(track) }}
+                                    resizeMode={"cover"}
+                                />
+                        }
 
                         <View style={TrackStyle.text}>
                             <TextTicker
@@ -111,8 +123,15 @@ class Track extends React.PureComponent<IProps, never> {
                                             text={"Open Track Source"} onSelect={() => openTrack(track)} />
                                 <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
                                             text={"Favorite Track"} onSelect={() => favoriteTrack(track, !favorites.includes(track))} />
-                                <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
-                                            text={"Download Track"} onSelect={() => download(track)} />
+
+                                {
+                                    this.props.local ?
+                                        <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
+                                                    text={"Delete Track"} onSelect={() => deleteTrack(track)} />
+                                        :
+                                        <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
+                                                    text={"Download Track"} onSelect={() => downloadTrack(track)} />
+                                }
                             </MenuOptions>
                         </Menu>
                     </View>

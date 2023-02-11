@@ -18,7 +18,7 @@ import { currentPlaylist } from "@backend/playlist";
 import { openTrack, promptPlaylistTrackAdd } from "@app/utils";
 import { navigate } from "@backend/navigation";
 import { favoriteTrack, favorites } from "@backend/user";
-import { getCurrentTrack, shuffleQueue, asData, download, toggleRepeatState } from "@backend/audio";
+import { getCurrentTrack, shuffleQueue, asData, downloadTrack, toggleRepeatState } from "@backend/audio";
 
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
@@ -196,7 +196,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                                 <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
                                             text={"Open Track Source"} onSelect={() => openTrack(track!)} />
                                 <MenuOption customStyles={{ optionText: TrackMenuStyle.text }}
-                                            text={"Download Track"} onSelect={() => download(asData(track!))} />
+                                            text={"Download Track"} onSelect={() => downloadTrack(asData(track!))} />
                             </MenuOptions>
                         </Menu>
                     </View>

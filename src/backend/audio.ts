@@ -52,7 +52,7 @@ export function asData(track: Track): TrackData {
  * Downloads a track and saves it to the file system.
  * @param track The track to download.
  */
-export async function download(track: TrackData): Promise<void> {
+export async function downloadTrack(track: TrackData): Promise<void> {
     if (await fs.trackExists(track)) {
         return;
     }
@@ -64,10 +64,23 @@ export async function download(track: TrackData): Promise<void> {
     await fs.downloadUrl(track.icon, fs.getIconPath(track));
     // Save the track's data.
     track.icon = `file://${fs.getIconPath(track)}`;
+    track.url = `file://${fs.getTrackPath(track)}`;
     await fs.saveData(track, fs.getDataPath(track));
 
     // Emit the track downloaded event.
     emitter.emit("download");
+}
+
+/**
+ * Deletes a track from the file system.
+ * @param track The local track to delete.
+ */
+export async function deleteTrack(track: TrackData): Promise<void> {
+    // Delete the track's folder.
+    await fs.deleteTrackFolder(track);
+
+    // Emit the track deleted event.
+    emitter.emit("delete");
 }
 
 /**

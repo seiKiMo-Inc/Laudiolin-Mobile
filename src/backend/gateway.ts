@@ -40,6 +40,9 @@ export function setupListeners(): void {
 async function update() {
     // Check if the track is playing.
     const currentTrack = await getCurrentTrack();
+    // Check if the track is a local track.
+    const url = currentTrack?.url as string;
+    if (url.startsWith("file://")) return;
 
     // Send player information to the gateway.
     sendGatewayMessage(<NowPlayingMessage>{

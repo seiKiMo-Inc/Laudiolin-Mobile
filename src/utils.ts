@@ -21,6 +21,8 @@ export const console = logger.createLogger();
 export function getIconUrl(track: TrackData): string {
     // Check if the icon is already a proxy.
     if (track.icon.includes("/proxy/")) return track.icon;
+    // Check if the icon is a local image.
+    if (track.icon.startsWith("file://")) return track.icon;
 
     let url = `${Gateway.url}/proxy/{ico}?from={src}`;
 
