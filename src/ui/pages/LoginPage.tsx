@@ -145,6 +145,7 @@ class SearchPage extends React.Component<any, IState> {
 
                 <View style={{ alignSelf: "center", gap: 15 }}>
                     <BasicButton text={"Continue as Guest"}
+                                 button={{ alignSelf: "center" }}
                                  color={"#FFFFFF"} outline={"#5b67af"}
                                  width={300} height={40} radius={10}
                                  transform={"uppercase"} bold={true}
