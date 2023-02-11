@@ -1,4 +1,4 @@
-package moe.seikimo.laudiolin-mobile.newarchitecture;
+package moe.seikimo.laudiolin_mobile.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import moe.seikimo.laudiolin-mobile.BuildConfig;
-import moe.seikimo.laudiolin-mobile.newarchitecture.components.MainComponentsRegistry;
-import moe.seikimo.laudiolin-mobile.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import moe.seikimo.laudiolin_mobile.BuildConfig;
+import moe.seikimo.laudiolin_mobile.newarchitecture.components.MainComponentsRegistry;
+import moe.seikimo.laudiolin_mobile.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

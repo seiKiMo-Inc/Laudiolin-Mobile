@@ -1,4 +1,4 @@
-package moe.seikimo.laudiolin-mobile;
+package moe.seikimo.laudiolin_mobile;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;

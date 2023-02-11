@@ -1,4 +1,4 @@
-package moe.seikimo.laudiolin-mobile.newarchitecture.components;
+package moe.seikimo.laudiolin_mobile.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

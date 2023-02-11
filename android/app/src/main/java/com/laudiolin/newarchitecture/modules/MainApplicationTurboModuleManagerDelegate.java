@@ -1,4 +1,4 @@
-package moe.seikimo.laudiolin-mobile.newarchitecture.modules;
+package moe.seikimo.laudiolin_mobile.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
