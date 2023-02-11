@@ -212,6 +212,11 @@ class PlaylistsPage extends React.Component<IProps, IState> {
         });
     }
 
+    componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
+        if (prevState.playlists !== fetchAllPlaylists())
+            this.setState({ playlists: fetchAllPlaylists() });
+    }
+
     render() {
         return this.props.showPage ? (
             <JumpInView visible={this.props.showPage} style={PlaylistsPageStyle.container}>
