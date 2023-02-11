@@ -267,8 +267,9 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         flex: 1,
         width: screenWidth,
         height: screenHeight,
-        maxHeight: screenHeight * 0.45,
-        maxWidth: 400,
+        maxHeight: screenWidth * 0.9,
+        maxWidth: screenWidth * 0.9,
+        borderRadius: 10,
     },
     alert: {
         alignSelf: "center"
