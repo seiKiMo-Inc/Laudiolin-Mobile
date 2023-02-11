@@ -38,7 +38,7 @@ class ProgressBar extends React.Component<IProps, any> {
                     onSlidingComplete={this.props.onSeek}
                     value={this.props.currentTime}
                     minimumTrackTintColor={"#FFFFFF"}
-                    maximumTrackTintColor={"#343d6b"}
+                    maximumTrackTintColor={"#FFFFFF50"}
                     thumbStyle={ProgressBarStyle.thumb}
                     trackStyle={ProgressBarStyle.track}
                     allowTouchTrack={true}
