@@ -55,7 +55,8 @@ class ListPlaylist extends React.Component<any, any> {
      * Deletes the playlist.
      */
     async delete(): Promise<void> {
-        await deletePlaylist(this.props.playlist);
+        await deletePlaylist(this.props.playlist.id);
+        this.props.onDelete();
     }
 
     async componentDidMount() {
@@ -161,6 +162,12 @@ class PlaylistsPage extends React.Component<IProps, IState> {
         };
     }
 
+    deletePlaylist = () => {
+        this.setState({
+            playlists: fetchAllPlaylists()
+        });
+    }
+
     createPlaylistAsync = async () => {
         const playlist: Playlist = {
             name: this.state.playlistNameInputText || "New Playlist",
@@ -218,7 +225,7 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                         this.state.playlists.length > 0 ? (
                             this.state.playlists.map((playlist, index) => {
                                 return (
-                                    <ListPlaylist key={index} playlist={playlist} />
+                                    <ListPlaylist key={index} playlist={playlist} onDelete={() => this.deletePlaylist()} />
                                 );
                             })
                         ) : (
