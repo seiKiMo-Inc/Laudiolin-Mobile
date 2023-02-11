@@ -30,15 +30,20 @@ export type Playlist = {
     tracks: TrackData[];
 };
 
-export type User = {
-    playlists?: string[];
-    likedSongs?: TrackData[];
-    recentlyPlayed?: TrackData[];
-
+export type BasicUser = {
     username?: string;
     discriminator?: string;
     userId?: string;
     avatar?: string;
+};
+export type OnlineUser = BasicUser & {
+    listeningTo?: TrackData;
+    progress?: number;
+};
+export type User = BasicUser & {
+    playlists?: string[];
+    likedSongs?: TrackData[];
+    recentlyPlayed?: TrackData[];
 };
 
 export type UserSettings = {

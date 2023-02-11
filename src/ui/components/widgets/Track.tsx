@@ -8,7 +8,7 @@ import BasicText from "@components/common/BasicText";
 
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
-import { TrackStyle } from "@styles/TrackStyle";
+import { TrackStyle } from "@styles/WidgetStyle";
 import { TrackMenuStyle } from "@styles/MenuStyle";
 
 import type { Playlist, TrackData } from "@backend/types";

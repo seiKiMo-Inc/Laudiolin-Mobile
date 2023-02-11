@@ -29,6 +29,31 @@ export const TrackStyle = StyleSheet.create({
     }
 });
 
+export const UserStyle = StyleSheet.create({
+    container: {
+
+    },
+    trackIcon: {
+        width: 64, height: 64,
+        borderRadius: 12
+    },
+    userIcon: {
+        position: "absolute",
+        width: 24, height: 24,
+        borderRadius: 32
+    },
+    text: {
+        paddingLeft: 15,
+        justifyContent: "center"
+    },
+    title: {
+        color: "white",
+        fontFamily: "Poppins",
+        fontSize: 16,
+        width: screenWidth - 160
+    }
+});
+
 export const ControlStyle = StyleSheet.create({
     container: {
         flexDirection: "row",

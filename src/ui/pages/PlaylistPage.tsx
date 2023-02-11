@@ -2,7 +2,7 @@ import React from "react";
 import { FlatList, View, ListRenderItemInfo } from "react-native";
 
 import { Icon } from "@rneui/base";
-import Track from "@components/Track";
+import Track from "@components/widgets/Track";
 import Hide from "@components/common/Hide";
 import BasicText from "@components/common/BasicText";
 import JumpInView from "@components/common/JumpInView";
