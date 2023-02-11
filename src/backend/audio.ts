@@ -99,8 +99,15 @@ export async function playTrack(
     local = false,
     fromPlaylist = false,
 ): Promise<void> {
+    let trackData = asTrack(track, local);
+    // Check if the track has been downloaded.
+    if (!local && await fs.trackExists(track)) {
+        trackData = await fs.loadLocalTrack(track.id);
+        trackData.original = track;
+    }
+
     // Add the track to the player.
-    await TrackPlayer.add(asTrack(track, local));
+    await TrackPlayer.add(trackData);
     // Play the track if specified.
     play && await TrackPlayer.play();
     // Skip to the track if specified.
@@ -152,7 +159,8 @@ export async function toggleRepeatState(): Promise<void> {
  * Gets the currently playing track from the player.
  */
 export async function getCurrentTrack(): Promise<Track|null> {
-    return (await TrackPlayer.getQueue())[(await TrackPlayer.getCurrentTrack()) ?? 0];
+    const playerResult = (await TrackPlayer.getQueue())[(await TrackPlayer.getCurrentTrack()) ?? 0];
+    return playerResult ? (playerResult["original"] ?? playerResult) : null;
 }
 
 /**

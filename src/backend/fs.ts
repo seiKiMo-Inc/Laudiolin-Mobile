@@ -2,8 +2,6 @@ import type { TrackData } from "@backend/types";
 import type { Track } from "react-native-track-player";
 import type { DownloadResult } from "react-native-fs";
 
-import { asTrack } from "@backend/audio";
-
 import { DocumentDirectoryPath } from "react-native-fs";
 import { downloadFile, writeFile, readFile, mkdir, unlink, readDir, exists } from "react-native-fs";
 
@@ -78,7 +76,16 @@ export async function loadLocalTrackData(trackId: string): Promise<TrackData> {
  */
 export async function loadLocalTrack(trackId: string): Promise<Track> {
     const trackData = await loadLocalTrackData(trackId);
-    return asTrack(trackData, true);
+
+    return {
+        id: trackData.id,
+        url: trackData.url,
+        artwork: trackData.icon,
+        contentType: "audio/mpeg",
+        title: trackData.title,
+        artist: trackData.artist,
+        duration: trackData.duration
+    };
 }
 
 /**

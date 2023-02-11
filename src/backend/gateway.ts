@@ -42,7 +42,7 @@ async function update() {
     const currentTrack = await getCurrentTrack();
     // Check if the track is a local track.
     const url = currentTrack?.url as string;
-    if (url.startsWith("file://")) return;
+    if (url && url.startsWith("file://")) return;
 
     // Send player information to the gateway.
     sendGatewayMessage(<NowPlayingMessage>{

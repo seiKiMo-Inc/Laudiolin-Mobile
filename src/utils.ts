@@ -1,7 +1,9 @@
 import { Linking } from "react-native";
 
-import emitter from "@backend/events";
+import * as fs from "@backend/fs";
 import * as settings from "@backend/settings";
+
+import emitter from "@backend/events";
 import { Gateway } from "@app/constants";
 import { getCurrentTrack, playTrack } from "@backend/audio";
 import { fetchTrackById } from "@backend/search";
@@ -19,13 +21,15 @@ export const console = logger.createLogger();
  * @param track The track to get the icon URL for.
  */
 export function getIconUrl(track: TrackData): string {
+    const icon = track.icon;
     // Check if the icon is already a proxy.
-    if (track.icon.includes("/proxy/")) return track.icon;
+    if (icon.includes("/proxy/")) return icon;
     // Check if the icon is a local image.
-    if (track.icon.startsWith("file://")) return track.icon;
+    if (icon.includes("file://")) return icon;
+    // Check if the icon is blank.
+    if (icon == "") return `file://${fs.getIconPath(track)}`;
 
     let url = `${Gateway.url}/proxy/{ico}?from={src}`;
-
     // Match the icon URL to the correct proxy URL.
     const iconUrl = track.icon;
     let split = iconUrl.split("/");

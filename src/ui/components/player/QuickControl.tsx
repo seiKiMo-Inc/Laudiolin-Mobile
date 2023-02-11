@@ -6,7 +6,8 @@ import BasicText from "@components/common/BasicText";
 
 import { ControlStyle } from "@styles/WidgetStyle";
 
-import { getCurrentTrack } from "@app/backend/audio";
+import { getIconUrl } from "@app/utils";
+import { asData, getCurrentTrack } from "@app/backend/audio";
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -103,6 +104,7 @@ class QuickControl extends React.Component<IProps, IState> {
     render() {
         const track = this.state.track;
         const toggle = this.state.paused ? "play-arrow" : "pause";
+        let artwork = track ? getIconUrl(asData(track)) : "";
 
         return track != null ? (
             <TouchableWithoutFeedback onPress={() => this.props.showPlayingTrackPage()}>
@@ -132,7 +134,7 @@ class QuickControl extends React.Component<IProps, IState> {
                         </View>
 
                         <Image
-                            source={{ uri: (track?.artwork as string ?? "") }}
+                            source={{ uri: artwork }}
                             style={ControlStyle.image}
                         >
                             <View style={{ backgroundColor: "rgba(0, 0, 0, 0.5)", height: "100%", width: "100%", borderRadius: 20 }} />

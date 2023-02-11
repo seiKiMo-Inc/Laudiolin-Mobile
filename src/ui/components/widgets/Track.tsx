@@ -58,7 +58,8 @@ class Track extends React.PureComponent<IProps, never> {
     }
 
     render() {
-        const { track, local } = this.props;
+        const { track } = this.props;
+        const icon = getIconUrl(track);
 
         return (
             <View style={{
@@ -71,16 +72,16 @@ class Track extends React.PureComponent<IProps, never> {
                 >
                     <View style={{ flexDirection: "row" }}>
                         {
-                            local ?
+                            icon.startsWith("file://") ?
                                 <Image
                                     style={TrackStyle.image}
-                                    source={{ uri: track.icon }}
+                                    source={{ uri: icon }}
                                     resizeMode={"cover"}
                                 />
                                 :
                                 <FastImage
                                     style={TrackStyle.image}
-                                    source={{ uri: getIconUrl(track) }}
+                                    source={{ uri: icon }}
                                     resizeMode={"cover"}
                                 />
                         }

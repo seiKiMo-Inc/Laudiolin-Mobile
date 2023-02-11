@@ -15,7 +15,7 @@ import { PlayingTrackPageStyle } from "@styles/PageStyles";
 
 import type { Playlist } from "@backend/types";
 import { currentPlaylist } from "@backend/playlist";
-import { openTrack, promptPlaylistTrackAdd } from "@app/utils";
+import { getIconUrl, openTrack, promptPlaylistTrackAdd } from "@app/utils";
 import { navigate } from "@backend/navigation";
 import { favoriteTrack, favorites } from "@backend/user";
 import { getCurrentTrack, shuffleQueue, asData, downloadTrack, toggleRepeatState } from "@backend/audio";
@@ -146,11 +146,15 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
         let { track } = this.state;
         if (!track) return null;
 
+        // Get the track's artwork.
+        let artwork = track.artwork as string;
+        if (!artwork) artwork = getIconUrl(asData(track));
+
         return this.props.showPage ? (
                 <JumpInView visible={this.props.showPage} style={PlayingTrackPageStyle.view}>
                     <ImageBackground
                         style={PlayingTrackPageStyle.background}
-                        source={{ uri: track.artwork as string }}
+                        source={{ uri: artwork }}
                         blurRadius={50}
                     >
                         <View style={{ ...PlayingTrackPageStyle.background, backgroundColor: "rgba(0,0,0, 0.6)" }} />
@@ -205,7 +209,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                         <View style={PlayingTrackPageStyle.trackInfo}>
                             <Image
                                 style={PlayingTrackPageStyle.trackImage}
-                                source={{ uri: track.artwork as string }}
+                                source={{ uri: artwork }}
                             />
                         </View>
 
