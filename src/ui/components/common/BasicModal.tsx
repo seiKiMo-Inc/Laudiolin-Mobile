@@ -46,7 +46,6 @@ class BasicModal extends React.Component<IProps, any> {
                     press={this.props.onSubmit}
                     container={{ marginTop: 20, padding: 10 }}
                     button={{ width: "100%", height: 50, borderRadius: 10 }}
-                    
                 />
             </Overlay>
         );
