@@ -5,6 +5,7 @@ import type { TrackData } from "@backend/types";
 import { loadRecents, token, recents } from "@backend/user";
 import { asData, getCurrentTrack, syncToTrack } from "@backend/audio";
 import { listenWith } from "@backend/social";
+import { system } from "@backend/settings";
 import { Gateway } from "@app/constants";
 import emitter from "@backend/events";
 
@@ -125,9 +126,10 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
     // Handle the message data.
     switch (message?.type) {
         case "initialize":
-            sendGatewayMessage(<InitializeMessage>{
+            sendGatewayMessage(<InitializeMessage> {
                 type: "initialize",
-                token: await token()
+                token: await token(),
+                broadcast: system().broadcast_listening
             });
 
             // Log gateway handshake.
@@ -140,7 +142,7 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
 
             return;
         case "latency":
-            sendGatewayMessage(<LatencyMessage>{
+            sendGatewayMessage(<LatencyMessage> {
                 type: "latency"
             });
             return;
@@ -215,6 +217,7 @@ type BaseGatewayMessage = {
 export type InitializeMessage = BaseGatewayMessage & {
     type: "initialize";
     token?: string;
+    broadcast?: string;
 };
 // To server.
 export type LatencyMessage = BaseGatewayMessage & {

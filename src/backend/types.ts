@@ -71,6 +71,7 @@ export type UISettings = {
 };
 export type SystemSettings = {
     offline: boolean;
+    broadcast_listening: "Nobody" | "Friends" | "Everyone";
 };
 export type SettingType = "boolean" | "input" | "select" | "color";
 
