@@ -50,17 +50,17 @@ class InformationPage extends React.Component<any, IState> {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         registerListener(this.update);
 
-        userData && getAvailableUsers().then(async online => {
-            let recents = await getRecentUsers();
-
-            online = online.filter(user => user.userId != userData?.userId);
-            recents = recents.filter(user => user.userId != userData?.userId);
-
-            this.setState({ users: [...online, ...recents] });
-        });
+        // Fetch the users from the backend.
+        const availableUsers = await getAvailableUsers(true);
+        const recentUsers = await getRecentUsers();
+        // Filter users that are the current user.
+        const users = availableUsers.concat(recentUsers)
+            .filter(user => user.userId != userData?.userId);
+        // Set the users.
+        this.setState({ users });
     }
 
     componentWillUnmount() {

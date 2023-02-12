@@ -31,7 +31,7 @@ class InAppNotification extends React.Component<IProps, never> {
         if (diffDays > 0) return `${diffDays} days ago`;
         else if (diffHours > 0) return `${diffHours} hours ago`;
         else if (diffMinutes > 1) return `${diffMinutes} minutes ago`;
-        else if (diffMinutes === 1) return `${diffMinutes} minute ago`;
+        else if (diffMinutes == 1) return `${diffMinutes} minute ago`;
         else if (diffSeconds > 0) return `${diffSeconds} seconds ago`;
         else return "Just now";
     }
