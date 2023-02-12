@@ -167,8 +167,8 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
 /**
  * Invoked when the gateway encounters an error.
  */
-function onError(): void {
-    console.error("Gateway error.");
+function onError(error: any): void {
+    console.error("Gateway error.", error, Gateway.socket);
 }
 
 /**
