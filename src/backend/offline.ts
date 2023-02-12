@@ -1,5 +1,5 @@
-import { readDir, unlink } from "react-native-fs";
 import { DocumentDirectoryPath } from "react-native-fs";
+import { mkdir, readDir, unlink } from "react-native-fs";
 
 import * as fs from "@backend/fs";
 import * as audio from "@backend/audio";
@@ -13,6 +13,7 @@ import { console } from "@app/utils";
 const userDataPath = `${DocumentDirectoryPath}/userData.json`;
 const playlistsPath = `${DocumentDirectoryPath}/playlists`;
 
+let downloadedObjects = 0; // The number of objects downloaded.
 export let isOffline = false; // Whether the app is in offline mode.
 
 /**
@@ -62,6 +63,7 @@ export async function loadState(
 function saveTracks(tracks: TrackData[]): void {
     tracks.forEach(track => {
         audio.downloadTrack(track, false)
+            .then(() => downloadedObjects++)
             .catch(err => console.error(err));
     });
 }
@@ -80,20 +82,39 @@ export async function offlineSupport(enabled: boolean): Promise<void> {
             favorites: favorites.map(track => track.id),
         };
 
+        // Calculate the objects to save.
+        let objects = 1 + playlists.length + favorites.length +
+            playlists.map(playlist => playlist.tracks.length)
+                .reduce((a, b) => a + b, 0);
+        console.info(`Started downloading offline data. (${objects} objects)`);
+
+        // Check if the user has downloaded any tracks.
+        let interval = setInterval(() => {
+            if (downloadedObjects === objects) {
+                downloadedObjects = 0;
+                clearInterval(interval);
+                console.info("Finished downloading offline data.");
+                // TODO: Send notification to user.
+            }
+        }, 1e3);
+
         // Save the playlists to the file system.
         playlists.forEach(playlist => {
             // Save the playlist ID to the user data.
             playlist.id && data.playlists.push(playlist.id);
             // Save the playlist to the file system.
-            fs.saveData(playlist, `${playlistsPath}/${playlist.id}.json`);
+            fs.saveData(playlist, `${playlistsPath}/${playlist.id}.json`)
+                .then(() => downloadedObjects++);
             // Download the tracks in the playlist.
             saveTracks(playlist.tracks);
         });
 
         saveTracks(favorites); // Download every favorite track.
-        await fs.saveData(data, userDataPath); // Save the user data.
+        fs.saveData(data, userDataPath)
+            .then(() => downloadedObjects++); // Save the user data.
     } else {
         await unlink(userDataPath); // Delete the saved user data.
         await unlink(playlistsPath); // Delete the saved playlists.
+        await mkdir(playlistsPath); // Create the playlists directory.
     }
 }
