@@ -5,24 +5,25 @@ import { TabView, Tab } from "@rneui/themed";
 import InAppNotification from "@components/InAppNotification";
 import User from "@components/widgets/User";
 
-import { InAppNotificationData, OfflineUser, OnlineUser } from "@backend/types";
+import type { InAppNotificationData, OfflineUser, OnlineUser } from "@backend/types";
 import { getAvailableUsers, getRecentUsers } from "@backend/social";
+import { userData } from "@backend/user";
 
 import { NotificationsPageStyle } from "@styles/PageStyles";
 
 const placeholderNotifications: InAppNotificationData[] = [
-    // {
-    //     message: "Finished downloading \"The Best of 2019\" playlist",
-    //     icon: "file-download",
-    //     date: new Date(),
-    //     onPress: () => console.log("Pressed")
-    // },
-    // {
-    //     message: "Finished downloading \"The Best of 2022\" playlist",
-    //     icon: "file-download",
-    //     date: new Date(),
-    //     onPress: () => console.log("Pressed")
-    // }
+    {
+        message: "Finished downloading \"The Best of 2019\" playlist",
+        icon: "file-download",
+        date: new Date(),
+        onPress: () => console.log("Pressed")
+    },
+    {
+        message: "Finished downloading \"The Best of 2022\" playlist",
+        icon: "file-download",
+        date: new Date(),
+        onPress: () => console.log("Pressed")
+    }
 ];
 
 interface IState {
@@ -39,7 +40,7 @@ class NotificationsPage extends React.Component<any, IState> {
             notifications: placeholderNotifications,
             tabIndex: 0,
             users: []
-        }
+        };
     }
 
     renderNotification(item: ListRenderItemInfo<InAppNotificationData>) {
@@ -55,11 +56,13 @@ class NotificationsPage extends React.Component<any, IState> {
     }
 
     componentDidMount() {
-        getAvailableUsers().then((users) => {
-            this.setState({ users: users });
-            getRecentUsers().then((recentUsers) => {
-                this.setState({ users: [...this.state.users, ...recentUsers] });
-            });
+        userData && getAvailableUsers().then(async online => {
+            let recents = await getRecentUsers();
+
+            online = online.filter(user => user.userId != userData?.userId);
+            recents = recents.filter(user => user.userId != userData?.userId);
+
+            this.setState({ users: [...online, ...recents] });
         });
     }
 
@@ -70,10 +73,10 @@ class NotificationsPage extends React.Component<any, IState> {
                     value={this.state.tabIndex}
                     style={NotificationsPageStyle.tab}
                     indicatorStyle={{ backgroundColor: "#0a3cef" }}
-                    onChange={(i) => this.setState({ tabIndex: i })}
+                    onChange={page => this.setState({ tabIndex: page })}
                 >
                     <Tab.Item title={"Notifications"} titleStyle={{ color: "#5492ff" }} />
-                    <Tab.Item title={"Friend Activity"} titleStyle={{ color: "#5492ff" }} />
+                    { userData && <Tab.Item title={"Friend Activity"} titleStyle={{ color: "#5492ff" }} /> }
                 </Tab>
 
                 <TabView
@@ -83,20 +86,29 @@ class NotificationsPage extends React.Component<any, IState> {
                     minSwipeRatio={0.1}
                 >
                     <TabView.Item>
-                        <FlatList
-                            data={this.state.notifications}
-                            renderItem={this.renderNotification}
-                            ItemSeparatorComponent={() => <View style={{ height: 0.5, backgroundColor: "#0089d3", width: "80%", alignSelf: "center" }} />}
-                        />
+                        {
+                            this.state.tabIndex == 0 && (
+                                <FlatList
+                                    data={this.state.notifications}
+                                    renderItem={this.renderNotification}
+                                    ItemSeparatorComponent={() => <View style={{ height: 0.5, backgroundColor: "#0089d3", width: "80%", alignSelf: "center" }} />}
+                                />
+                            )
+                        }
                     </TabView.Item>
+
                     <TabView.Item>
-                        <View style={{ padding: 10 }}>
-                            <FlatList
-                                data={this.state.users}
-                                renderItem={(item) => this.renderUser(item)}
-                                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-                            />
-                        </View>
+                        {
+                            userData && this.state.tabIndex == 1 && (
+                                <View style={{ padding: 10 }}>
+                                    <FlatList
+                                        data={this.state.users}
+                                        renderItem={(item) => this.renderUser(item)}
+                                        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                                    />
+                                </View>
+                            )
+                        }
                     </TabView.Item>
                 </TabView>
             </View>
