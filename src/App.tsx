@@ -1,5 +1,5 @@
 import React from "react";
-import { BackHandler, StyleSheet, View, StatusBar, AppState } from "react-native";
+import { StyleSheet, BackHandler, View, StatusBar, AppState } from "react-native";
 
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";

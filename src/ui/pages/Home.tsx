@@ -113,6 +113,11 @@ class Home extends React.Component<any, IState> {
     update = () => this.forceUpdate();
 
     /**
+     * Fetches the playlists.
+     */
+    fetchPlaylists = () => this.setState({ playlists: getPlaylists() })
+
+    /**
      * Reloads all local tracks.
      */
     reloadLocal = async () => {
@@ -148,9 +153,7 @@ class Home extends React.Component<any, IState> {
         emitter.on("login", this.update);
         emitter.on("recent", this.update);
         emitter.on("favorite", this.update);
-        emitter.on("playlist", () => {
-            this.setState({ playlists: getPlaylists() });
-        });
+        emitter.on("playlist", this.fetchPlaylists);
         emitter.on("download", this.reloadLocal);
         emitter.on("delete", this.reloadLocal);
 
@@ -164,7 +167,7 @@ class Home extends React.Component<any, IState> {
         emitter.removeListener("recent", this.update);
         emitter.removeListener("delete", this.update);
         emitter.removeListener("favorite", this.update);
-        emitter.removeListener("playlist", this.update);
+        emitter.removeListener("playlist", this.fetchPlaylists);
         emitter.removeListener("download", this.update);
     }
 
