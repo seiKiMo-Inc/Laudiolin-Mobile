@@ -31,16 +31,15 @@ export const TrackStyle = StyleSheet.create({
 
 export const UserStyle = StyleSheet.create({
     container: {
-
-    },
-    trackIcon: {
-        width: 64, height: 64,
-        borderRadius: 12
+        width: screenWidth - 20,
+        backgroundColor: "#0f1c3a",
+        padding: 10,
+        borderRadius: 20,
+        overflow: "hidden",
     },
     userIcon: {
-        position: "absolute",
-        width: 24, height: 24,
-        borderRadius: 32
+        width: 48, height: 48,
+        borderRadius: 64
     },
     text: {
         paddingLeft: 15,
@@ -49,8 +48,47 @@ export const UserStyle = StyleSheet.create({
     title: {
         color: "white",
         fontFamily: "Poppins",
-        fontSize: 16,
-        width: screenWidth - 160
+        fontSize: 18,
+        width: screenWidth - 120,
+        fontWeight: "bold"
+    },
+    subtitle: {
+        color: "white",
+        fontFamily: "Poppins",
+        fontSize: 18,
+        width: screenWidth - 120,
+    },
+    offlineOverlay: {
+        backgroundColor: `rgba(21,21,21,0.4)`,
+        width: screenWidth - 20,
+        height: 70,
+        position: "absolute",
+        zIndex: 1,
+        borderRadius: 20,
+    },
+    detailsContainer: {
+        padding: 15,
+    },
+    details: {
+        flexDirection: "row",
+        gap: 10,
+        alignItems: "center",
+    },
+    detailsIcon: {
+        width: 64,
+        height: 64,
+        borderRadius: 12,
+    },
+    detailsText: {
+        flexDirection: "column",
+        gap: 5,
+        width: screenWidth - 140,
+    },
+    button: {
+        width: "100%",
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: "#319a02",
     }
 });
 
