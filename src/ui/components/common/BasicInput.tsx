@@ -23,7 +23,7 @@ class BasicInput extends React.Component<IProps, any> {
     render() {
         return (
             <Input
-                value={this.props.text ?? ""}
+                value={this.props.text}
                 label={this.props.label ?? ""}
                 ref={this.props.ref ?? null}
                 placeholder={this.props.placeholder ?? ""}
