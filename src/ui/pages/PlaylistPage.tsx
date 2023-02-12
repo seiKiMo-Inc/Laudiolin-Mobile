@@ -2,7 +2,8 @@ import React from "react";
 import { FlatList, View, ListRenderItemInfo, ScrollView } from "react-native";
 
 import { Icon, ScreenWidth } from "@rneui/base";
-import Track from "@components/widgets/Track";
+
+import Track from "@widgets/Track";
 import Hide from "@components/common/Hide";
 import BasicText from "@components/common/BasicText";
 import JumpInView from "@components/common/JumpInView";
@@ -13,13 +14,12 @@ import BasicCheckbox from "@components/common/BasicCheckbox";
 import FastImage from "react-native-fast-image";
 
 import { PlaylistPageStyle } from "@styles/PageStyles";
-import { OverlayMenu } from "@styles/ModalStyle";
 
-import { editPlaylist } from "@backend/playlist";
-import { Playlist, TrackData } from "@backend/types";
+import type { Playlist, TrackData } from "@backend/types";
 import { playPlaylist, playTrack } from "@backend/audio";
-import { navigate } from "@backend/navigation";
 import { getPlaylistAuthor } from "@backend/user";
+import { editPlaylist } from "@backend/playlist";
+import { navigate } from "@backend/navigation";
 import emitter from "@backend/events";
 
 interface IProps {

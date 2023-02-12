@@ -207,7 +207,10 @@ class Home extends React.Component<any, IState> {
 
     render() {
         return (
-            <ScrollView style={HomePageStyle.text} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                style={HomePageStyle.text}
+                showsVerticalScrollIndicator={false}
+            >
                 <LinearGradient
                     colors={["#354ab2", "transparent"]}
                     style={{

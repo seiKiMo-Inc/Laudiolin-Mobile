@@ -2,8 +2,11 @@ import React from "react";
 import { View, ImageBackground } from "react-native";
 
 import WebView, { WebViewNavigation } from "react-native-webview";
+import BasicTextInput from "@components/common/BasicTextInput";
 import BasicButton from "@components/common/BasicButton";
+import BasicModal from "@components/common/BasicModal";
 import BasicText from "@components/common/BasicText";
+import { ScreenWidth } from "@rneui/base";
 
 import { LoginPageStyle } from "@styles/PageStyles";
 
@@ -12,9 +15,6 @@ import { navigate } from "@backend/navigation";
 import { getLoginUrl, getToken, login } from "@backend/user";
 
 import { console } from "@app/utils";
-import BasicModal from "@components/common/BasicModal";
-import BasicTextInput from "@components/common/BasicTextInput";
-import { ScreenHeight, ScreenWidth } from "@rneui/base";
 
 interface IState {
     showCode: boolean;
@@ -131,17 +131,15 @@ class SearchPage extends React.Component<any, IState> {
 
 
                 <BasicButton text={"Log in with Discord"}
-                             outline={"#5b67af"}
-                             color={"#5b67af"}
-                             bold={true}
+                             outline={"#5b67af"} color={"#5b67af"}
                              width={300} height={40} radius={10}
-                             transform={"uppercase"}
+                             transform={"uppercase"} bold={true}
                              press={() => this.login()}
                              hold={() => this.authCode()}
                 />
 
                 <BasicText text={"OR"} style={{ color: "#FFFFFF80", fontWeight: "bold" }} />
-                
+
                 <BasicButton text={"Continue as Guest"}
                                  button={{ alignSelf: "center" }}
                                  color={"#FFFFFF00"} outline={"#5b67af"}
@@ -149,8 +147,8 @@ class SearchPage extends React.Component<any, IState> {
                                  transform={"uppercase"} bold={true}
                                  press={() => this.ignoreLogin()}
                 />
-                
-                <BasicText text={"Logging in with Discord lets you create playlists, like songs, connect with friends and more!"} 
+
+                <BasicText text={"Logging in with Discord lets you create playlists, like songs, connect with friends and more!"}
                              style={{ width: ScreenWidth, maxWidth: "90%", alignSelf: "center", textAlign: "center"}} />
 
                 <BasicModal
@@ -164,9 +162,9 @@ class SearchPage extends React.Component<any, IState> {
                         onChange={authCode => this.setState({ authCode })}
                     />
                 </BasicModal>
-                
+
             </View>
-            
+
         ) : (
             <WebView
                 source={{ uri: this.state.webViewUrl }}
