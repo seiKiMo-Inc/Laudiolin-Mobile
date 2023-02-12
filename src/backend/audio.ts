@@ -209,7 +209,7 @@ export async function syncToTrack(
     const playing = await getCurrentTrack();
     if (playing?.id != track.id) {
         // Play the track.
-        await playTrack(track, !paused, false, false, false, true);
+        await playTrack(track, true, true, false, false, true);
     }
 
     // Set the progress.
