@@ -3,13 +3,15 @@ import { Dimensions, TouchableWithoutFeedback, View } from "react-native";
 
 import { Icon, Image } from "@rneui/base";
 import BasicText from "@components/common/BasicText";
+import LinearGradient from "react-native-linear-gradient";
 
 import { ControlStyle } from "@styles/WidgetStyle";
 
+import { ui } from "@backend/settings";
 import { getIconUrl } from "@app/utils";
 import { asData, getCurrentTrack } from "@app/backend/audio";
+
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
-import LinearGradient from "react-native-linear-gradient";
 
 interface IProps {
     showPlayingTrackPage: () => void;
@@ -118,19 +120,29 @@ class QuickControl extends React.Component<IProps, IState> {
                             borderRadius: 22,
                             overflow: "hidden"
                         }}>
-                            <LinearGradient
-                                colors={["#1e85ad", "transparent"]}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 0 }}
-                                angle={90}
-                                angleCenter={{ x: 0.5, y: 0.5 }}
-                                useAngle={true}
-                                style={{
-                                    height: 65,
-                                    width: `${this.state.trackProgressPercentage}%`,
-                                    position: "absolute"
-                                }}
-                            />
+                            {
+                                ui().progress_fill == "Gradient" ?
+                                    <LinearGradient
+                                        colors={["#1e85ad", "transparent"]}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 0 }}
+                                        angle={90}
+                                        angleCenter={{ x: 0.5, y: 0.5 }}
+                                        useAngle={true}
+                                        style={{
+                                            height: 65,
+                                            width: `${this.state.trackProgressPercentage}%`,
+                                            position: "absolute"
+                                        }}
+                                    />
+                                    :
+                                    <View style={{
+                                        height: 65,
+                                        width: `${this.state.trackProgressPercentage}%`,
+                                        position: "absolute",
+                                        backgroundColor: "#1e85ad"
+                                    }}/>
+                            }
                         </View>
 
                         <Image

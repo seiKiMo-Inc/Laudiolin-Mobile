@@ -13,7 +13,8 @@ export const defaultSettings: UserSettings = {
     },
     ui: {
         background_color: "",
-        background_url: ""
+        background_url: "",
+        progress_fill: "Solid"
     },
     system: {
         offline: false
@@ -26,6 +27,7 @@ export const settingsKeys: {[key: string]: string} = {
     "search.engine": "Preferred Search Engine",
     "ui.background_color": "Background Color",
     "ui.background_url": "Background URL",
+    "ui.progress_fill": "Progress Fill Style",
     "system.offline": "Full Offline Support"
 };
 

@@ -38,7 +38,8 @@ class Setting extends React.Component<
     getValue(): string {
         switch(this.props.type) {
             case "select":
-                return this.state.value as string;
+                const value = this.state.value as string;
+                return value.length > 0 ? value : this.props.options?.[0] ?? "";
             case "boolean":
                 return (this.state.value as boolean) ? "Enabled" : "Disabled";
             default:
@@ -59,8 +60,8 @@ class Setting extends React.Component<
                 if (options == null) return;
 
                 // Get the index of the current select option.
-                const index = options.findIndex(option => option == this.state.value as string);
-                if (index == -1) return;
+                let index = options.findIndex(option => option == this.state.value as string);
+                if (index == -1) index = 0;
                 // Get the next option, or the first option if there is no next option.
                 const next = options[index + 1] ?? options[0];
                 // Set the next option.
@@ -202,6 +203,16 @@ class SearchPage extends React.Component<any, IState> {
                                  options={["All", "YouTube", "Spotify"]} />
                         { !isOffline && <Setting setting={"system.offline"} type={"boolean"}
                                                  onUpdate={value => offlineSupport(value)} /> }
+                    </View>
+
+                    <View style={{ paddingBottom: 20 }}>
+                        <BasicText
+                            text={"User Interface"}
+                            style={SettingsPageStyle.category}
+                        />
+
+                        <Setting setting={"ui.progress_fill"} type={"select"}
+                                 options={["Solid", "Gradient"]} />
                     </View>
                 </View>
 
