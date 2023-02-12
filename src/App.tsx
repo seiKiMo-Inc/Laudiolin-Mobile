@@ -252,9 +252,9 @@ class App extends React.Component<any, IState> {
                     { !isOffline && <TabView.Item>
                         <SearchPage key={`${this.state.searchPageKey}`} />
                     </TabView.Item> }
-                    {/*<TabView.Item>*/}
-                    {/*    <NotificationsPage key={`${this.state.notificationsPageKey}`} />*/}
-                    {/*</TabView.Item>*/}
+                    <TabView.Item>
+                        <NotificationsPage key={`${this.state.notificationsPageKey}`} />
+                    </TabView.Item>
                     <TabView.Item>
                         <SettingsPage key={`${this.state.settingsPageKey}`} />
                     </TabView.Item>
