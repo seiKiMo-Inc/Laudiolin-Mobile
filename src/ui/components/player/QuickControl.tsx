@@ -113,8 +113,8 @@ class QuickControl extends React.Component<IProps, IState> {
                 <View style={ControlStyle.container}>
                     <View style={{ justifyContent: "center" }}>
                         <View style={{
-                            height: 65,
-                            width: Dimensions.get("window").width - 33,
+                            height: 64,
+                            width: Dimensions.get("window").width - 32,
                             position: "absolute",
                             backgroundColor: "transparent",
                             borderRadius: 22,
