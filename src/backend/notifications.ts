@@ -41,6 +41,7 @@ export async function saveNotifications() {
 export async function notify(notification: InAppNotificationData) {
     // Add the notification to the collection.
     notifications.push(notification);
+    notification.index = notifications.length - 1;
     // Save the notifications.
     await saveNotifications();
     // Emit the notification event.

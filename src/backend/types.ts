@@ -82,7 +82,9 @@ export type InAppNotificationData = {
     icon: string;
 
     event?: string;
+    index?: number;
     progress?: number;
+    totalProgress?: number;
 
     onPress?: (index: number) => void;
     update?: (data: InAppNotificationData) => void;

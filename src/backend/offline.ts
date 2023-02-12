@@ -6,6 +6,7 @@ import * as audio from "@backend/audio";
 import { system } from "@backend/settings";
 
 import { userData, playlists, favorites } from "@backend/user";
+import { dismiss, notify, notifyEmitter } from "@backend/notifications";
 import type { OfflineUserData, Playlist, TrackData, User } from "@backend/types";
 
 import { console } from "@app/utils";
@@ -15,6 +16,8 @@ const playlistsPath = `${DocumentDirectoryPath}/playlists`;
 
 let downloadedObjects = 0; // The number of objects downloaded.
 export let isOffline = false; // Whether the app is in offline mode.
+
+const getDownloadedObjects = () => downloadedObjects; // Get the number of downloaded objects.
 
 /**
  * Loads the user data from the file system.
@@ -90,13 +93,40 @@ export async function offlineSupport(enabled: boolean): Promise<void> {
 
         // Check if the user has downloaded any tracks.
         let interval = setInterval(() => {
-            if (downloadedObjects === objects) {
-                downloadedObjects = 0;
+            if (downloadedObjects == objects) {
                 clearInterval(interval);
-                console.info("Finished downloading offline data.");
-                // TODO: Send notification to user.
+                notify({
+                    type: "info",
+                    message: "Offline data downloaded.",
+                    date: new Date(),
+                    icon: "file-download",
+                    onPress: dismiss
+                });
             }
+
+            notifyEmitter.emit("offlineDownload");
         }, 1e3);
+
+        // Send a notification for the download progress.
+        await notify({
+            type: "progress",
+            message: "Downloading offline data...",
+            date: new Date(),
+            icon: "file-download",
+            event: "offlineDownload",
+            progress: getDownloadedObjects(),
+            totalProgress: objects,
+            onPress: index => {
+                getDownloadedObjects() == objects && dismiss(index);
+            },
+            update: data => {
+                data.progress = getDownloadedObjects();
+                if (getDownloadedObjects() == objects) {
+                    dismiss(data.index ?? 0); // Dismiss the notification.
+                    downloadedObjects = 0; // Reset the downloaded objects.
+                }
+            }
+        });
 
         // Save the playlists to the file system.
         playlists.forEach(playlist => {
