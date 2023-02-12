@@ -206,7 +206,7 @@ export async function playPlaylist(playlist: Playlist, shuffle: boolean): Promis
     shuffle && (tracks = tracks.sort(() => Math.random() - 0.5));
     // Add all tracks in the playlist to the queue.
     for (const track of tracks) {
-        await playTrack(track, false, false, true);
+        await playTrack(track, false, false, false, true);
     }
 
     // Play the player.
@@ -238,7 +238,7 @@ export async function playbackService(): Promise<void> {
             if (await fs.trackExists(asData(nextTrack))) return;
 
             // Pre-fetch the next track.
-            await fetch(`${Gateway}/cache?id=${nextTrack.id}`);
+            await fetch(`${Gateway.url}/cache?id=${nextTrack.id}`);
         }
     });
 
