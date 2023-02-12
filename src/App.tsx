@@ -10,7 +10,7 @@ import NetInfo from "@react-native-community/netinfo";
 import Home from "@pages/Home";
 import SearchPage from "@pages/SearchPage";
 import LoginPage from "@pages/LoginPage";
-import NotificationsPage from "@pages/NotificationsPage";
+import InformationPage from "@pages/InformationPage";
 import SettingsPage from "@pages/SettingsPage";
 import PlaylistsPage from "@pages/PlaylistsPage";
 import PlayingTrackPage from "@pages/PlayingTrackPage";
@@ -28,8 +28,9 @@ import emitter from "@backend/events";
 import { gateway } from "@backend/gateway";
 import { get } from "@backend/settings";
 import { loadState, isOffline } from "@backend/offline";
+import { loadPlayerState, savePlayerState, console } from "@app/utils";
+import { loadNotifications, saveNotifications } from "@backend/notifications";
 import { registerListener, removeListeners } from "@backend/navigation";
-import { loadPlayerState, savePlayerState } from "@app/utils";
 
 interface IState {
     pageIndex: number;
@@ -217,8 +218,13 @@ class App extends React.Component<any, IState> {
             return true;
         });
 
-        // Load the player state.
-        // TODO: await loadPlayerState();
+        // Load application data.
+        setTimeout(() => {
+            loadPlayerState()
+                .catch(err => console.error(err)); // Load the player state.
+            loadNotifications()
+                .catch(err => console.error(err)); // Load the notifications.
+        }, 3e3);
 
         // Hide the splash screen.
         if (SplashScreen) SplashScreen.hide();
@@ -228,6 +234,7 @@ class App extends React.Component<any, IState> {
         emitter.removeListener("login", this.onLogin);
         removeListeners(); // Remove navigation listeners.
 
+        await saveNotifications(); // Save the notifications.
         await savePlayerState(); // Save the player state.
         await TrackPlayer.reset(); // Destroy the player.
         gateway?.close(); // Close the gateway connection.
@@ -253,7 +260,7 @@ class App extends React.Component<any, IState> {
                         <SearchPage key={`${this.state.searchPageKey}`} />
                     </TabView.Item> }
                     { !isOffline && <TabView.Item>
-                        <NotificationsPage key={`${this.state.notificationsPageKey}`} />
+                        <InformationPage key={`${this.state.notificationsPageKey}`} />
                     </TabView.Item> }
                     <TabView.Item>
                         <SettingsPage key={`${this.state.settingsPageKey}`} />

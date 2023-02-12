@@ -74,11 +74,18 @@ export type SystemSettings = {
 };
 export type SettingType = "boolean" | "input" | "select" | "color";
 
+export type NotificationType = "info" | "progress";
 export type InAppNotificationData = {
+    type: NotificationType;
     message: string;
     date: Date;
     icon: string;
-    onPress?: () => void;
+
+    event?: string;
+    progress?: number;
+
+    onPress?: (index: number) => void;
+    update?: (data: InAppNotificationData) => void;
 };
 
 export type PlaylistSelectInfo = {

@@ -5,26 +5,12 @@ import { TabView, Tab } from "@rneui/themed";
 import InAppNotification from "@components/InAppNotification";
 import User from "@components/widgets/User";
 
-import type { InAppNotificationData, OfflineUser, OnlineUser } from "@backend/types";
-import { getAvailableUsers, getRecentUsers } from "@backend/social";
-import { userData } from "@backend/user";
-
 import { NotificationsPageStyle } from "@styles/PageStyles";
 
-const placeholderNotifications: InAppNotificationData[] = [
-    {
-        message: "Finished downloading \"The Best of 2019\" playlist",
-        icon: "file-download",
-        date: new Date(),
-        onPress: () => console.log("Pressed")
-    },
-    {
-        message: "Finished downloading \"The Best of 2022\" playlist",
-        icon: "file-download",
-        date: new Date(),
-        onPress: () => console.log("Pressed")
-    }
-];
+import type { InAppNotificationData, OfflineUser, OnlineUser } from "@backend/types";
+import { registerListener, unregisterListener, dismissAll, notifications } from "@backend/notifications";
+import { getAvailableUsers, getRecentUsers } from "@backend/social";
+import { userData } from "@backend/user";
 
 interface IState {
     notifications: InAppNotificationData[];
@@ -32,19 +18,28 @@ interface IState {
     users: (OnlineUser|OfflineUser)[];
 }
 
-class NotificationsPage extends React.Component<any, IState> {
+class InformationPage extends React.Component<any, IState> {
+    /**
+     * Updates the notifications.
+     */
+    update = (notifications: InAppNotificationData[]) =>
+        this.setState({ notifications });
+
     constructor(props: never) {
         super(props);
 
         this.state = {
-            notifications: placeholderNotifications,
+            notifications,
             tabIndex: 0,
             users: []
         };
     }
 
     renderNotification(item: ListRenderItemInfo<InAppNotificationData>) {
-        return <InAppNotification key={item.index} notification={item.item} />;
+        return <InAppNotification
+            key={item.index} index={item.index}
+            notification={item.item}
+        />;
     }
 
     renderUser(item: ListRenderItemInfo<any>) {
@@ -56,6 +51,8 @@ class NotificationsPage extends React.Component<any, IState> {
     }
 
     componentDidMount() {
+        registerListener(this.update);
+
         userData && getAvailableUsers().then(async online => {
             let recents = await getRecentUsers();
 
@@ -64,6 +61,10 @@ class NotificationsPage extends React.Component<any, IState> {
 
             this.setState({ users: [...online, ...recents] });
         });
+    }
+
+    componentWillUnmount() {
+        unregisterListener(this.update);
     }
 
     render() {
@@ -75,7 +76,8 @@ class NotificationsPage extends React.Component<any, IState> {
                     indicatorStyle={{ backgroundColor: "#0a3cef" }}
                     onChange={page => this.setState({ tabIndex: page })}
                 >
-                    <Tab.Item title={"Notifications"} titleStyle={{ color: "#5492ff" }} />
+                    <Tab.Item title={"Notifications"} titleStyle={{ color: "#5492ff" }}
+                              onLongPress={() => dismissAll()} />
                     { userData && <Tab.Item title={"Friend Activity"} titleStyle={{ color: "#5492ff" }} /> }
                 </Tab>
 
@@ -116,4 +118,4 @@ class NotificationsPage extends React.Component<any, IState> {
     }
 }
 
-export default NotificationsPage;
+export default InformationPage;
