@@ -50,6 +50,7 @@ export type UserSettings = {
     search: SearchSettings;
     audio: AudioSettings;
     ui: UISettings;
+    system: SystemSettings;
     token: string;
 };
 export type SearchSettings = {
@@ -63,6 +64,9 @@ export type UISettings = {
     background_color: string;
     background_url: string;
 };
+export type SystemSettings = {
+    offline: boolean;
+};
 export type SettingType = "boolean" | "input" | "select" | "color";
 
 export type InAppNotificationData = {
@@ -75,4 +79,10 @@ export type InAppNotificationData = {
 export type PlaylistSelectInfo = {
     title: string;
     callback: (playlist?: Playlist) => void;
+};
+
+export type OfflineUserData = {
+    user: User;
+    playlists: string[];
+    favorites: string[];
 };

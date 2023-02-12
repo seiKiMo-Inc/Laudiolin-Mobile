@@ -1,4 +1,4 @@
-import type { UserSettings, SearchSettings, AudioSettings, UISettings } from "@backend/types";
+import type { UserSettings, SearchSettings, AudioSettings, UISettings, SystemSettings } from "@backend/types";
 
 import EncryptedStorage from "react-native-encrypted-storage";
 
@@ -15,6 +15,9 @@ export const defaultSettings: UserSettings = {
         background_color: "",
         background_url: ""
     },
+    system: {
+        offline: false
+    },
     token: ""
 };
 
@@ -22,7 +25,8 @@ export const settingsKeys: {[key: string]: string} = {
     "search.accuracy": "Search Accuracy",
     "search.engine": "Preferred Search Engine",
     "ui.background_color": "Background Color",
-    "ui.background_url": "Background URL"
+    "ui.background_url": "Background URL",
+    "system.offline": "Full Offline Support"
 };
 
 /**
@@ -107,6 +111,13 @@ export function ui(): UISettings {
     return settings?.ui || <UISettings> {};
 }
 
+/**
+ * Returns the cached system settings.
+ */
+export function system(): SystemSettings {
+    return settings?.system || <SystemSettings> {};
+}
+
 /*
  * Local storage utilities.
  */
@@ -132,7 +143,7 @@ export function getFromPath(path: string, fallback: string | null = null): strin
  * @param path The path to save the value to. (ex. settings.search.accuracy)
  * @param value The value to save.
  */
-export async function saveFromPath(path: string, value: string = ""): Promise<void> {
+export async function saveFromPath(path: string, value: any = ""): Promise<void> {
     // Get the correct object.
     const parts = path.split(".");
     const key = parts.pop() as string;

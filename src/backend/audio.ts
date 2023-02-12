@@ -51,8 +51,9 @@ export function asData(track: Track): TrackData {
 /**
  * Downloads a track and saves it to the file system.
  * @param track The track to download.
+ * @param emit Should the download event be emitted?
  */
-export async function downloadTrack(track: TrackData): Promise<void> {
+export async function downloadTrack(track: TrackData, emit = true): Promise<void> {
     if (await fs.trackExists(track)) {
         return;
     }
@@ -60,15 +61,15 @@ export async function downloadTrack(track: TrackData): Promise<void> {
     // Create the track's folder.
     await fs.createTrackFolder(track);
     // Download the track data as necessary.
-    await fs.downloadUrl(track.url, fs.getTrackPath(track));
-    await fs.downloadUrl(track.icon, fs.getIconPath(track));
+    await fs.downloadUrl(getStreamingUrl(track), fs.getTrackPath(track));
+    await fs.downloadUrl(getIconUrl(track), fs.getIconPath(track));
     // Save the track's data.
     track.icon = `file://${fs.getIconPath(track)}`;
     track.url = `file://${fs.getTrackPath(track)}`;
     await fs.saveData(track, fs.getDataPath(track));
 
     // Emit the track downloaded event.
-    emitter.emit("download");
+    emit && emitter.emit("download");
 }
 
 /**

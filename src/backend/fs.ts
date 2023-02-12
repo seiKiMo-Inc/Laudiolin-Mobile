@@ -10,6 +10,7 @@ import { downloadFile, writeFile, readFile, mkdir, unlink, readDir, exists } fro
  */
 export async function createFolders(): Promise<void> {
     await mkdir(`${DocumentDirectoryPath}/tracks`);
+    await mkdir(`${DocumentDirectoryPath}/playlists`);
 }
 
 /**
@@ -48,7 +49,7 @@ export function getIconPath(track: TrackData): string {
  * Standardized way to get the file path for a track's data.
  * @param track A track data object.
  */
-export function getDataPath(track: TrackData): string {
+export function getDataPath(track: TrackData|{ id: string }): string {
     return `${DocumentDirectoryPath}/tracks/${track.id}/data.json`;
 }
 
@@ -106,6 +107,16 @@ export async function trackExists(track: TrackData): Promise<boolean> {
  */
 export async function downloadUrl(url: string, path: string): Promise<DownloadResult> {
     return downloadFile({ fromUrl: url, toFile: path }).promise;
+}
+
+/**
+ * Reads the data from the file system.
+ * @param path The path to read the file from.
+ * @return The data read from the file. Null if the file doesn't exist.
+ */
+export async function readData(path: string): Promise<any|null> {
+    if (!await exists(path)) return null; // File doesn't exist.
+    return JSON.parse(await readFile(path)); // File exists.
 }
 
 /**

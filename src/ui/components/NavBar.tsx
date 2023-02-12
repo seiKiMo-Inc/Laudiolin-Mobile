@@ -4,6 +4,8 @@ import { Tab } from "@rneui/themed";
 
 import { NavBarStyle } from "@styles/NavBarStyle"
 
+import { isOffline } from "@backend/offline";
+
 interface IProps {
     pageIndex: number;
     setPageIndex: (i: number) => void;
@@ -26,16 +28,16 @@ class NavBar extends React.Component<IProps, never> {
                      icon={{ name: "home", type: "material", color: this.props.pageIndex == 0 ? "#5bc6ff" : "#bebebe", size: 30 }}
                      titleStyle={{ color: "#5492ff" }}
                  />
-                 <Tab.Item
+                 { !isOffline && <Tab.Item
                      icon={{ name: "search", type: "material", color: this.props.pageIndex == 1 ? "#5bc6ff" : "#bebebe", size: 30 }}
                      titleStyle={{ color: "#5492ff" }}
-                 />
+                 /> }
                  {/*<Tab.Item*/}
                  {/*    icon={{ name: "notifications", type: "material", color: this.props.pageIndex == 2 ? "#5bc6ff" : "#bebebe", size: 30 }}*/}
                  {/*    titleStyle={{ color: "#5492ff" }}*/}
                  {/*/>*/}
                  <Tab.Item
-                     icon={{ name: "account-circle", type: "material", color: this.props.pageIndex == 3 ? "#5bc6ff" : "#bebebe", size: 30 }}
+                     icon={{ name: "settings", type: "material", color: this.props.pageIndex == 3 ? "#5bc6ff" : "#bebebe", size: 30 }}
                      titleStyle={{ color: "#5492ff" }}
                  />
              </Tab>

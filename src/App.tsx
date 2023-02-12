@@ -3,8 +3,9 @@ import { BackHandler, StyleSheet, View, StatusBar } from "react-native";
 
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
-import SplashScreen from 'react-native-splash-screen'
+import SplashScreen from "react-native-splash-screen";
 import TrackPlayer from "react-native-track-player";
+import NetInfo from "@react-native-community/netinfo";
 
 import Home from "@pages/Home";
 import SearchPage from "@pages/SearchPage";
@@ -24,9 +25,10 @@ import { MenuProvider } from "react-native-popup-menu";
 
 import * as user from "@backend/user";
 import emitter from "@backend/events";
+import { get } from "@backend/settings";
+import { loadState, isOffline } from "@backend/offline";
 import { registerListener, removeListeners } from "@backend/navigation";
 import { loadPlayerState, savePlayerState } from "@app/utils";
-import { get } from "@backend/settings";
 
 interface IState {
     pageIndex: number;
@@ -93,21 +95,38 @@ class App extends React.Component<any, IState> {
         }
     };
 
+    /**
+     * Continues the app loading process.
+     */
     async continueLoading(): Promise<void> {
-        get("authenticated").then((authenticated) => {
-            if (authenticated === "guest") {
-                this.setState({ loggedIn: true });
-            }
-        });
+        const result = await get("authenticated");
+        if (result == "guest") {
+            this.setState({ loggedIn: true });
+        }
+
         // Re-render the app.
         this.setState({ reloadKey: "loaded" });
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         // Listen for the login event.
         emitter.on("login", this.onLogin);
-        // Login to laudiolin.
-        user.login().then(() => this.continueLoading());
+        // Login to Laudiolin.
+        NetInfo.fetch()
+            .then(state => {
+                if (state.isConnected) {
+                    // Login over the network.
+                    user.login().then(() => this.continueLoading());
+                } else {
+                    // Load the offline state.
+                    setTimeout(() => loadState(
+                        user.loaders.userData,
+                        user.loaders.playlists,
+                        user.loaders.favorites,
+                    ).then(() => this.setState({ reloadKey: "loaded" })), 1e3);
+                }
+            })
+            .catch(err => console.error(err));
 
         registerListener(page => {
             switch (page) {
@@ -228,9 +247,9 @@ class App extends React.Component<any, IState> {
                     <TabView.Item>
                         <Home />
                     </TabView.Item>
-                    <TabView.Item>
+                    { !isOffline && <TabView.Item>
                         <SearchPage key={`${this.state.searchPageKey}`} />
-                    </TabView.Item>
+                    </TabView.Item> }
                     {/*<TabView.Item>*/}
                     {/*    <NotificationsPage key={`${this.state.notificationsPageKey}`} />*/}
                     {/*</TabView.Item>*/}

@@ -8,12 +8,14 @@ import JumpInView from "@components/common/JumpInView";
 import ProgressBar from "@components/player/ProgressBar";
 import Controls from "@components/player/Controls";
 
+import TextTicker from "react-native-text-ticker";
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
 import { TrackMenuStyle } from "@styles/MenuStyle";
 import { PlayingTrackPageStyle } from "@styles/PageStyles";
 
 import type { Playlist } from "@backend/types";
+import { isOffline } from "@backend/offline";
 import { currentPlaylist } from "@backend/playlist";
 import { getIconUrl, openTrack, promptPlaylistTrackAdd } from "@app/utils";
 import { navigate } from "@backend/navigation";
@@ -22,7 +24,6 @@ import { getCurrentTrack, shuffleQueue, asData, downloadTrack, toggleRepeatState
 
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
-import TextTicker from "react-native-text-ticker";
 
 interface IProps {
     showPage: boolean;
@@ -231,14 +232,16 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                                 />
                             </View>
 
-                            <Icon
-                                name={"favorite"}
-                                type={"material"}
-                                size={30}
-                                color={this.state.favorite ? "#d21d4f" : "#FFFFFF"}
-                                underlayColor={"#FFFFFF"}
-                                onPress={() => this.favoriteTrack()}
-                            />
+                            <Hide show={!isOffline}>
+                                <Icon
+                                    name={"favorite"}
+                                    type={"material"}
+                                    size={30}
+                                    color={this.state.favorite ? "#d21d4f" : "#FFFFFF"}
+                                    underlayColor={"#FFFFFF"}
+                                    onPress={() => this.favoriteTrack()}
+                                />
+                            </Hide>
                         </View>
 
                         <View style={PlayingTrackPageStyle.lowerContainer}>

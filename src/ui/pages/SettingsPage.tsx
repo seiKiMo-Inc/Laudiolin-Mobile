@@ -16,9 +16,13 @@ import * as settings from "@backend/settings";
 import { navigate } from "@backend/navigation";
 import { getCode, logout, userData } from "@backend/user";
 import { connect, connected } from "@backend/gateway";
+import { offlineSupport, isOffline } from "@backend/offline";
 
 class Setting extends React.Component<
-    { setting: string, type: SettingType, options?: string[] }, { value: string }
+    {
+        setting: string, type: SettingType, options?: string[]
+        onUpdate?: (value: any) => void
+    }, { value: string|boolean }
 > {
     constructor(props: any) {
         super(props);
@@ -26,6 +30,20 @@ class Setting extends React.Component<
         this.state = {
             value: ""
         };
+    }
+
+    /**
+     * Returns a string'ified value of the setting.
+     */
+    getValue(): string {
+        switch(this.props.type) {
+            case "select":
+                return this.state.value as string;
+            case "boolean":
+                return (this.state.value as boolean) ? "Enabled" : "Disabled";
+            default:
+                return "";
+        }
     }
 
     async componentDidMount() {
@@ -41,15 +59,23 @@ class Setting extends React.Component<
                 if (options == null) return;
 
                 // Get the index of the current select option.
-                const index = options.findIndex(option => option == this.state.value);
+                const index = options.findIndex(option => option == this.state.value as string);
                 if (index == -1) return;
                 // Get the next option, or the first option if there is no next option.
                 const next = options[index + 1] ?? options[0];
                 // Set the next option.
                 await settings.saveFromPath(this.props.setting, next);
                 this.setState({ value: next });
-                return;
+                break;
+            case "boolean":
+                // Set the next option.
+                await settings.saveFromPath(this.props.setting, !this.state.value);
+                this.setState({ value: !this.state.value });
+                break;
         }
+
+        // Invoke the update callback.
+        this.props.onUpdate?.(this.state.value);
     }
 
     render() {
@@ -57,7 +83,7 @@ class Setting extends React.Component<
             <View style={SettingsPageStyle.configure}>
                 <BasicText text={settings.settingsKeys[this.props.setting]}
                            style={SettingsPageStyle.setting} />
-                <BasicText text={this.state.value}
+                <BasicText text={this.getValue()}
                            style={SettingsPageStyle.value}
                            press={() => this.showInput()} />
             </View>
@@ -131,9 +157,10 @@ class SearchPage extends React.Component<any, IState> {
                                     <Image
                                         style={SettingsPageStyle.userImage}
                                         source={{ uri: user?.avatar ?? "" }}
-                                        onLongPress={() => this.setState({ showAuthModal: true })}
+                                        onLongPress={() => !isOffline && this.setState({ showAuthModal: true })}
                                     />
                                 </View>
+
                                 <View style={{ justifyContent: "center" }}>
                                     <BasicText text={"Logged in as"} style={{ fontSize: 13 }} />
                                     <MixedText
@@ -142,11 +169,14 @@ class SearchPage extends React.Component<any, IState> {
                                         secondStyle={{ ...SettingsPageStyle.userText, color: "#888787" }}
                                     />
                                 </View>
-                                <BasicText
-                                    containerStyle={SettingsPageStyle.logOutContainer}
-                                    text={"Log out"} style={SettingsPageStyle.logOut}
-                                    press={async () => await logout()}
-                                />
+
+                                <Hide show={!isOffline}>
+                                    <BasicText
+                                        containerStyle={SettingsPageStyle.logOutContainer}
+                                        text={"Log out"} style={SettingsPageStyle.logOut}
+                                        press={async () => await logout()}
+                                    />
+                                </Hide>
                             </>
                         ) : (
                             <View style={{ alignItems: "center", width: Dimensions.get("window").width - 20 }}>
@@ -170,11 +200,13 @@ class SearchPage extends React.Component<any, IState> {
 
                         <Setting setting={"search.engine"} type={"select"}
                                  options={["All", "YouTube", "Spotify"]} />
+                        { !isOffline && <Setting setting={"system.offline"} type={"boolean"}
+                                                 onUpdate={value => offlineSupport(value)} /> }
                     </View>
                 </View>
 
                 <View style={SettingsPageStyle.actionsContainer}>
-                    <Hide show={!connected}>
+                    <Hide show={!connected && !isOffline}>
                         <BasicButton
                             color={"#c75450"}
                             text={"Reconnect to Gateway"}

@@ -16,6 +16,21 @@ export let playlists: Playlist[] = []; // The loaded playlist data.
 export let favorites: TrackData[] = []; // The loaded favorite tracks.
 export let recents: TrackData[] = []; // The loaded recent tracks.
 
+/**
+ * Data loaders for offline support.
+ */
+export const loaders = {
+    userData: (data: User) => {
+        userData = data; // Update the user data.
+        emitter.emit("login", data); // Emit the login event.
+    },
+    playlists: (data: Playlist[]) => {
+        playlists = data; // Update the playlist data.
+        emitter.emit("playlist", data); // Emit the playlist event.
+    },
+    favorites: (data: TrackData[]) => favorites = data,
+};
+
 /*
  * HTTP request utilities.
  */
