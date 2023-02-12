@@ -32,10 +32,10 @@ class NavBar extends React.Component<IProps, never> {
                      icon={{ name: "search", type: "material", color: this.props.pageIndex == 1 ? "#5bc6ff" : "#bebebe", size: 30 }}
                      titleStyle={{ color: "#5492ff" }}
                  /> }
-                 <Tab.Item
-                     icon={{ name: "notifications", type: "material", color: this.props.pageIndex == 2 ? "#5bc6ff" : "#bebebe", size: 30 }}
+                 { !isOffline && <Tab.Item
+                     icon={{ name: "account-circle", type: "material", color: this.props.pageIndex == 2 ? "#5bc6ff" : "#bebebe", size: 30 }}
                      titleStyle={{ color: "#5492ff" }}
-                 />
+                 /> }
                  <Tab.Item
                      icon={{ name: "settings", type: "material", color: this.props.pageIndex == 3 ? "#5bc6ff" : "#bebebe", size: 30 }}
                      titleStyle={{ color: "#5492ff" }}

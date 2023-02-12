@@ -1,9 +1,8 @@
 import React from "react";
-import { Dimensions, View, FlatList, ListRenderItemInfo } from "react-native";
+import { View, FlatList, ListRenderItemInfo } from "react-native";
 
 import { TabView, Tab } from "@rneui/themed";
 import InAppNotification from "@components/InAppNotification";
-import BasicText from "@components/common/BasicText";
 import User from "@components/widgets/User";
 
 import { InAppNotificationData, OfflineUser, OnlineUser } from "@backend/types";
@@ -12,18 +11,18 @@ import { getAvailableUsers, getRecentUsers } from "@backend/social";
 import { NotificationsPageStyle } from "@styles/PageStyles";
 
 const placeholderNotifications: InAppNotificationData[] = [
-    {
-        message: "Finished downloading \"The Best of 2019\" playlist",
-        icon: "file-download",
-        date: new Date(),
-        onPress: () => console.log("Pressed")
-    },
-    {
-        message: "Finished downloading \"The Best of 2022\" playlist",
-        icon: "file-download",
-        date: new Date(),
-        onPress: () => console.log("Pressed")
-    }
+    // {
+    //     message: "Finished downloading \"The Best of 2019\" playlist",
+    //     icon: "file-download",
+    //     date: new Date(),
+    //     onPress: () => console.log("Pressed")
+    // },
+    // {
+    //     message: "Finished downloading \"The Best of 2022\" playlist",
+    //     icon: "file-download",
+    //     date: new Date(),
+    //     onPress: () => console.log("Pressed")
+    // }
 ];
 
 interface IState {
