@@ -35,6 +35,16 @@ export function setupListeners(): void {
     emitter.on("seek", () => update(false, true));
     TrackPlayer.addEventListener(Event.PlaybackState, () => update());
     TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => update(false));
+
+    // Add app state listeners.
+    emitter.on("appState", state => {
+        if (connected) return;
+        if (state == "background") {
+            clearTimeout(retryToken);
+        } else if (state == "active") {
+            connect();
+        }
+    });
 }
 
 /**
@@ -97,8 +107,7 @@ function onClose(): void {
     connected = false;
 
     // Retry the connection.
-    // TODO: Pause when the device closes the app.
-    // retryToken = setTimeout(connect, 5000);
+    retryToken = setTimeout(connect, 5000);
 }
 
 /**
@@ -116,12 +125,10 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
     // Handle the message data.
     switch (message?.type) {
         case "initialize":
-            gateway?.send(
-                JSON.stringify(<InitializeMessage>{
-                    type: "initialize",
-                    token: await token()
-                })
-            );
+            sendGatewayMessage(<InitializeMessage>{
+                type: "initialize",
+                token: await token()
+            });
 
             // Log gateway handshake.
             console.info("Gateway handshake complete.");
@@ -133,11 +140,9 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
 
             return;
         case "latency":
-            gateway?.send(
-                JSON.stringify(<LatencyMessage>{
-                    type: "latency"
-                })
-            );
+            sendGatewayMessage(<LatencyMessage>{
+                type: "latency"
+            });
             return;
         case "sync":
             const { track, progress, paused, seek } = message as SyncMessage;
@@ -178,7 +183,8 @@ export function sendGatewayMessage(message: object) {
     }
 
     // Send the message to the gateway.
-    gateway?.send(JSON.stringify(message));
+    if (gateway && gateway.readyState == WebSocket.OPEN)
+        gateway.send(JSON.stringify(message));
 }
 
 /**

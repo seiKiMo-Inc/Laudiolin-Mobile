@@ -11,6 +11,7 @@ import type { InAppNotificationData, OfflineUser, OnlineUser } from "@backend/ty
 import { registerListener, unregisterListener, dismissAll, notifications } from "@backend/notifications";
 import { getAvailableUsers, getRecentUsers } from "@backend/social";
 import { userData } from "@backend/user";
+import emitter from "@backend/events";
 
 interface IState {
     notifications: InAppNotificationData[];
@@ -22,8 +23,16 @@ class InformationPage extends React.Component<any, IState> {
     /**
      * Updates the notifications.
      */
-    update = (notifications: InAppNotificationData[]) =>
+    notificationUpdate = (notifications: InAppNotificationData[]) =>
         this.setState({ notifications });
+
+    /**
+     * Updates the users.
+     */
+    userUpdate = async () => {
+        // Fetch the users from the backend.
+        await this.fetchUsers();
+    };
 
     reloadInterval: any = null;
 
@@ -67,18 +76,24 @@ class InformationPage extends React.Component<any, IState> {
     }
 
     async componentDidMount() {
-        registerListener(this.update);
+        registerListener(this.notificationUpdate);
         await this.fetchUsers();
 
         // Set a reload interval.
-        this.reloadInterval = setInterval(async () => {
-            // Fetch the users from the backend.
-            await this.fetchUsers();
-        }, 10e3);
+        this.reloadInterval = setInterval(this.userUpdate, 10e3);
+
+        // Set a listener for app state.
+        emitter.on("appState", state => {
+            if (state == "background") {
+                this.reloadInterval && clearInterval(this.reloadInterval);
+            } else if (state == "active") {
+                this.reloadInterval = setInterval(this.userUpdate, 10e3);
+            }
+        });
     }
 
     componentWillUnmount() {
-        unregisterListener(this.update);
+        unregisterListener(this.notificationUpdate);
         this.reloadInterval && clearInterval(this.reloadInterval);
     }
 

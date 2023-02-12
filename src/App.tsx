@@ -1,5 +1,5 @@
 import React from "react";
-import { BackHandler, StyleSheet, View, StatusBar } from "react-native";
+import { BackHandler, StyleSheet, View, StatusBar, AppState } from "react-native";
 
 import { TabView } from "@rneui/themed";
 import LinearGradient from "react-native-linear-gradient";
@@ -217,6 +217,9 @@ class App extends React.Component<any, IState> {
             BackHandler.exitApp();
             return true;
         });
+
+        AppState.addEventListener("change", state =>
+            emitter.emit("appState", state));
 
         // Load application data.
         setTimeout(() => {
