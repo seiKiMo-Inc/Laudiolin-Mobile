@@ -28,8 +28,6 @@ If you do not wish to build the app from source you can download the latest rele
 
 - **TODO: Continue writing this guide.**
 
-and more...
-
 ## Developer Quickstart
 
 - **TODO: Continue writing this guide.**
