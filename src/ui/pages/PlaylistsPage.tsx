@@ -1,30 +1,29 @@
 import React from "react";
 import { ImageBackground, View, TouchableHighlight, ScrollView } from "react-native";
 
-import { Icon } from "@rneui/base";
+import { Icon, ScreenWidth } from "@rneui/base";
 
-import BasicText from "@components/common/BasicText";
+import FastImage from "react-native-fast-image";
+import TextTicker from "react-native-text-ticker";
 import LinearGradient from "react-native-linear-gradient";
+import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
 import JumpInView from "@components/common/JumpInView";
+import BasicCheckbox from "@components/common/BasicCheckbox";
 import BasicButton from "@components/common/BasicButton";
 import BasicModal from "@components/common/BasicModal";
 import BasicInput from "@components/common/BasicInput";
-import BasicCheckbox from "@components/common/BasicCheckbox";
-import TextTicker from "react-native-text-ticker";
+import BasicText from "@components/common/BasicText";
 
 import { PlaylistMenuStyle } from "@styles/MenuStyle";
 import { PlaylistsPageStyle } from "@styles/PageStyles";
 
+import type { Playlist, User } from "@backend/types";
 import { getPlaylistAuthor, createPlaylist, login, deletePlaylist, loadPlaylists, userData } from "@backend/user";
 import { importPlaylist, fetchAllPlaylists } from "@backend/playlist";
-import { navigate } from "@backend/navigation";
-import { Playlist, User } from "@backend/types";
-import emitter from "@backend/events";
-
-import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 import { playPlaylist } from "@backend/audio";
-import FastImage from "react-native-fast-image";
+import { navigate } from "@backend/navigation";
+import emitter from "@backend/events";
 
 class ListPlaylist extends React.Component<any, any> {
     constructor(props: any) {
@@ -219,7 +218,10 @@ class PlaylistsPage extends React.Component<IProps, IState> {
 
     render() {
         return this.props.showPage ? (
-            <JumpInView visible={this.props.showPage} style={PlaylistsPageStyle.container}>
+            <JumpInView
+                visible={this.props.showPage}
+                style={PlaylistsPageStyle.container}
+            >
                 <View style={PlaylistsPageStyle.header}>
                     <Icon name={"chevron-left"} type={"material"} color={"white"} size={35} onPress={() => navigate("Home")} underlayColor={"#FFF"} />
                     <BasicText text={"Playlists"} style={{ fontSize: 25, fontWeight: "bold", marginLeft: 10 }} />
@@ -270,6 +272,7 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                         title={"Create Playlist"}
                         onBackdropPress={() => this.setState({ showCreatePlaylistModal: false })}
                     >
+                        <ScrollView showsVerticalScrollIndicator={false} style={{width: ScreenWidth, maxWidth: "100%"}}>
                         <BasicInput
                             placeholder={"Driving playlist..."}
                             onChangeText={(text) => this.setState({ playlistNameInputText: text })}
@@ -296,8 +299,11 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                             text={"Or Import A Playlist"}
                             container={{ alignItems: "center", marginTop: 10 }}
                             press={() => this.setState({ showImportPlaylistModal: true, showCreatePlaylistModal: false })}
-                            outline={"#5b67af"}
+                            color={"#5b67af50"}
+                            outline={"#5b67af00"}
+                            button={{ width: "100%", borderRadius: 10 }}
                         />
+                        </ScrollView>
                     </BasicModal>
 
                     <BasicModal
