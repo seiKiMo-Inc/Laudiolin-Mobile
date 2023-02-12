@@ -5,6 +5,7 @@ import { Slider } from "@rneui/themed";
 import { ProgressBarStyle } from "@styles/ProgressBarStyle";
 
 interface IProps {
+    canSeek: boolean;
     trackLength: number;
     currentTime: number;
     onSeek: (value: number) => void;
@@ -41,7 +42,8 @@ class ProgressBar extends React.Component<IProps, any> {
                     maximumTrackTintColor={"#FFFFFF50"}
                     thumbStyle={ProgressBarStyle.thumb}
                     trackStyle={ProgressBarStyle.track}
-                    allowTouchTrack={true}
+                    allowTouchTrack={this.props.canSeek}
+                    disabled={!this.props.canSeek}
                 />
 
                 <View style={{ flexDirection: 'row', justifyContent: "space-between" }}>

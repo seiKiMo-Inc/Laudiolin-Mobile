@@ -10,6 +10,13 @@ import { console } from "@app/utils";
 export let listeningWith: User | null = null; // The ID of the user you are currently listening with.
 
 /**
+ * Checks if the user is listening with someone.
+ */
+export function isListeningWith(): boolean {
+    return listeningWith != null;
+}
+
+/**
  * Listens along with the specified user.
  * @param user The user to listen along with.
  */
@@ -17,7 +24,7 @@ export async function listenWith(user: string | null = null): Promise<void> {
     // Set the listening with user.
     listeningWith = user ? await getUserById(user) : null;
     // Inform the gateway to sync with the specified user.
-    user && listenAlongWith(user);
+    listenAlongWith(user);
     // Emit the listening event.
     emitter.emit("listen", listeningWith);
 }
