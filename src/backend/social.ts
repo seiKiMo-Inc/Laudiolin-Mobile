@@ -7,6 +7,8 @@ import emitter from "@backend/events";
 import { targetRoute } from "@backend/user";
 import { console } from "@app/utils";
 
+import TrackPlayer from "react-native-track-player";
+
 export let listeningWith: User | null = null; // The ID of the user you are currently listening with.
 
 /**
@@ -21,6 +23,8 @@ export function isListeningWith(): boolean {
  * @param user The user to listen along with.
  */
 export async function listenWith(user: string | null = null): Promise<void> {
+    // Reset the track player.
+    await TrackPlayer.reset();
     // Set the listening with user.
     listeningWith = user ? await getUserById(user) : null;
     // Inform the gateway to sync with the specified user.

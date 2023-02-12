@@ -108,9 +108,6 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
         console.error("Failed to parse message data."); return;
     }
 
-    if (message?.type != "latency")
-        console.info(message);
-
     // Handle the message data.
     switch (message?.type) {
         case "initialize":
@@ -138,7 +135,7 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
             );
             return;
         case "sync":
-            const { track, progress } = message as SyncMessage;
+            const { track, progress, paused } = message as SyncMessage;
 
             // Validate the track.
             if (track == null && progress == -1) {
@@ -147,6 +144,10 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
 
             // Pass the message to the player.
             await syncToTrack(track, progress);
+            // Set the player's state.
+            if (paused)
+                await TrackPlayer.pause();
+            else await TrackPlayer.play();
             return;
         case "recents":
             const { recents } = message as RecentsMessage;
@@ -233,6 +234,7 @@ export type SyncMessage = BaseGatewayMessage & {
     type: "sync";
     track: TrackData | null;
     progress: number;
+    paused: boolean;
 };
 // To client.
 export type RecentsMessage = BaseGatewayMessage & {
