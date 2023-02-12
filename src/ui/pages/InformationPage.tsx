@@ -34,6 +34,18 @@ class InformationPage extends React.Component<any, IState> {
         await this.fetchUsers();
     };
 
+    /**
+     * Updates the state.
+     * @param state The new state.
+     */
+    stateUpdate = (state: string) => {
+        if (state == "background") {
+            this.reloadInterval && clearInterval(this.reloadInterval);
+        } else if (state == "active") {
+            this.reloadInterval = setInterval(this.userUpdate, 10e3);
+        }
+    };
+
     reloadInterval: any = null;
 
     constructor(props: never) {
@@ -83,18 +95,13 @@ class InformationPage extends React.Component<any, IState> {
         this.reloadInterval = setInterval(this.userUpdate, 10e3);
 
         // Set a listener for app state.
-        emitter.on("appState", state => {
-            if (state == "background") {
-                this.reloadInterval && clearInterval(this.reloadInterval);
-            } else if (state == "active") {
-                this.reloadInterval = setInterval(this.userUpdate, 10e3);
-            }
-        });
+        emitter.on("appState", this.stateUpdate);
     }
 
     componentWillUnmount() {
         unregisterListener(this.notificationUpdate);
         this.reloadInterval && clearInterval(this.reloadInterval);
+        emitter.removeListener("appState", this.stateUpdate);
     }
 
     render() {
