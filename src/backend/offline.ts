@@ -102,6 +102,8 @@ export async function offlineSupport(enabled: boolean): Promise<void> {
                     icon: "file-download",
                     onPress: dismiss
                 });
+
+                notifyEmitter.removeAllListeners("offlineDownload");
             }
 
             notifyEmitter.emit("offlineDownload");

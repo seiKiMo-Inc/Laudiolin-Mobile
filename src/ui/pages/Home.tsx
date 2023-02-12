@@ -165,10 +165,10 @@ class Home extends React.Component<any, IState> {
     componentWillUnmount() {
         emitter.removeListener("login", this.update);
         emitter.removeListener("recent", this.update);
-        emitter.removeListener("delete", this.update);
         emitter.removeListener("favorite", this.update);
         emitter.removeListener("playlist", this.fetchPlaylists);
-        emitter.removeListener("download", this.update);
+        emitter.removeListener("download", this.reloadLocal);
+        emitter.removeListener("delete", this.reloadLocal);
     }
 
     /**

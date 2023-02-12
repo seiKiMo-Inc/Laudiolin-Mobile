@@ -242,7 +242,7 @@ export async function loadRecents(tracks: TrackData[]|null = null) {
  * Returns an empty string if the user data has not been loaded.
  */
 export function getUserId(): string {
-    return userData ? userData.userId ?? "" : "";
+    return userData ? userData?.userId ?? "" : "";
 }
 
 /**

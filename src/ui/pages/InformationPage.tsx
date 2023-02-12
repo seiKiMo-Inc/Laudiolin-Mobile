@@ -82,7 +82,7 @@ class InformationPage extends React.Component<any, IState> {
         const recentUsers = await getRecentUsers();
         // Filter users that are the current user.
         const users = availableUsers.concat(recentUsers)
-            .filter(user => user.userId != userData?.userId);
+            .filter(user => user?.userId != userData?.userId);
         // Set the users.
         this.setState({ users });
     }

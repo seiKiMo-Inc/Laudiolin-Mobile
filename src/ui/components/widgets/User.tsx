@@ -108,13 +108,13 @@ class User extends React.PureComponent<IProps, IState> {
                                     </View>
 
                                     <BasicButton
-                                        text={listeningWith?.userId == user.userId ?
+                                        text={listeningWith?.userId == user?.userId ?
                                             "Already Listening!" : "Listen Along!"}
-                                        disabled={listeningWith?.userId == user.userId}
+                                        disabled={listeningWith?.userId == user?.userId}
                                         button={UserStyle.button}
                                         container={{ marginTop: 15 }}
                                         title={{ color: "white", fontSize: 18, fontWeight: "bold" }}
-                                        press={() => listenWith(user.userId)}
+                                        press={() => listenWith(user?.userId ?? null)}
                                     />
                                 </View>
                             )
