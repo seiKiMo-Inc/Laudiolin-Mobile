@@ -1,14 +1,16 @@
+import { Platform } from "react-native";
+
 import type { TrackData } from "@backend/types";
 
 import { loadRecents, token, recents } from "@backend/user";
 import { asData, getCurrentTrack, syncToTrack } from "@backend/audio";
+import { listenWith } from "@backend/social";
 import { Gateway } from "@app/constants";
 import emitter from "@backend/events";
 
-import TrackPlayer, { Event } from "react-native-track-player";
+import TrackPlayer, { Event, State } from "react-native-track-player";
 
 import { console } from "@app/utils";
-import { Platform } from "react-native";
 
 let retryToken: any = null;
 export let connected: boolean = false;
@@ -50,7 +52,8 @@ async function update(shouldSync: boolean = true): Promise<void> {
         timestamp: Date.now(),
         sync: shouldSync,
         seek: await TrackPlayer.getPosition(),
-        track: currentTrack ? asData(currentTrack) : null
+        paused: await TrackPlayer.getState() == State.Paused,
+        track: currentTrack ? asData(currentTrack) : null,
     });
 }
 
@@ -137,6 +140,11 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
         case "sync":
             const { track, progress } = message as SyncMessage;
 
+            // Validate the track.
+            if (track == null && progress == -1) {
+                await listenWith(null); // Stop listening along.
+            }
+
             // Pass the message to the player.
             await syncToTrack(track, progress);
             return;
@@ -209,6 +217,8 @@ export type NowPlayingMessage = BaseGatewayMessage & {
     type: "playing";
     track: TrackData | null;
     seek: number;
+    sync: boolean;
+    paused: boolean;
 };
 /**
  * From server.
