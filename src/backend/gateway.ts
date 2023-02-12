@@ -20,24 +20,24 @@ const messageQueue: object[] = [];
  */
 export function setupListeners(): void {
     // Add remote event listeners.
-    TrackPlayer.addEventListener(Event.RemotePlay, update);
-    TrackPlayer.addEventListener(Event.RemoteStop, update);
-    TrackPlayer.addEventListener(Event.RemoteSeek, update);
-    TrackPlayer.addEventListener(Event.RemoteNext, update);
-    TrackPlayer.addEventListener(Event.RemoteDuck, update);
-    TrackPlayer.addEventListener(Event.RemotePause, update);
-    TrackPlayer.addEventListener(Event.RemotePrevious, update);
-    Platform.OS == "android" && TrackPlayer.addEventListener(Event.RemoteSkip, update);
+    TrackPlayer.addEventListener(Event.RemotePlay, () => update());
+    TrackPlayer.addEventListener(Event.RemoteStop, () => update());
+    TrackPlayer.addEventListener(Event.RemoteSeek, () => update());
+    TrackPlayer.addEventListener(Event.RemoteNext, () => update());
+    TrackPlayer.addEventListener(Event.RemoteDuck, () => update());
+    TrackPlayer.addEventListener(Event.RemotePause, () => update());
+    TrackPlayer.addEventListener(Event.RemotePrevious, () => update());
+    Platform.OS == "android" && TrackPlayer.addEventListener(Event.RemoteSkip, () => update());
 
     // Add playback event listeners.
-    TrackPlayer.addEventListener(Event.PlaybackState, update);
-    TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, update);
+    TrackPlayer.addEventListener(Event.PlaybackState, () => update());
+    TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => update(false));
 }
 
 /**
  * Updates the current track info.
  */
-async function update() {
+async function update(shouldSync: boolean = true): Promise<void> {
     // Check if the track is playing.
     const currentTrack = await getCurrentTrack();
     // Check if the track is a local track.
@@ -48,6 +48,7 @@ async function update() {
     sendGatewayMessage(<NowPlayingMessage>{
         type: "playing",
         timestamp: Date.now(),
+        sync: shouldSync,
         seek: await TrackPlayer.getPosition(),
         track: currentTrack ? asData(currentTrack) : null
     });
@@ -103,6 +104,9 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
     } catch {
         console.error("Failed to parse message data."); return;
     }
+
+    if (message?.type != "latency")
+        console.info(message);
 
     // Handle the message data.
     switch (message?.type) {
