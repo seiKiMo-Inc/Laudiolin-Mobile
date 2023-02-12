@@ -1,7 +1,7 @@
 import React from "react";
 import { ImageBackground, View, TouchableHighlight, ScrollView } from "react-native";
 
-import { Icon } from "@rneui/base";
+import { Icon, ScreenWidth } from "@rneui/base";
 
 import BasicText from "@components/common/BasicText";
 import LinearGradient from "react-native-linear-gradient";
@@ -15,6 +15,7 @@ import TextTicker from "react-native-text-ticker";
 
 import { PlaylistMenuStyle } from "@styles/MenuStyle";
 import { PlaylistsPageStyle } from "@styles/PageStyles";
+import { OverlayMenu } from "@styles/ModalStyle";
 
 import { getPlaylistAuthor, createPlaylist, login, deletePlaylist, loadPlaylists, userData } from "@backend/user";
 import { importPlaylist, fetchAllPlaylists } from "@backend/playlist";
@@ -270,6 +271,7 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                         title={"Create Playlist"}
                         onBackdropPress={() => this.setState({ showCreatePlaylistModal: false })}
                     >
+                        <ScrollView showsVerticalScrollIndicator={false} style={{width: ScreenWidth, maxWidth: "100%"}}>
                         <BasicInput
                             placeholder={"Driving playlist..."}
                             onChangeText={(text) => this.setState({ playlistNameInputText: text })}
@@ -296,8 +298,11 @@ class PlaylistsPage extends React.Component<IProps, IState> {
                             text={"Or Import A Playlist"}
                             container={{ alignItems: "center", marginTop: 10 }}
                             press={() => this.setState({ showImportPlaylistModal: true, showCreatePlaylistModal: false })}
-                            outline={"#5b67af"}
+                            color={"#5b67af50"}
+                            outline={"#5b67af00"}
+                            button={{ width: "100%", borderRadius: 10 }}
                         />
+                        </ScrollView>
                     </BasicModal>
 
                     <BasicModal

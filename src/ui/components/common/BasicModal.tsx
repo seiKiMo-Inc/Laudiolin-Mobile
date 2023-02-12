@@ -25,7 +25,7 @@ class BasicModal extends React.Component<IProps, any> {
         return (
             <Overlay
                 isVisible={this.props.showModal}
-                backdropStyle={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+                backdropStyle={{ backgroundColor: "rgba(0,0,0,0)" }}
                 overlayStyle={{
                     borderRadius: 10,
                     backgroundColor: "#070a1e",
@@ -45,7 +45,8 @@ class BasicModal extends React.Component<IProps, any> {
                     text={this.props.buttonText ?? "Submit"}
                     press={this.props.onSubmit}
                     container={{ marginTop: 20, padding: 10 }}
-                    button={{ width: "100%", height: 50 }}
+                    button={{ width: "100%", height: 50, borderRadius: 10 }}
+                    
                 />
             </Overlay>
         );

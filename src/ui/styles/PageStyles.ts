@@ -1,3 +1,4 @@
+import { ScreenWidth } from "@rneui/base";
 import { Dimensions, StyleSheet } from "react-native";
 
 const screenWidth = Dimensions.get("window").width
@@ -11,12 +12,6 @@ export const LoginPageStyle = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         gap: 20
-    },
-    divider: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 10
     },
     image: {
         bottom: 0,
@@ -290,7 +285,7 @@ export const PlayingTrackPageStyle = StyleSheet.create({
 
 export const PlaylistPageStyle = StyleSheet.create({
     container: {
-        padding: 20,
+        paddingHorizontal: 20,
         paddingTop: 30,
         paddingBottom: 0,
         backgroundColor: "#0c0f17",

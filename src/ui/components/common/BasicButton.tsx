@@ -37,7 +37,7 @@ class BasicButton extends React.Component<IProps, any> {
     render() {
         return (
             <Button
-                type={this.props.outline ? "outline" : "solid"}
+                type={this.props.solid ? "outline" : "solid"}
                 icon={this.props.icon}
                 title={this.props.text}
                 color={this.props.color}

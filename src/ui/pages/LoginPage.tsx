@@ -14,6 +14,7 @@ import { getLoginUrl, getToken, login } from "@backend/user";
 import { console } from "@app/utils";
 import BasicModal from "@components/common/BasicModal";
 import BasicTextInput from "@components/common/BasicTextInput";
+import { ScreenHeight, ScreenWidth } from "@rneui/base";
 
 interface IState {
     showCode: boolean;
@@ -130,31 +131,27 @@ class SearchPage extends React.Component<any, IState> {
 
 
                 <BasicButton text={"Log in with Discord"}
-                             color={"#5b67af"} bold={true}
+                             outline={"#5b67af"}
+                             color={"#5b67af"}
+                             bold={true}
                              width={300} height={40} radius={10}
                              transform={"uppercase"}
                              press={() => this.login()}
                              hold={() => this.authCode()}
                 />
 
-                <View style={LoginPageStyle.divider}>
-                    <View style={{ height: 2, width: 100, backgroundColor: "#fff" }} />
-                    <BasicText text={"OR"} style={{ fontWeight: "bold" }} />
-                    <View style={{ height: 2, width: 100, backgroundColor: "#fff"  }} />
-                </View>
-
-                <View style={{ alignSelf: "center", gap: 15 }}>
-                    <BasicButton text={"Continue as Guest"}
+                <BasicText text={"OR"} style={{ color: "#FFFFFF80", fontWeight: "bold" }} />
+                
+                <BasicButton text={"Continue as Guest"}
                                  button={{ alignSelf: "center" }}
-                                 color={"#FFFFFF"} outline={"#5b67af"}
+                                 color={"#FFFFFF00"} outline={"#5b67af"}
                                  width={300} height={40} radius={10}
                                  transform={"uppercase"} bold={true}
                                  press={() => this.ignoreLogin()}
-                    />
-
-                    <BasicText text={"Logging in with Discord lets you create playlists, like \n" +
-                        "songs, connect with friends and more!"} style={{ textAlign: "center" }} />
-                </View>
+                />
+                
+                <BasicText text={"Logging in with Discord lets you create playlists, like songs, connect with friends and more!"} 
+                             style={{ width: ScreenWidth, maxWidth: "90%", alignSelf: "center", textAlign: "center"}} />
 
                 <BasicModal
                     title={"Enter an Authorization Code"}
@@ -167,7 +164,9 @@ class SearchPage extends React.Component<any, IState> {
                         onChange={authCode => this.setState({ authCode })}
                     />
                 </BasicModal>
+                
             </View>
+            
         ) : (
             <WebView
                 source={{ uri: this.state.webViewUrl }}

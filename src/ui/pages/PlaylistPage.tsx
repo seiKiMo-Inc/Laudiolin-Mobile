@@ -1,7 +1,7 @@
 import React from "react";
-import { FlatList, View, ListRenderItemInfo } from "react-native";
+import { FlatList, View, ListRenderItemInfo, ScrollView } from "react-native";
 
-import { Icon } from "@rneui/base";
+import { Icon, ScreenWidth } from "@rneui/base";
 import Track from "@components/widgets/Track";
 import Hide from "@components/common/Hide";
 import BasicText from "@components/common/BasicText";
@@ -13,6 +13,7 @@ import BasicCheckbox from "@components/common/BasicCheckbox";
 import FastImage from "react-native-fast-image";
 
 import { PlaylistPageStyle } from "@styles/PageStyles";
+import { OverlayMenu } from "@styles/ModalStyle";
 
 import { editPlaylist } from "@backend/playlist";
 import { Playlist, TrackData } from "@backend/types";
@@ -216,13 +217,13 @@ class PlaylistPage extends React.Component<IProps, IState> {
                         showsHorizontalScrollIndicator={false}
                     />
                 </Hide>
-
                 <BasicModal
                     showModal={this.state.showEditPlaylistModal}
                     onSubmit={this.editPlaylistAsync}
-                    title={"Create Playlist"}
+                    title={"Edit Playlist"}
                     onBackdropPress={() => this.setState({ showEditPlaylistModal: false })}
                 >
+                    <ScrollView showsVerticalScrollIndicator={false} style={{width: ScreenWidth, maxWidth: "100%"}}>
                     <BasicInput
                         text={this.state.playlistEditName}
                         placeholder={"Driving playlist..."}
@@ -248,6 +249,7 @@ class PlaylistPage extends React.Component<IProps, IState> {
                         onPress={() => this.setState({ playlistEditIsPrivate: !this.state.playlistEditIsPrivate })}
                         label={"Public Playlist"}
                     />
+                    </ScrollView>
                 </BasicModal>
             </JumpInView>
         ) : null;
