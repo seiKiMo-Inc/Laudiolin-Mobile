@@ -1,16 +1,17 @@
+import { Platform } from "react-native";
 import type { Track } from "react-native-track-player";
 import type { Playlist, TrackData } from "@backend/types";
 
 import * as fs from "@backend/fs";
 import emitter from "@backend/events";
+import { Gateway } from "@app/constants";
+import { getIconUrl } from "@app/utils";
 import { doSearch } from "@backend/search";
 import { getStreamingUrl } from "@backend/gateway";
 import { setCurrentPlaylist } from "@backend/playlist";
 
 import TrackPlayer, { Event, State } from "react-native-track-player";
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
-import { Platform } from "react-native";
-import { getIconUrl } from "@app/utils";
 
 /**
  * Converts a local track data object to a track player object.
@@ -219,11 +220,26 @@ export async function playPlaylist(playlist: Playlist, shuffle: boolean): Promis
  * Called on application registration.
  */
 export async function playbackService(): Promise<void> {
-    TrackPlayer.addEventListener(Event.PlaybackState, ({ state }) => {
+    TrackPlayer.addEventListener(Event.PlaybackState, async ({ state }) => {
         if (state == State.Stopped)
-            TrackPlayer.reset();
+            await TrackPlayer.reset();
         if (state == State.Ready)
-            TrackPlayer.play();
+            await TrackPlayer.play();
+        if (state == State.Playing) {
+            // Check if there are additional tracks in queue.
+            const queue = await TrackPlayer.getQueue();
+            if (queue.length == 1) return;
+
+            // Get the next track.
+            const nextTrack = queue[1];
+            // Check if the next track is local.
+            if (nextTrack["original"] != null) return;
+            // Check if the next track has been downloaded.
+            if (await fs.trackExists(asData(nextTrack))) return;
+
+            // Pre-fetch the next track.
+            await fetch(`${Gateway}/cache?id=${nextTrack.id}`);
+        }
     });
 
     TrackPlayer.addEventListener(Event.RemotePlay, () => TrackPlayer.play());
