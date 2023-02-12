@@ -1,4 +1,4 @@
-import type { OnlineUser, User } from "@backend/types";
+import type { OfflineUser, OnlineUser, User } from "@backend/types";
 
 import { getUserById } from "@backend/user";
 import { listenAlongWith } from "@backend/gateway";
@@ -35,9 +35,10 @@ export async function listenWith(user: string | null = null): Promise<void> {
 
 /**
  * Gets all online users which are listening on Laudiolin.
+ * @param active Should only active users be returned?
  */
-export async function getAvailableUsers(): Promise<OnlineUser[]> {
-    const route = `${targetRoute}/social/available`;
+export async function getAvailableUsers(active: boolean = true): Promise<OnlineUser[]> {
+    const route = `${targetRoute}/social/available?active=${active}`;
     const response = await fetch(route);
 
     // Check the response.
@@ -48,4 +49,21 @@ export async function getAvailableUsers(): Promise<OnlineUser[]> {
 
     // Return the users.
     return (await response.json()).onlineUsers;
+}
+
+/**
+ * Gets all offline users which are listening on Laudiolin.
+ */
+export async function getRecentUsers(): Promise<OfflineUser[]> {
+    const route = `${targetRoute}/social/recent`;
+    const response = await fetch(route);
+
+    // Check the response.
+    if (response.status != 200) {
+        console.error(`Failed to get recent users: ${response.status} ${response.statusText}`);
+        return [];
+    }
+
+    // Return the users.
+    return (await response.json()).recentUsers;
 }

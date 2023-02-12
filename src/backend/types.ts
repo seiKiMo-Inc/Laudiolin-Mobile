@@ -40,6 +40,10 @@ export type OnlineUser = BasicUser & {
     listeningTo?: TrackData;
     progress?: number;
 };
+export type OfflineUser = BasicUser & {
+    lastSeen: number;
+    lastListeningTo: TrackData;
+};
 export type User = BasicUser & {
     playlists?: string[];
     likedSongs?: TrackData[];
