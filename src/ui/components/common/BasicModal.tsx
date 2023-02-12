@@ -1,6 +1,5 @@
 import React from "react";
 
-import { Overlay } from "@rneui/themed";
 
 import BasicText from "@components/common/BasicText";
 import BasicButton from "@components/common/BasicButton";

@@ -15,7 +15,6 @@ import TextTicker from "react-native-text-ticker";
 
 import { PlaylistMenuStyle } from "@styles/MenuStyle";
 import { PlaylistsPageStyle } from "@styles/PageStyles";
-import { OverlayMenu } from "@styles/ModalStyle";
 
 import { getPlaylistAuthor, createPlaylist, login, deletePlaylist, loadPlaylists, userData } from "@backend/user";
 import { importPlaylist, fetchAllPlaylists } from "@backend/playlist";
