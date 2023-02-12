@@ -41,4 +41,5 @@ Just try to follow the style of the code and use `npm run lint` to format your c
 
 - [Arikatsu](https://github.com/Arikatsu): Programmer of the original Laudiolin project.
 - [KingRainbow44](https://github.com/KingRainbow44): Programmer of the original Laudiolin project.
+- [Lunatic1911](https://github.com/lunaticwhat): Main contributor of the Mobile version of Laudiolin.
 - [Natsu](https://github.com/natsurepo): UI Concept for the Mobile version of Laudiolin.
