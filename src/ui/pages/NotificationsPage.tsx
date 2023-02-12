@@ -4,8 +4,10 @@ import { Dimensions, View, FlatList, ListRenderItemInfo } from "react-native";
 import { TabView, Tab } from "@rneui/themed";
 import InAppNotification from "@components/InAppNotification";
 import BasicText from "@components/common/BasicText";
+import User from "@components/widgets/User";
 
-import { InAppNotificationData } from "@backend/types";
+import { InAppNotificationData, OfflineUser, OnlineUser } from "@backend/types";
+import { getAvailableUsers, getRecentUsers } from "@backend/social";
 
 import { NotificationsPageStyle } from "@styles/PageStyles";
 
@@ -27,6 +29,7 @@ const placeholderNotifications: InAppNotificationData[] = [
 interface IState {
     notifications: InAppNotificationData[];
     tabIndex: number;
+    users: (OnlineUser|OfflineUser)[];
 }
 
 class NotificationsPage extends React.Component<any, IState> {
@@ -35,12 +38,30 @@ class NotificationsPage extends React.Component<any, IState> {
 
         this.state = {
             notifications: placeholderNotifications,
-            tabIndex: 0
+            tabIndex: 0,
+            users: []
         }
     }
 
     renderNotification(item: ListRenderItemInfo<InAppNotificationData>) {
         return <InAppNotification key={item.index} notification={item.item} />;
+    }
+
+    renderUser(item: ListRenderItemInfo<any>) {
+        if (item.item.listeningTo) {
+            return <User key={item.index} user={item.item} />;
+        } else {
+            return <User key={item.index} user={item.item} isOffline={true} />;
+        }
+    }
+
+    componentDidMount() {
+        getAvailableUsers().then((users) => {
+            this.setState({ users: users });
+            getRecentUsers().then((recentUsers) => {
+                this.setState({ users: [...this.state.users, ...recentUsers] });
+            });
+        });
     }
 
     render() {
@@ -70,9 +91,12 @@ class NotificationsPage extends React.Component<any, IState> {
                         />
                     </TabView.Item>
                     <TabView.Item>
-                        <View style={{ height: "100%", width: Dimensions.get("window").width, justifyContent: "center", alignItems: "center" }}>
-                            <BasicText text="Friend Activity" />
-                            <BasicText text="Doesnt exist yet lol" />
+                        <View style={{ padding: 10 }}>
+                            <FlatList
+                                data={this.state.users}
+                                renderItem={(item) => this.renderUser(item)}
+                                ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                            />
                         </View>
                     </TabView.Item>
                 </TabView>
