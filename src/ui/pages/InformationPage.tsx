@@ -25,6 +25,8 @@ class InformationPage extends React.Component<any, IState> {
     update = (notifications: InAppNotificationData[]) =>
         this.setState({ notifications });
 
+    reloadInterval: any = null;
+
     constructor(props: never) {
         super(props);
 
@@ -50,9 +52,10 @@ class InformationPage extends React.Component<any, IState> {
         }
     }
 
-    async componentDidMount() {
-        registerListener(this.update);
-
+    /**
+     * Fetches recent and online users.
+     */
+    async fetchUsers(): Promise<void> {
         // Fetch the users from the backend.
         const availableUsers = await getAvailableUsers(true);
         const recentUsers = await getRecentUsers();
@@ -63,8 +66,20 @@ class InformationPage extends React.Component<any, IState> {
         this.setState({ users });
     }
 
+    async componentDidMount() {
+        registerListener(this.update);
+        await this.fetchUsers();
+
+        // Set a reload interval.
+        this.reloadInterval = setInterval(async () => {
+            // Fetch the users from the backend.
+            await this.fetchUsers();
+        }, 10e3);
+    }
+
     componentWillUnmount() {
         unregisterListener(this.update);
+        this.reloadInterval && clearInterval(this.reloadInterval);
     }
 
     render() {
