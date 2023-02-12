@@ -228,14 +228,13 @@ export const PlaylistsPageStyle = StyleSheet.create({
 
 export const PlayingTrackPageStyle = StyleSheet.create({
     background: {
-        width: "100%",
-        height: screenHeight + 40,
+        width: screenWidth,
+        height: "100%",
         position: "absolute",
         zIndex: 0,
         resizeMode: "cover",
     },
     view: {
-        paddingTop: 10,
         width: screenWidth,
         height: "100%",
         backgroundColor: "#0c0f17",
