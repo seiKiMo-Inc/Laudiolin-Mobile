@@ -229,9 +229,10 @@ export const PlaylistsPageStyle = StyleSheet.create({
 export const PlayingTrackPageStyle = StyleSheet.create({
     background: {
         width: "100%",
-        height: "100%",
+        height: screenHeight + 40,
         position: "absolute",
         zIndex: 0,
+        resizeMode: "cover",
     },
     view: {
         paddingTop: 10,
@@ -260,15 +261,12 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         alignSelf: "center",
         marginTop: 20,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        width: screenWidth > screenHeight ? screenHeight : screenWidth,
+        height: screenWidth > screenHeight ? screenHeight : screenWidth,
     },
     trackImage: {
         resizeMode: "contain",
-        flex: 1,
-        width: screenWidth,
-        height: screenHeight,
-        maxHeight: screenWidth * 0.9,
-        maxWidth: screenWidth * 0.9,
         borderRadius: 10,
     },
     alert: {

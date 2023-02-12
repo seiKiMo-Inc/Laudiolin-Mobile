@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ImageBackground, ScrollView } from "react-native";
+import { View, ImageBackground, ScrollView, Dimensions } from "react-native";
 
 import { Icon, Image } from "@rneui/themed";
 import Hide from "@components/common/Hide";
@@ -36,6 +36,8 @@ interface IState {
     favorite: boolean;
     playlist: Playlist|null;
     repeatMode: RepeatMode;
+    imageWidth: number;
+    imageHeight: number;
 }
 
 class PlayingTrackPage extends React.Component<IProps, IState> {
@@ -48,7 +50,9 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
             paused: false,
             favorite: false,
             playlist: null,
-            repeatMode: RepeatMode.Off
+            repeatMode: RepeatMode.Off,
+            imageWidth: 0,
+            imageHeight: 0
         };
     }
 
@@ -135,12 +139,39 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
         }
     }
 
+    setImageSize() {
+        let artwork = this.state.track?.artwork as string;
+        if (!artwork) artwork = getIconUrl(asData(this.state.track as Track));
+
+        const { width, height } = Dimensions.get("window");
+
+        Image.getSize(artwork as string, (w, h) => {
+            if (width < height) {
+                this.setState({
+                    imageWidth: width * 0.9,
+                    imageHeight: (width / (w / h)) * 0.9
+                });
+            } else {
+                this.setState({
+                    imageWidth: (height / (h / w)) * 0.9,
+                    imageHeight: height * 0.9
+                });
+            }
+        });
+    }
+
     componentDidMount() {
         // Register track player listeners.
         TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => this.positionUpdate());
         TrackPlayer.addEventListener(Event.PlaybackTrackChanged, () => this.update());
         TrackPlayer.addEventListener(Event.PlaybackQueueEnded, () => this.update());
         TrackPlayer.addEventListener(Event.PlaybackState, () => this.update());
+    }
+
+    componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
+        if (this.state.track != prevState.track) {
+            this.setImageSize();
+        }
     }
 
     render() {
@@ -209,7 +240,11 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                     <ScrollView>
                         <View style={PlayingTrackPageStyle.trackInfo}>
                             <Image
-                                style={PlayingTrackPageStyle.trackImage}
+                                style={{
+                                    ...PlayingTrackPageStyle.trackImage,
+                                    width: this.state.imageWidth,
+                                    height: this.state.imageHeight
+                                }}
                                 source={{ uri: artwork }}
                             />
                         </View>
