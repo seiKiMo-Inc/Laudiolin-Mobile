@@ -19,6 +19,7 @@ import { isOffline } from "@backend/offline";
 import { currentPlaylist } from "@backend/playlist";
 import { getIconUrl, openTrack, promptPlaylistTrackAdd } from "@app/utils";
 import { navigate } from "@backend/navigation";
+import { isListeningWith } from "@backend/social";
 import { favoriteTrack, favorites } from "@backend/user";
 import { getCurrentTrack, shuffleQueue, asData, downloadTrack, toggleRepeatState } from "@backend/audio";
 
@@ -281,6 +282,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
 
                         <View style={PlayingTrackPageStyle.lowerContainer}>
                             <ProgressBar
+                                canSeek={!isListeningWith()}
                                 trackLength={track.duration ?? 0}
                                 currentTime={this.state.position}
                                 onSeek={time => TrackPlayer.seekTo(time)}

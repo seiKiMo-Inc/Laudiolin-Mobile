@@ -1,14 +1,16 @@
+import { Platform } from "react-native";
+
 import type { TrackData } from "@backend/types";
 
 import { loadRecents, token, recents } from "@backend/user";
 import { asData, getCurrentTrack, syncToTrack } from "@backend/audio";
+import { listenWith } from "@backend/social";
 import { Gateway } from "@app/constants";
 import emitter from "@backend/events";
 
-import TrackPlayer, { Event } from "react-native-track-player";
+import TrackPlayer, { Event, State } from "react-native-track-player";
 
 import { console } from "@app/utils";
-import { Platform } from "react-native";
 
 let retryToken: any = null;
 export let connected: boolean = false;
@@ -50,7 +52,8 @@ async function update(shouldSync: boolean = true): Promise<void> {
         timestamp: Date.now(),
         sync: shouldSync,
         seek: await TrackPlayer.getPosition(),
-        track: currentTrack ? asData(currentTrack) : null
+        paused: await TrackPlayer.getState() == State.Paused,
+        track: currentTrack ? asData(currentTrack) : null,
     });
 }
 
@@ -105,9 +108,6 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
         console.error("Failed to parse message data."); return;
     }
 
-    if (message?.type != "latency")
-        console.info(message);
-
     // Handle the message data.
     switch (message?.type) {
         case "initialize":
@@ -135,10 +135,19 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
             );
             return;
         case "sync":
-            const { track, progress } = message as SyncMessage;
+            const { track, progress, paused } = message as SyncMessage;
+
+            // Validate the track.
+            if (track == null && progress == -1) {
+                await listenWith(null); // Stop listening along.
+            }
 
             // Pass the message to the player.
             await syncToTrack(track, progress);
+            // Set the player's state.
+            if (paused)
+                await TrackPlayer.pause();
+            else await TrackPlayer.play();
             return;
         case "recents":
             const { recents } = message as RecentsMessage;
@@ -183,7 +192,7 @@ export function getStreamingUrl(track: TrackData): string {
  * Tells the gateway to sync the audio between this client and the specified user.
  * @param userId The user ID to sync with.
  */
-export function listenAlongWith(userId: string): void {
+export function listenAlongWith(userId: string | null): void {
     sendGatewayMessage(<ListenMessage>{
         type: "listen",
         with: userId
@@ -209,6 +218,8 @@ export type NowPlayingMessage = BaseGatewayMessage & {
     type: "playing";
     track: TrackData | null;
     seek: number;
+    sync: boolean;
+    paused: boolean;
 };
 /**
  * From server.
@@ -223,6 +234,7 @@ export type SyncMessage = BaseGatewayMessage & {
     type: "sync";
     track: TrackData | null;
     progress: number;
+    paused: boolean;
 };
 // To client.
 export type RecentsMessage = BaseGatewayMessage & {

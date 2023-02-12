@@ -9,6 +9,7 @@ import { ControlStyle } from "@styles/WidgetStyle";
 
 import { ui } from "@backend/settings";
 import { getIconUrl } from "@app/utils";
+import { isListeningWith } from "@backend/social";
 import { asData, getCurrentTrack } from "@app/backend/audio";
 
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
@@ -156,17 +157,17 @@ class QuickControl extends React.Component<IProps, IState> {
                     <View style={{ justifyContent: "center" }}>
                         <View style={ControlStyle.controls}>
                             <Icon
-                                color={"white"}
+                                color={isListeningWith() ? "#D0D0D0FF" : "#FFFFFF"}
                                 type={"material"} name={toggle}
                                 iconStyle={ControlStyle.button}
-                                onPress={() => this.togglePlayback()}
+                                onPress={() => !isListeningWith() && this.togglePlayback()}
                             />
 
                             <Icon
-                                color={"white"}
+                                color={isListeningWith() ? "#D0D0D0FF" : "#FFFFFF"}
                                 type={"material"} name={"skip-next"}
                                 iconStyle={ControlStyle.button}
-                                onPress={() => this.skip()}
+                                onPress={() => !isListeningWith() && this.skip()}
                             />
                         </View>
 

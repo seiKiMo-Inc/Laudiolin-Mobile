@@ -9,6 +9,7 @@ import { getIconUrl } from "@app/utils";
 import { doSearch } from "@backend/search";
 import { getStreamingUrl } from "@backend/gateway";
 import { setCurrentPlaylist } from "@backend/playlist";
+import { isListeningWith, listenWith } from "@backend/social";
 
 import TrackPlayer, { Event, State } from "react-native-track-player";
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
@@ -93,6 +94,7 @@ export async function deleteTrack(track: TrackData): Promise<void> {
  * @param force Should this track be played now?
  * @param local Is this track local?
  * @param fromPlaylist Is this track from a playlist?
+ * @param fromHost Is this track from the host?
  */
 export async function playTrack(
     track: TrackData,
@@ -100,6 +102,7 @@ export async function playTrack(
     force = false,
     local = false,
     fromPlaylist = false,
+    fromHost = false
 ): Promise<void> {
     let trackData = asTrack(track, local);
     // Check if the track has been downloaded.
@@ -118,6 +121,8 @@ export async function playTrack(
 
     // Reset the current playlist.
     !fromPlaylist && setCurrentPlaylist(null);
+    // Reset the listening state.
+    isListeningWith() && !fromHost && await listenWith(null);
 }
 
 /**
@@ -180,7 +185,7 @@ export async function syncToTrack(track: TrackData|null, progress: number): Prom
     const playing = await getCurrentTrack();
     if (playing?.id != track.id) {
         // Play the track.
-        await playTrack(track, true, true);
+        await playTrack(track, true, true, false, false, true);
     }
 
     // Set the progress.

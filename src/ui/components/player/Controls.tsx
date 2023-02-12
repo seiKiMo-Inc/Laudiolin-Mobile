@@ -3,6 +3,8 @@ import { View } from "react-native";
 
 import { Icon } from "@rneui/themed";
 
+import { isListeningWith } from "@backend/social";
+
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
 
 interface IProps {
@@ -17,8 +19,7 @@ interface IProps {
     repeatMode: RepeatMode;
 }
 
-
-class Controls extends React.Component<IProps, any> {
+class Controls extends React.Component<IProps, never> {
     constructor(props: IProps) {
         super(props);
     }
@@ -30,46 +31,47 @@ class Controls extends React.Component<IProps, any> {
                     name={"shuffle"}
                     type={"material"}
                     size={30}
-                    color={"#FFFFFF"}
+                    color={isListeningWith() ? "#D0D0D0FF" : "#FFFFFF"}
                     underlayColor={"#FFFFFF"}
-                    onPress={this.props.shuffleControl}
+                    onPress={() => !isListeningWith() && this.props.shuffleControl()}
                 />
 
                 <Icon
                     name={"skip-previous"}
                     type={"material"}
                     size={30}
-                    color={"#FFFFFF"}
+                    color={isListeningWith() ? "#D0D0D0FF" : "#FFFFFF"}
                     underlayColor={"#FFFFFF"}
-                    onPress={this.props.skipToPreviousControl}
+                    onPress={() => !isListeningWith() && this.props.skipToPreviousControl()}
                 />
 
                 <Icon
                     name={this.props.isPaused ? "play-arrow" : "pause"}
                     type={"material"}
                     size={30}
-                    color={"#FFFFFF"}
+                    color={isListeningWith() ? "#D0D0D0FF" : "#FFFFFF"}
                     containerStyle={{ backgroundColor: "#FFFFFF50", borderRadius: 50, padding: 10 }}
                     underlayColor={"#FFFFFF"}
-                    onPress={this.props.playControl}
+                    onPress={() => !isListeningWith() && this.props.playControl()}
                 />
 
                 <Icon
                     name={"skip-next"}
                     type={"material"}
                     size={30}
-                    color={"#FFFFFF"}
+                    color={isListeningWith() ? "#D0D0D0FF" : "#FFFFFF"}
                     underlayColor={"#FFFFFF"}
-                    onPress={this.props.skipToNextControl}
+                    onPress={() => !isListeningWith() && this.props.skipToNextControl()}
                 />
 
                 <Icon
                     name={this.props.repeatMode === RepeatMode.Track ? "repeat-one" : "repeat"}
                     type={"material"}
                     size={30}
-                    color={this.props.repeatMode === RepeatMode.Off ? "#FFFFFF" : "#00dfff"}
+                    color={this.props.repeatMode === RepeatMode.Off ?
+                        (isListeningWith() ? "#D0D0D0FF" : "#FFFFFF") : "#00dfff"}
                     underlayColor={"#FFFFFF"}
-                    onPress={this.props.repeatControl}
+                    onPress={() => !isListeningWith() && this.props.repeatControl()}
                 />
             </View>
         );
