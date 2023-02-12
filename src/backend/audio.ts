@@ -14,6 +14,16 @@ import { isListeningWith, listenWith } from "@backend/social";
 import TrackPlayer, { Event, State } from "react-native-track-player";
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
 
+export let forcePause = false; // Should the player be paused?
+
+/**
+ * Sets the force pause value.
+ * @param value The new force pause value.
+ */
+export function setForcePause(value: boolean): void {
+    forcePause = value;
+}
+
 /**
  * Converts a local track data object to a track player object.
  * Use this method to get an object to play from TrackPlayer.
@@ -111,18 +121,25 @@ export async function playTrack(
         trackData.original = track;
     }
 
+    // Reset the listening state.
+    if (isListeningWith() && !fromHost) {
+        await listenWith(null);
+        setForcePause(false);
+    }
+
     // Add the track to the player.
-    await TrackPlayer.add(trackData);
-    // Play the track if specified.
-    play && await TrackPlayer.play();
-    // Skip to the track if specified.
-    force && await TrackPlayer.skip((
-        await TrackPlayer.getQueue()).length - 1);
+    TrackPlayer.add(trackData)
+        .then(async () => {
+            // Play the track if specified.
+            play && await TrackPlayer.play();
+            // Skip to the track if specified.
+            play && force && await TrackPlayer.skip((
+                await TrackPlayer.getQueue()).length - 1);
+        })
+        .catch(err => console.error(err));
 
     // Reset the current playlist.
     !fromPlaylist && setCurrentPlaylist(null);
-    // Reset the listening state.
-    isListeningWith() && !fromHost && await listenWith(null);
 }
 
 /**
@@ -174,8 +191,15 @@ export async function getCurrentTrack(): Promise<Track|null> {
  * Syncs the current player to the specified track.
  * @param track The track to sync to.
  * @param progress The progress to sync to.
+ * @param paused Is the player paused?
+ * @param seek Should the player seek?
  */
-export async function syncToTrack(track: TrackData|null, progress: number): Promise<void> {
+export async function syncToTrack(
+    track: TrackData|null,
+    progress: number,
+    paused: boolean,
+    seek: boolean
+): Promise<void> {
     // Reset the player if the track is null.
     if (track == null) {
         await TrackPlayer.reset(); return;
@@ -185,11 +209,20 @@ export async function syncToTrack(track: TrackData|null, progress: number): Prom
     const playing = await getCurrentTrack();
     if (playing?.id != track.id) {
         // Play the track.
-        await playTrack(track, true, true, false, false, true);
+        await playTrack(track, !paused, false, false, false, true);
     }
 
     // Set the progress.
-    await TrackPlayer.seekTo(progress);
+    seek && await TrackPlayer.seekTo(progress);
+
+    // Set the player's state.
+    if (paused) {
+        setForcePause(true);
+        await TrackPlayer.pause();
+    } else {
+        setForcePause(false);
+        await TrackPlayer.play();
+    }
 }
 
 /**
@@ -228,8 +261,10 @@ export async function playbackService(): Promise<void> {
     TrackPlayer.addEventListener(Event.PlaybackState, async ({ state }) => {
         if (state == State.Stopped)
             await TrackPlayer.reset();
-        if (state == State.Ready)
-            await TrackPlayer.play();
+        if (state == State.Ready) {
+            if (forcePause) await TrackPlayer.pause();
+            else await TrackPlayer.play();
+        }
         if (state == State.Playing) {
             // Check if there are additional tracks in queue.
             const queue = await TrackPlayer.getQueue();

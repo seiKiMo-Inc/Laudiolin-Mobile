@@ -24,7 +24,7 @@ export function setupListeners(): void {
     // Add remote event listeners.
     TrackPlayer.addEventListener(Event.RemotePlay, () => update());
     TrackPlayer.addEventListener(Event.RemoteStop, () => update());
-    TrackPlayer.addEventListener(Event.RemoteSeek, () => update());
+    TrackPlayer.addEventListener(Event.RemoteSeek, () => update(false, true));
     TrackPlayer.addEventListener(Event.RemoteNext, () => update());
     TrackPlayer.addEventListener(Event.RemoteDuck, () => update());
     TrackPlayer.addEventListener(Event.RemotePause, () => update());
@@ -32,6 +32,7 @@ export function setupListeners(): void {
     Platform.OS == "android" && TrackPlayer.addEventListener(Event.RemoteSkip, () => update());
 
     // Add playback event listeners.
+    emitter.on("seek", () => update(false, true));
     TrackPlayer.addEventListener(Event.PlaybackState, () => update());
     TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => update(false));
 }
@@ -39,7 +40,10 @@ export function setupListeners(): void {
 /**
  * Updates the current track info.
  */
-async function update(shouldSync: boolean = true): Promise<void> {
+async function update(
+    shouldSync: boolean = true,
+    wasSeek: boolean = false
+): Promise<void> {
     // Check if the track is playing.
     const currentTrack = await getCurrentTrack();
     // Check if the track is a local track.
@@ -50,10 +54,11 @@ async function update(shouldSync: boolean = true): Promise<void> {
     sendGatewayMessage(<NowPlayingMessage>{
         type: "playing",
         timestamp: Date.now(),
+        seeked: wasSeek,
         sync: shouldSync,
         seek: await TrackPlayer.getPosition(),
         paused: await TrackPlayer.getState() == State.Paused,
-        track: currentTrack ? asData(currentTrack) : null,
+        track: currentTrack ? asData(currentTrack) : null
     });
 }
 
@@ -135,7 +140,7 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
             );
             return;
         case "sync":
-            const { track, progress, paused } = message as SyncMessage;
+            const { track, progress, paused, seek } = message as SyncMessage;
 
             // Validate the track.
             if (track == null && progress == -1) {
@@ -143,11 +148,7 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
             }
 
             // Pass the message to the player.
-            await syncToTrack(track, progress);
-            // Set the player's state.
-            if (paused)
-                await TrackPlayer.pause();
-            else await TrackPlayer.play();
+            await syncToTrack(track, progress, paused, seek);
             return;
         case "recents":
             const { recents } = message as RecentsMessage;
@@ -235,6 +236,7 @@ export type SyncMessage = BaseGatewayMessage & {
     track: TrackData | null;
     progress: number;
     paused: boolean;
+    seek: boolean;
 };
 // To client.
 export type RecentsMessage = BaseGatewayMessage & {
