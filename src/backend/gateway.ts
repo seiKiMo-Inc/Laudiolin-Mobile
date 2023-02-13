@@ -14,6 +14,8 @@ import TrackPlayer, { Event, State } from "react-native-track-player";
 import { console } from "@app/utils";
 
 let retryToken: any = null;
+let waitingForInit: boolean = false;
+
 export let connected: boolean = false;
 export let gateway: WebSocket | null = null;
 const messageQueue: object[] = [];
@@ -94,6 +96,24 @@ export function connect(): void {
 function onOpen(): void {
     console.info("Connected to the gateway.");
 
+    // Wait for the gateway to be ready.
+    let wait = setInterval(async () => {
+        // Check the state of the gateway.
+        if (gateway?.readyState != WebSocket.OPEN) return;
+        if (!waitingForInit) return;
+        clearInterval(wait);
+
+        // Send the initialization message.
+        await sendInitMessage();
+        // Log gateway handshake.
+        console.info("Gateway handshake complete.");
+
+        // Set connected to true.
+        connected = true;
+        // Send all queued messages.
+        messageQueue.forEach((message) => sendGatewayMessage(message));
+    }, 500)
+
     // Remove the retry token.
     retryToken && clearTimeout(retryToken);
 }
@@ -101,8 +121,8 @@ function onOpen(): void {
 /**
  * Invoked when the gateway closes.
  */
-function onClose(): void {
-    console.info("Disconnected from the gateway.");
+function onClose(close: any): void {
+    console.info("Disconnected from the gateway.", close);
 
     // Reset the connection state.
     connected = false;
@@ -126,20 +146,7 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
     // Handle the message data.
     switch (message?.type) {
         case "initialize":
-            gateway?.send(JSON.stringify(<InitializeMessage> {
-                type: "initialize",
-                token: await token(),
-                broadcast: system().broadcast_listening
-            }));
-
-            // Log gateway handshake.
-            console.info("Gateway handshake complete.");
-
-            // Set connected to true.
-            connected = true;
-            // Send all queued messages.
-            messageQueue.forEach((message) => sendGatewayMessage(message));
-
+            waitingForInit = true;
             return;
         case "latency":
             sendGatewayMessage(<LatencyMessage> {
@@ -174,6 +181,21 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
  */
 function onError(error: any): void {
     console.error("Gateway error.", error, Gateway.socket);
+}
+
+/**
+ * Sends the initialization message to the gateway.
+ */
+async function sendInitMessage(): Promise<void> {
+    try {
+        gateway?.send(JSON.stringify(<InitializeMessage> {
+            type: "initialize",
+            token: await token(),
+            broadcast: system().broadcast_listening
+        }));
+    } catch (err) {
+        console.error("Failed to send initialize message.", err);
+    }
 }
 
 /**
