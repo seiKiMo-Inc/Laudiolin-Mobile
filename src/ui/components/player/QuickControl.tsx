@@ -10,7 +10,7 @@ import { ControlStyle } from "@styles/WidgetStyle";
 import { ui } from "@backend/settings";
 import { getIconUrl } from "@app/utils";
 import { isListeningWith } from "@backend/social";
-import { asData, getCurrentTrack } from "@app/backend/audio";
+import { asData, getCurrentTrack, forcePause } from "@app/backend/audio";
 
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 
@@ -106,7 +106,7 @@ class QuickControl extends React.Component<IProps, IState> {
 
     render() {
         const track = this.state.track;
-        const toggle = this.state.paused ? "play-arrow" : "pause";
+        const toggle = (this.state.paused || forcePause) ? "play-arrow" : "pause";
         let artwork = track ? getIconUrl(asData(track)) : "";
 
         return track != null ? (

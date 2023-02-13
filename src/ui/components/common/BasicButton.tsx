@@ -7,18 +7,22 @@ import { IconNode } from "@rneui/base";
 interface IProps {
     text?: string;
     icon?: IconNode;
+
     bold?: boolean;
     color?: string;
     outline?: string;
     textColor?: string;
+    disabled?: boolean;
+    transform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase';
+
     left?: number;
     right?: number;
     top?: number;
     bottom?: number;
+
     width?: string | number;
     height?: string | number;
     radius?: number;
-    transform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase';
 
     press?: () => void;
     hold?: () => void;
@@ -66,6 +70,7 @@ class BasicButton extends React.Component<IProps, any> {
                 iconContainerStyle={this.props.iconStyle}
                 onPress={this.props.press}
                 onLongPress={this.props.hold}
+                disabled={this.props.disabled ?? false}
             />
         );
     }

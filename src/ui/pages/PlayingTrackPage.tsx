@@ -16,13 +16,15 @@ import { TrackMenuStyle } from "@styles/MenuStyle";
 import { PlayingTrackPageStyle } from "@styles/PageStyles";
 
 import type { Playlist } from "@backend/types";
+import emitter from "@backend/events";
 import { isOffline } from "@backend/offline";
 import { currentPlaylist } from "@backend/playlist";
 import { getIconUrl, openTrack, promptPlaylistTrackAdd } from "@app/utils";
 import { navigate } from "@backend/navigation";
 import { isListeningWith } from "@backend/social";
 import { favoriteTrack, favorites } from "@backend/user";
-import { getCurrentTrack, shuffleQueue, asData, downloadTrack, toggleRepeatState } from "@backend/audio";
+import { getCurrentTrack, shuffleQueue, asData,
+    downloadTrack, toggleRepeatState, forcePause } from "@backend/audio";
 
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
@@ -299,12 +301,15 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                                 canSeek={!isListeningWith()}
                                 trackLength={track.duration ?? 0}
                                 currentTime={this.state.position}
-                                onSeek={time => TrackPlayer.seekTo(time)}
+                                onSeek={time => {
+                                    TrackPlayer.seekTo(time)
+                                        .then(() => emitter.emit("seek", time));
+                                }}
                                 onSlidingStart={() => null}
                             />
 
                             <Controls
-                                isPaused={this.state.paused}
+                                isPaused={this.state.paused || forcePause}
                                 shuffleControl={() => shuffleQueue()}
                                 repeatControl={() => this.toggleReplayState()}
                                 skipToPreviousControl={() => this.skip(true)}

@@ -1,5 +1,6 @@
 import React from "react";
 import { FlatList, ImageBackground, ScrollView, TouchableHighlight, View } from "react-native";
+import { NavigationSwitchScreenProps } from "react-navigation";
 
 import Track from "@widgets/Track";
 import BasicText from "@components/common/BasicText";
@@ -18,6 +19,7 @@ import { navigate } from "@backend/navigation";
 import { playTrack } from "@backend/audio";
 
 import { console } from "@app/utils";
+import FadeInView from "@components/common/FadeInView";
 
 /**
  * Gets the playlists for the user.
@@ -113,6 +115,11 @@ class Home extends React.Component<any, IState> {
     update = () => this.forceUpdate();
 
     /**
+     * Fetches the playlists.
+     */
+    fetchPlaylists = () => this.setState({ playlists: getPlaylists() })
+
+    /**
      * Reloads all local tracks.
      */
     reloadLocal = async () => {
@@ -148,9 +155,7 @@ class Home extends React.Component<any, IState> {
         emitter.on("login", this.update);
         emitter.on("recent", this.update);
         emitter.on("favorite", this.update);
-        emitter.on("playlist", () => {
-            this.setState({ playlists: getPlaylists() });
-        });
+        emitter.on("playlist", this.fetchPlaylists);
         emitter.on("download", this.reloadLocal);
         emitter.on("delete", this.reloadLocal);
 
@@ -162,10 +167,10 @@ class Home extends React.Component<any, IState> {
     componentWillUnmount() {
         emitter.removeListener("login", this.update);
         emitter.removeListener("recent", this.update);
-        emitter.removeListener("delete", this.update);
         emitter.removeListener("favorite", this.update);
-        emitter.removeListener("playlist", this.update);
-        emitter.removeListener("download", this.update);
+        emitter.removeListener("playlist", this.fetchPlaylists);
+        emitter.removeListener("download", this.reloadLocal);
+        emitter.removeListener("delete", this.reloadLocal);
     }
 
     /**
@@ -207,82 +212,84 @@ class Home extends React.Component<any, IState> {
 
     render() {
         return (
-            <ScrollView
-                style={HomePageStyle.text}
-                showsVerticalScrollIndicator={false}
-            >
-                <LinearGradient
-                    colors={["#354ab2", "transparent"]}
-                    style={{
-                        position: "absolute",
-                        top: 0,
-                        height: 120,
-                        zIndex: 0,
-                        width: "100%",
-                    }}
-                />
+            <FadeInView navigation={this.props.navigation as NavigationSwitchScreenProps["navigation"]}>
+                <ScrollView
+                    style={HomePageStyle.text}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <LinearGradient
+                        colors={["#354ab2", "transparent"]}
+                        style={{
+                            position: "absolute",
+                            top: 0,
+                            height: 120,
+                            zIndex: 0,
+                            width: "100%",
+                        }}
+                    />
 
-                <BasicText
-                    text={this.greetingText()}
-                    style={{ fontSize: 20, color: "white", fontFamily: "System", fontWeight: "300" }}
-                    containerStyle={{ width: "100%", padding: 40, paddingTop: 60, paddingLeft: 20 }}
-                />
+                    <BasicText
+                        text={this.greetingText()}
+                        style={{ fontSize: 20, color: "white", fontFamily: "System", fontWeight: "300" }}
+                        containerStyle={{ width: "100%", padding: 40, paddingTop: 60, paddingLeft: 20 }}
+                    />
 
-                <View style={{ paddingBottom: 20, width: "100%" }}>
-                    <View style={HomePageStyle.header}>
-                        <BasicText text={"Playlists"} style={HomePageStyle.headerText} />
-                        <BasicText text={"More"} style={HomePageStyle.morePlaylists}
-                                   press={() => navigate("Playlists")}
-                        />
+                    <View style={{ paddingBottom: 20, width: "100%" }}>
+                        <View style={HomePageStyle.header}>
+                            <BasicText text={"Playlists"} style={HomePageStyle.headerText} />
+                            <BasicText text={"More"} style={HomePageStyle.morePlaylists}
+                                       press={() => navigate("Playlists")}
+                            />
+                        </View>
+
+                        {
+                            this.state.playlists.length > 0 ?
+                                (<FlatList
+                                    style={HomePageStyle.playlists}
+                                    data={this.state.playlists.slice(0, 6)}
+                                    renderItem={(info) => this.renderPlaylist(info)}
+                                    horizontal showsHorizontalScrollIndicator={false}
+                                />) :
+                                (<BasicText text={"No playlists yet."} style={{ textAlign: "center", justifyContent: "center", padding: 40 }}  />)
+                        }
                     </View>
 
                     {
-                        this.state.playlists.length > 0 ?
-                            (<FlatList
-                                style={HomePageStyle.playlists}
-                                data={this.state.playlists.slice(0, 6)}
-                                renderItem={(info) => this.renderPlaylist(info)}
-                                horizontal showsHorizontalScrollIndicator={false}
-                            />) :
-                            (<BasicText text={"No playlists yet."} style={{ textAlign: "center", justifyContent: "center", padding: 40 }}  />)
-                    }
-                </View>
+                        this.state.downloads.length > 0 ? (
+                            <View style={{ paddingBottom: 20 }}>
+                                <View style={HomePageStyle.header}>
+                                    <BasicText text={"Downloads"} style={HomePageStyle.headerText} />
+                                    <BasicText text={"More"} style={HomePageStyle.moreDownloads}
+                                               press={() => navigate("Downloads")}
+                                    />
+                                </View>
 
-                {
-                    this.state.downloads.length > 0 ? (
-                        <View style={{ paddingBottom: 20 }}>
-                            <View style={HomePageStyle.header}>
-                                <BasicText text={"Downloads"} style={HomePageStyle.headerText} />
-                                <BasicText text={"More"} style={HomePageStyle.moreDownloads}
-                                           press={() => navigate("Downloads")}
+                                <List
+                                    style={HomePageStyle.tracks}
+                                    data={this.state.downloads}
+                                    renderItem={(info) => this.renderTracks(info, true)}
                                 />
                             </View>
+                        ) : null
+                    }
 
-                            <List
-                                style={HomePageStyle.tracks}
-                                data={this.state.downloads}
-                                renderItem={(info) => this.renderTracks(info, true)}
-                            />
-                        </View>
-                    ) : null
-                }
+                    {
+                        recents.length > 0 ? (
+                            <View style={{ paddingBottom: 20 }}>
+                                <View style={HomePageStyle.header}>
+                                    <BasicText text={"Recent Plays"} style={HomePageStyle.headerText} />
+                                </View>
 
-                {
-                    recents.length > 0 ? (
-                        <View style={{ paddingBottom: 20 }}>
-                            <View style={HomePageStyle.header}>
-                                <BasicText text={"Recent Plays"} style={HomePageStyle.headerText} />
+                                <List
+                                    style={HomePageStyle.tracks}
+                                    data={filter(recents)}
+                                    renderItem={(info) => this.renderTracks(info)}
+                                />
                             </View>
-
-                            <List
-                                style={HomePageStyle.tracks}
-                                data={filter(recents)}
-                                renderItem={(info) => this.renderTracks(info)}
-                            />
-                        </View>
-                    ) : null
-                }
-            </ScrollView>
+                        ) : null
+                    }
+                </ScrollView>
+            </FadeInView>
         );
     }
 }

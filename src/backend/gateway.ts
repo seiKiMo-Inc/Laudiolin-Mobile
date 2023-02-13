@@ -5,6 +5,7 @@ import type { TrackData } from "@backend/types";
 import { loadRecents, token, recents } from "@backend/user";
 import { asData, getCurrentTrack, syncToTrack } from "@backend/audio";
 import { listenWith } from "@backend/social";
+import { system } from "@backend/settings";
 import { Gateway } from "@app/constants";
 import emitter from "@backend/events";
 
@@ -12,7 +13,6 @@ import TrackPlayer, { Event, State } from "react-native-track-player";
 
 import { console } from "@app/utils";
 
-let retryToken: any = null;
 export let connected: boolean = false;
 export let gateway: WebSocket | null = null;
 const messageQueue: object[] = [];
@@ -24,7 +24,7 @@ export function setupListeners(): void {
     // Add remote event listeners.
     TrackPlayer.addEventListener(Event.RemotePlay, () => update());
     TrackPlayer.addEventListener(Event.RemoteStop, () => update());
-    TrackPlayer.addEventListener(Event.RemoteSeek, () => update());
+    TrackPlayer.addEventListener(Event.RemoteSeek, () => update(true, true));
     TrackPlayer.addEventListener(Event.RemoteNext, () => update());
     TrackPlayer.addEventListener(Event.RemoteDuck, () => update());
     TrackPlayer.addEventListener(Event.RemotePause, () => update());
@@ -32,6 +32,7 @@ export function setupListeners(): void {
     Platform.OS == "android" && TrackPlayer.addEventListener(Event.RemoteSkip, () => update());
 
     // Add playback event listeners.
+    emitter.on("seek", () => update(true, true));
     TrackPlayer.addEventListener(Event.PlaybackState, () => update());
     TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => update(false));
 }
@@ -39,7 +40,10 @@ export function setupListeners(): void {
 /**
  * Updates the current track info.
  */
-async function update(shouldSync: boolean = true): Promise<void> {
+async function update(
+    shouldSync: boolean = true,
+    wasSeek: boolean = false
+): Promise<void> {
     // Check if the track is playing.
     const currentTrack = await getCurrentTrack();
     // Check if the track is a local track.
@@ -50,10 +54,11 @@ async function update(shouldSync: boolean = true): Promise<void> {
     sendGatewayMessage(<NowPlayingMessage>{
         type: "playing",
         timestamp: Date.now(),
+        seeked: wasSeek,
         sync: shouldSync,
         seek: await TrackPlayer.getPosition(),
         paused: await TrackPlayer.getState() == State.Paused,
-        track: currentTrack ? asData(currentTrack) : null,
+        track: currentTrack ? asData(currentTrack) : null
     });
 }
 
@@ -78,22 +83,32 @@ export function connect(): void {
 function onOpen(): void {
     console.info("Connected to the gateway.");
 
-    // Remove the retry token.
-    retryToken && clearTimeout(retryToken);
+    // Wait for the gateway to be ready.
+    let wait = setInterval(async () => {
+        // Check the state of the gateway.
+        if (gateway?.readyState != WebSocket.OPEN) return;
+        clearInterval(wait);
+
+        // Send the initialization message.
+        await sendInitMessage();
+        // Log gateway handshake.
+        console.info("Gateway handshake complete.");
+
+        // Set connected to true.
+        connected = true;
+        // Send all queued messages.
+        messageQueue.forEach((message) => sendGatewayMessage(message));
+    }, 500)
 }
 
 /**
  * Invoked when the gateway closes.
  */
-function onClose(): void {
-    console.info("Disconnected from the gateway.");
+function onClose(close: any): void {
+    console.info("Disconnected from the gateway.", close);
 
     // Reset the connection state.
     connected = false;
-
-    // Retry the connection.
-    // TODO: Pause when the device closes the app.
-    // retryToken = setTimeout(connect, 5000);
 }
 
 /**
@@ -111,31 +126,14 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
     // Handle the message data.
     switch (message?.type) {
         case "initialize":
-            gateway?.send(
-                JSON.stringify(<InitializeMessage>{
-                    type: "initialize",
-                    token: await token()
-                })
-            );
-
-            // Log gateway handshake.
-            console.info("Gateway handshake complete.");
-
-            // Set connected to true.
-            connected = true;
-            // Send all queued messages.
-            messageQueue.forEach((message) => sendGatewayMessage(message));
-
             return;
         case "latency":
-            gateway?.send(
-                JSON.stringify(<LatencyMessage>{
-                    type: "latency"
-                })
-            );
+            sendGatewayMessage(<LatencyMessage> {
+                type: "latency"
+            });
             return;
         case "sync":
-            const { track, progress, paused } = message as SyncMessage;
+            const { track, progress, paused, seek } = message as SyncMessage;
 
             // Validate the track.
             if (track == null && progress == -1) {
@@ -143,11 +141,7 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
             }
 
             // Pass the message to the player.
-            await syncToTrack(track, progress);
-            // Set the player's state.
-            if (paused)
-                await TrackPlayer.pause();
-            else await TrackPlayer.play();
+            await syncToTrack(track, progress, paused, seek);
             return;
         case "recents":
             const { recents } = message as RecentsMessage;
@@ -155,14 +149,32 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
             await loadRecents(recents); // Load the recents.
             emitter.emit("recent"); // Emit the recents event.
             return;
+        default:
+            console.warn(message);
+            return;
     }
 }
 
 /**
  * Invoked when the gateway encounters an error.
  */
-function onError(): void {
-    console.error("Gateway error.");
+function onError(error: any): void {
+    console.error("Gateway error.", error, Gateway.socket);
+}
+
+/**
+ * Sends the initialization message to the gateway.
+ */
+async function sendInitMessage(): Promise<void> {
+    try {
+        gateway?.send(JSON.stringify(<InitializeMessage> {
+            type: "initialize",
+            token: await token(),
+            broadcast: system().broadcast_listening
+        }));
+    } catch (err) {
+        console.error("Failed to send initialize message.", err);
+    }
 }
 
 /**
@@ -177,7 +189,8 @@ export function sendGatewayMessage(message: object) {
     }
 
     // Send the message to the gateway.
-    gateway?.send(JSON.stringify(message));
+    if (gateway && gateway.readyState == WebSocket.OPEN)
+        gateway.send(JSON.stringify(message));
 }
 
 /**
@@ -208,6 +221,7 @@ type BaseGatewayMessage = {
 export type InitializeMessage = BaseGatewayMessage & {
     type: "initialize";
     token?: string;
+    broadcast?: string;
 };
 // To server.
 export type LatencyMessage = BaseGatewayMessage & {
@@ -235,6 +249,7 @@ export type SyncMessage = BaseGatewayMessage & {
     track: TrackData | null;
     progress: number;
     paused: boolean;
+    seek: boolean;
 };
 // To client.
 export type RecentsMessage = BaseGatewayMessage & {
