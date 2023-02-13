@@ -3,6 +3,7 @@ import { TouchableHighlight, View, Animated } from "react-native";
 
 import { Text } from "@rneui/themed";
 import FastImage from "react-native-fast-image";
+import TextTicker from "react-native-text-ticker";
 import BasicText from "@components/common/BasicText";
 import BasicButton from "@components/common/BasicButton";
 
@@ -101,10 +102,13 @@ class User extends React.PureComponent<IProps, IState> {
                                         />
 
                                         <View style={UserStyle.detailsText}>
-                                            <Text numberOfLines={3} style={{ color: "white" }}>
+                                            <TextTicker
+                                                style={{ color: "white" }}
+                                                duration={10000} loop
+                                            >
                                                 <Text style={{ fontWeight: "bold", color: "white", fontSize: 16 }}>Listening to: </Text>
                                                 {user.listeningTo?.title}
-                                            </Text>
+                                            </TextTicker>
                                             <Text numberOfLines={3} style={{ color: "white" }}>
                                                 <Text style={{ fontWeight: "bold", color: "white", fontSize: 16 }}>Elapsed: </Text>
                                                 {this.toTime(user.progress).join(":")}
