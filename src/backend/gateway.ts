@@ -126,11 +126,11 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
     // Handle the message data.
     switch (message?.type) {
         case "initialize":
-            sendGatewayMessage(<InitializeMessage> {
+            gateway?.send(JSON.stringify(<InitializeMessage> {
                 type: "initialize",
                 token: await token(),
                 broadcast: system().broadcast_listening
-            });
+            }));
 
             // Log gateway handshake.
             console.info("Gateway handshake complete.");
@@ -162,6 +162,9 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
 
             await loadRecents(recents); // Load the recents.
             emitter.emit("recent"); // Emit the recents event.
+            return;
+        default:
+            console.warn(message);
             return;
     }
 }
