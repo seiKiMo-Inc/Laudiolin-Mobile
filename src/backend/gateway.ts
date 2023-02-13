@@ -43,8 +43,9 @@ export function setupListeners(): void {
         if (connected) return;
         if (state == "background") {
             clearTimeout(retryToken);
+            retryToken = null;
         } else if (state == "active") {
-            connect();
+            !connected && connect();
         }
     });
 }
