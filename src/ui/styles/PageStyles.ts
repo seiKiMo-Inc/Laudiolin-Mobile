@@ -258,10 +258,11 @@ export const PlayingTrackPageStyle = StyleSheet.create({
     },
     topBar: {
         width: "100%",
-        height: 70,
+        height: 90,
         flexDirection: "row",
         justifyContent: "space-between",
-        padding: 20
+        padding: 20,
+        paddingTop: 40,
     },
     topBarText: {
         flexDirection: "column",
