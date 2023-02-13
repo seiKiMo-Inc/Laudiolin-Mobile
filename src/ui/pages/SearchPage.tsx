@@ -1,5 +1,6 @@
 import React from "react";
 import { ScrollView, View } from "react-native";
+import { NavigationSwitchScreenProps } from "react-navigation";
 
 import BasicTextInput from "@components/common/BasicTextInput";
 import Track from "@components/widgets/Track";
@@ -11,6 +12,7 @@ import ContentLoader from "@components/common/ContentLoader";
 import { TrackData } from "@backend/types";
 import { playTrack } from "@backend/audio";
 import { doSearch } from "@backend/search";
+import FadeInView from "@components/common/FadeInView";
 
 interface IState {
     results: TrackData[];
@@ -78,35 +80,37 @@ class SearchPage extends React.Component<any, IState> {
 
     render() {
         return (
-            <View style={SearchPageStyle.container}>
-                <View style={{ alignItems: "center" }}>
-                    <BasicTextInput
-                        default={"Search"}
-                        onChange={text => this.updateQuery(text)}
-                        textStyle={SearchPageStyle.searchText}
-                        containerStyle={SearchPageStyle.searchContainer}
-                        icon={<Icon
-                            type="material" name={"search"}
-                            iconStyle={{ color: "white", paddingLeft: 5 }}
-                        />}
-                    />
-                </View>
+            <FadeInView navigation={this.props.navigation as NavigationSwitchScreenProps["navigation"]}>
+                <View style={SearchPageStyle.container}>
+                    <View style={{ alignItems: "center" }}>
+                        <BasicTextInput
+                            default={"Search"}
+                            onChange={text => this.updateQuery(text)}
+                            textStyle={SearchPageStyle.searchText}
+                            containerStyle={SearchPageStyle.searchContainer}
+                            icon={<Icon
+                                type="material" name={"search"}
+                                iconStyle={{ color: "white", paddingLeft: 5 }}
+                            />}
+                        />
+                    </View>
 
-                <ScrollView contentContainerStyle={SearchPageStyle.results}>
-                    {
-                        this.state.results.length > 0 ?
-                            this.state.results.map((track, index) => (
-                                <Track
-                                    key={index} track={track} padding={10}
-                                    onClick={track => this.playTrack(track)}
-                                />
-                            ))
-                            : !this.state.isLoading ? (
-                                <BasicText text={"No results."} containerStyle={{ padding: 50, alignItems: "center" }} />
-                            ) : <ContentLoader style={{ padding: 50, alignItems: "center" }} />
-                    }
-                </ScrollView>
-            </View>
+                    <ScrollView contentContainerStyle={SearchPageStyle.results}>
+                        {
+                            this.state.results.length > 0 ?
+                                this.state.results.map((track, index) => (
+                                    <Track
+                                        key={index} track={track} padding={10}
+                                        onClick={track => this.playTrack(track)}
+                                    />
+                                ))
+                                : !this.state.isLoading ? (
+                                    <BasicText text={"No results."} containerStyle={{ padding: 50, alignItems: "center" }} />
+                                ) : <ContentLoader style={{ padding: 50, alignItems: "center" }} />
+                        }
+                    </ScrollView>
+                </View>
+            </FadeInView>
         );
     }
 }

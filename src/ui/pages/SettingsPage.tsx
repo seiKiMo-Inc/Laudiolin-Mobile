@@ -1,5 +1,6 @@
 import React from "react";
 import { Dimensions, ScrollView, TouchableHighlight, View } from "react-native";
+import { NavigationSwitchScreenProps } from "react-navigation";
 
 import Hide from "@components/common/Hide";
 import BasicText from "@components/common/BasicText";
@@ -17,6 +18,7 @@ import { navigate } from "@backend/navigation";
 import { getCode, logout, userData } from "@backend/user";
 import { connect, connected } from "@backend/gateway";
 import { offlineSupport, isOffline } from "@backend/offline";
+import FadeInView from "@components/common/FadeInView";
 
 class Setting extends React.Component<
     {
@@ -144,109 +146,111 @@ class SearchPage extends React.Component<any, IState> {
         const { user } = this.state;
 
         return (
-            <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingTop: 20 }}>
-                <BasicText
-                    text={"Settings"}
-                    style={SettingsPageStyle.title}
-                />
+            <FadeInView navigation={this.props.navigation as NavigationSwitchScreenProps["navigation"]}>
+                <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingTop: 20 }}>
+                    <BasicText
+                        text={"Settings"}
+                        style={SettingsPageStyle.title}
+                    />
 
-                <View style={SettingsPageStyle.userContainer}>
-                    {
-                        user != null ? (
+                    <View style={SettingsPageStyle.userContainer}>
+                        {
+                            user != null ? (
+                                <>
+                                    <View style={{ paddingRight: 10 }}>
+                                        <Image
+                                            style={SettingsPageStyle.userImage}
+                                            source={{ uri: user?.avatar ?? "" }}
+                                            onLongPress={() => !isOffline && this.setState({ showAuthModal: true })}
+                                        />
+                                    </View>
+
+                                    <View style={{ justifyContent: "center" }}>
+                                        <BasicText text={"Logged in as"} style={{ fontSize: 13 }} />
+                                        <MixedText
+                                            first={user?.username ?? ""} second={"#" + (user?.discriminator ?? "0000")}
+                                            firstStyle={{ ...SettingsPageStyle.userText, color: "white" }}
+                                            secondStyle={{ ...SettingsPageStyle.userText, color: "#888787" }}
+                                        />
+                                    </View>
+
+                                    <Hide show={!isOffline}>
+                                        <BasicText
+                                            containerStyle={SettingsPageStyle.logOutContainer}
+                                            text={"Log out"} style={SettingsPageStyle.logOut}
+                                            press={async () => await logout()}
+                                        />
+                                    </Hide>
+                                </>
+                            ) : (
+                                <View style={{ alignItems: "center", width: Dimensions.get("window").width - 20 }}>
+                                    <BasicButton text={"Log in with Discord"}
+                                                 color={"#5b67af"} bold={true}
+                                                 width={200} height={40} radius={10}
+                                                 transform={"uppercase"}
+                                                 press={() => navigate("Login")}
+                                    />
+                                </View>
+                            )
+                        }
+                    </View>
+
+                    <View style={SettingsPageStyle.settingsContainer}>
+                        <View style={{ paddingBottom: 20 }}>
+                            <BasicText
+                                text={"General"}
+                                style={SettingsPageStyle.category}
+                            />
+
+                            <Setting setting={"search.engine"} type={"select"}
+                                     options={["All", "YouTube", "Spotify"]} />
+                            { !isOffline && <Setting setting={"system.offline"} type={"boolean"}
+                                                     onUpdate={value => offlineSupport(value)} /> }
+                            { !isOffline && <Setting setting={"system.broadcast_listening"} type={"select"}
+                                                     options={["Nobody", "Friends", "Everyone"]} /> }
+                        </View>
+
+                        <View style={{ paddingBottom: 20 }}>
+                            <BasicText
+                                text={"User Interface"}
+                                style={SettingsPageStyle.category}
+                            />
+
+                            <Setting setting={"ui.progress_fill"} type={"select"}
+                                     options={["Solid", "Gradient"]} />
+                        </View>
+                    </View>
+
+                    <View style={SettingsPageStyle.actionsContainer}>
+                        <Hide show={!connected && !isOffline}>
+                            <BasicButton
+                                color={"#c75450"}
+                                text={"Reconnect to Gateway"}
+                                hold={() => this.reconnect()}
+                            />
+                        </Hide>
+                    </View>
+
+                    <BasicModal
+                        title={"Authentication Code"} buttonText={"Close"}
+                        showModal={this.state.showAuthModal}
+                        onSubmit={() => this.hideCodeModal()}
+                        onBackdropPress={() => this.hideCodeModal()}
+                    >
+                        <TouchableHighlight
+                            underlayColor={"transparent"}
+                            onPress={() => this.showAuthCode()}
+                        >
                             <>
-                                <View style={{ paddingRight: 10 }}>
-                                    <Image
-                                        style={SettingsPageStyle.userImage}
-                                        source={{ uri: user?.avatar ?? "" }}
-                                        onLongPress={() => !isOffline && this.setState({ showAuthModal: true })}
-                                    />
-                                </View>
-
-                                <View style={{ justifyContent: "center" }}>
-                                    <BasicText text={"Logged in as"} style={{ fontSize: 13 }} />
-                                    <MixedText
-                                        first={user?.username ?? ""} second={"#" + (user?.discriminator ?? "0000")}
-                                        firstStyle={{ ...SettingsPageStyle.userText, color: "white" }}
-                                        secondStyle={{ ...SettingsPageStyle.userText, color: "#888787" }}
-                                    />
-                                </View>
-
-                                <Hide show={!isOffline}>
-                                    <BasicText
-                                        containerStyle={SettingsPageStyle.logOutContainer}
-                                        text={"Log out"} style={SettingsPageStyle.logOut}
-                                        press={async () => await logout()}
-                                    />
+                                <BasicText text={`Press to ${this.state.showCode ? "hide" : "show"} code.`} />
+                                <Hide show={this.state.showCode}>
+                                    <BasicText text={`Authentication Code: ${this.state.code}`} />
                                 </Hide>
                             </>
-                        ) : (
-                            <View style={{ alignItems: "center", width: Dimensions.get("window").width - 20 }}>
-                                <BasicButton text={"Log in with Discord"}
-                                             color={"#5b67af"} bold={true}
-                                             width={200} height={40} radius={10}
-                                             transform={"uppercase"}
-                                             press={() => navigate("Login")}
-                                />
-                            </View>
-                        )
-                    }
-                </View>
-
-                <View style={SettingsPageStyle.settingsContainer}>
-                    <View style={{ paddingBottom: 20 }}>
-                        <BasicText
-                            text={"General"}
-                            style={SettingsPageStyle.category}
-                        />
-
-                        <Setting setting={"search.engine"} type={"select"}
-                                 options={["All", "YouTube", "Spotify"]} />
-                        { !isOffline && <Setting setting={"system.offline"} type={"boolean"}
-                                                 onUpdate={value => offlineSupport(value)} /> }
-                        { !isOffline && <Setting setting={"system.broadcast_listening"} type={"select"}
-                                                 options={["Nobody", "Friends", "Everyone"]} /> }
-                    </View>
-
-                    <View style={{ paddingBottom: 20 }}>
-                        <BasicText
-                            text={"User Interface"}
-                            style={SettingsPageStyle.category}
-                        />
-
-                        <Setting setting={"ui.progress_fill"} type={"select"}
-                                 options={["Solid", "Gradient"]} />
-                    </View>
-                </View>
-
-                <View style={SettingsPageStyle.actionsContainer}>
-                    <Hide show={!connected && !isOffline}>
-                        <BasicButton
-                            color={"#c75450"}
-                            text={"Reconnect to Gateway"}
-                            hold={() => this.reconnect()}
-                        />
-                    </Hide>
-                </View>
-
-                <BasicModal
-                    title={"Authentication Code"} buttonText={"Close"}
-                    showModal={this.state.showAuthModal}
-                    onSubmit={() => this.hideCodeModal()}
-                    onBackdropPress={() => this.hideCodeModal()}
-                >
-                    <TouchableHighlight
-                        underlayColor={"transparent"}
-                        onPress={() => this.showAuthCode()}
-                    >
-                        <>
-                            <BasicText text={`Press to ${this.state.showCode ? "hide" : "show"} code.`} />
-                            <Hide show={this.state.showCode}>
-                                <BasicText text={`Authentication Code: ${this.state.code}`} />
-                            </Hide>
-                        </>
-                    </TouchableHighlight>
-                </BasicModal>
-            </ScrollView>
+                        </TouchableHighlight>
+                    </BasicModal>
+                </ScrollView>
+            </FadeInView>
         );
     }
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import { View, FlatList, ListRenderItemInfo } from "react-native";
+import { NavigationSwitchScreenProps } from "react-navigation";
 
 import { TabView, Tab } from "@rneui/themed";
 import InAppNotification from "@components/InAppNotification";
@@ -12,6 +13,7 @@ import { registerListener, unregisterListener, dismissAll, notifications } from 
 import { getAvailableUsers, getRecentUsers } from "@backend/social";
 import { userData } from "@backend/user";
 import emitter from "@backend/events";
+import FadeInView from "@components/common/FadeInView";
 
 interface IState {
     notifications: InAppNotificationData[];
@@ -48,7 +50,7 @@ class InformationPage extends React.Component<any, IState> {
 
     reloadInterval: any = null;
 
-    constructor(props: never) {
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -85,6 +87,7 @@ class InformationPage extends React.Component<any, IState> {
             .filter(user => user?.userId != userData?.userId);
         // Set the users.
         this.setState({ users });
+        console.log("Users updated." + users.length);
     }
 
     async componentDidMount() {
@@ -106,51 +109,53 @@ class InformationPage extends React.Component<any, IState> {
 
     render() {
         return (
-            <View style={NotificationsPageStyle.container}>
-                <Tab
-                    value={this.state.tabIndex}
-                    style={NotificationsPageStyle.tab}
-                    indicatorStyle={{ backgroundColor: "#0a3cef" }}
-                    onChange={page => this.setState({ tabIndex: page })}
-                >
-                    <Tab.Item title={"Notifications"} titleStyle={{ color: "#5492ff" }}
-                              onLongPress={() => dismissAll()} />
-                    { userData && <Tab.Item title={"Friend Activity"} titleStyle={{ color: "#5492ff" }} /> }
-                </Tab>
+            <FadeInView navigation={this.props.navigation as NavigationSwitchScreenProps["navigation"]}>
+                <View style={NotificationsPageStyle.container}>
+                    <Tab
+                        value={this.state.tabIndex}
+                        style={NotificationsPageStyle.tab}
+                        indicatorStyle={{ backgroundColor: "#0a3cef" }}
+                        onChange={page => this.setState({ tabIndex: page })}
+                    >
+                        <Tab.Item title={"Notifications"} titleStyle={{ color: "#5492ff" }}
+                                  onLongPress={() => dismissAll()} />
+                        { userData && <Tab.Item title={"Friend Activity"} titleStyle={{ color: "#5492ff" }} /> }
+                    </Tab>
 
-                <TabView
-                    value={this.state.tabIndex}
-                    animationType="spring"
-                    onChange={(i) => this.setState({ tabIndex: i })}
-                    minSwipeRatio={0.1}
-                >
-                    <TabView.Item>
-                        {
-                            this.state.tabIndex == 0 && (
-                                <FlatList
-                                    data={this.state.notifications}
-                                    renderItem={this.renderNotification}
-                                    ItemSeparatorComponent={() => <View style={{ height: 0.5, backgroundColor: "#0089d3", width: "80%", alignSelf: "center" }} />}
-                                />
-                            )
-                        }
-                    </TabView.Item>
-
-                    <TabView.Item>
-                        {
-                            userData && this.state.tabIndex == 1 && (
-                                <View style={{ padding: 10 }}>
+                    <TabView
+                        value={this.state.tabIndex}
+                        animationType="spring"
+                        onChange={(i) => this.setState({ tabIndex: i })}
+                        minSwipeRatio={0.1}
+                    >
+                        <TabView.Item>
+                            {
+                                this.state.tabIndex == 0 && (
                                     <FlatList
-                                        data={this.state.users}
-                                        renderItem={(item) => this.renderUser(item)}
-                                        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                                        data={this.state.notifications}
+                                        renderItem={this.renderNotification}
+                                        ItemSeparatorComponent={() => <View style={{ height: 0.5, backgroundColor: "#0089d3", width: "80%", alignSelf: "center" }} />}
                                     />
-                                </View>
-                            )
-                        }
-                    </TabView.Item>
-                </TabView>
-            </View>
+                                )
+                            }
+                        </TabView.Item>
+
+                        <TabView.Item>
+                            {
+                                userData && this.state.tabIndex == 1 && (
+                                    <View style={{ padding: 10 }}>
+                                        <FlatList
+                                            data={this.state.users}
+                                            renderItem={(item) => this.renderUser(item)}
+                                            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                                        />
+                                    </View>
+                                )
+                            }
+                        </TabView.Item>
+                    </TabView>
+                </View>
+            </FadeInView>
         );
     }
 }
