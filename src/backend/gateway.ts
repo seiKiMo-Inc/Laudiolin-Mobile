@@ -26,7 +26,7 @@ export function setupListeners(): void {
     // Add remote event listeners.
     TrackPlayer.addEventListener(Event.RemotePlay, () => update());
     TrackPlayer.addEventListener(Event.RemoteStop, () => update());
-    TrackPlayer.addEventListener(Event.RemoteSeek, () => update(false, true));
+    TrackPlayer.addEventListener(Event.RemoteSeek, () => update(true, true));
     TrackPlayer.addEventListener(Event.RemoteNext, () => update());
     TrackPlayer.addEventListener(Event.RemoteDuck, () => update());
     TrackPlayer.addEventListener(Event.RemotePause, () => update());
