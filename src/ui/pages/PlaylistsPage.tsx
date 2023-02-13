@@ -105,7 +105,7 @@ class ListPlaylist extends React.Component<any, any> {
                             />
                         </View>
 
-                        <Menu style={{ position: "absolute", right: 0, top: 35 }}>
+                        <Menu style={{ position: "absolute", right: 0, top: 25 }}>
                             <MenuTrigger>
                                 <Icon
                                     color={"white"}

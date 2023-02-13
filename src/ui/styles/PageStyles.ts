@@ -233,8 +233,11 @@ export const PlaylistsPageStyle = StyleSheet.create({
     },
     playlistMore: {
         position: "absolute",
-        right: 20,
-        alignSelf: "center"
+        right: 10,
+        alignSelf: "center",
+        width: 40, height: 40,
+        justifyContent: "center",
+        alignItems: "center",
     }
 });
 
