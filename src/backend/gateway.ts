@@ -13,8 +13,6 @@ import TrackPlayer, { Event, State } from "react-native-track-player";
 
 import { console } from "@app/utils";
 
-let retryToken: any = null;
-
 export let connected: boolean = false;
 export let gateway: WebSocket | null = null;
 const messageQueue: object[] = [];
@@ -37,17 +35,6 @@ export function setupListeners(): void {
     emitter.on("seek", () => update(true, true));
     TrackPlayer.addEventListener(Event.PlaybackState, () => update());
     TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => update(false));
-
-    // Add app state listeners.
-    emitter.on("appState", state => {
-        if (connected) return;
-        if (state == "background") {
-            clearTimeout(retryToken);
-            retryToken = null;
-        } else if (state == "active") {
-            !connected && connect();
-        }
-    });
 }
 
 /**
@@ -112,9 +99,6 @@ function onOpen(): void {
         // Send all queued messages.
         messageQueue.forEach((message) => sendGatewayMessage(message));
     }, 500)
-
-    // Remove the retry token.
-    retryToken && clearTimeout(retryToken);
 }
 
 /**
@@ -125,11 +109,6 @@ function onClose(close: any): void {
 
     // Reset the connection state.
     connected = false;
-
-    // Retry the connection.
-    retryToken = setTimeout(() => {
-        retryToken && !connected && connect();
-    }, 5000);
 }
 
 /**
