@@ -516,7 +516,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = moe.seikimo.laudiolin;
+				PRODUCT_BUNDLE_IDENTIFIER = moe.seikimo.laudiolin-mobile;
 				PRODUCT_NAME = laudiolin;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -548,7 +548,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = moe.seikimo.laudiolin;
+				PRODUCT_BUNDLE_IDENTIFIER = moe.seikimo.laudiolin-mobile;
 				PRODUCT_NAME = laudiolin;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
