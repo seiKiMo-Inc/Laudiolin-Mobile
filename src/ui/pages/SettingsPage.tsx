@@ -7,6 +7,7 @@ import BasicText from "@components/common/BasicText";
 import MixedText from "@components/common/MixedText";
 import BasicModal from "@components/common/BasicModal";
 import BasicButton from "@components/common/BasicButton";
+import FadeInView from "@components/common/FadeInView";
 
 import { Image } from "@rneui/base";
 
@@ -18,7 +19,6 @@ import { navigate } from "@backend/navigation";
 import { getCode, logout, userData } from "@backend/user";
 import { connect, connected } from "@backend/gateway";
 import { offlineSupport, isOffline } from "@backend/offline";
-import FadeInView from "@components/common/FadeInView";
 
 class Setting extends React.Component<
     {

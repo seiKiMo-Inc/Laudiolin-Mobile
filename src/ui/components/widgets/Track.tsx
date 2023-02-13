@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableHighlight, View } from "react-native";
-import { Icon, Image } from "@rneui/base";
 
+import { Icon, Image } from "@rneui/base";
 import FastImage from "react-native-fast-image";
 import TextTicker from "react-native-text-ticker";
 import BasicText from "@components/common/BasicText";
@@ -13,6 +13,7 @@ import { TrackMenuStyle } from "@styles/MenuStyle";
 
 import type { Playlist, TrackData } from "@backend/types";
 import emitter from "@backend/events";
+import { getIconPath } from "@backend/fs";
 import { downloadTrack, deleteTrack } from "@backend/audio";
 import { favoriteTrack, loadPlaylists, favorites, playlists } from "@backend/user";
 import { getIconUrl, openTrack, promptPlaylistTrackAdd } from "@app/utils";
@@ -30,9 +31,17 @@ interface IProps {
     onClick?: (track: TrackData) => void;
 }
 
-class Track extends React.PureComponent<IProps, never> {
+interface IState {
+    local: boolean;
+}
+
+class Track extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
+
+        this.state = {
+            local: true
+        };
     }
 
     /**
@@ -59,7 +68,6 @@ class Track extends React.PureComponent<IProps, never> {
 
     render() {
         const { track } = this.props;
-        const icon = getIconUrl(track);
 
         return (
             <View style={{
@@ -72,16 +80,17 @@ class Track extends React.PureComponent<IProps, never> {
                 >
                     <View style={{ flexDirection: "row" }}>
                         {
-                            icon.startsWith("file://") ?
+                            this.state.local ?
                                 <Image
                                     style={TrackStyle.image}
-                                    source={{ uri: icon }}
+                                    source={{ uri: `file://${getIconPath(track)}` }}
+                                    onError={() => this.setState({ local: false })}
                                     resizeMode={"cover"}
                                 />
                                 :
                                 <FastImage
                                     style={TrackStyle.image}
-                                    source={{ uri: icon }}
+                                    source={{ uri: getIconUrl(track) }}
                                     resizeMode={"cover"}
                                 />
                         }
