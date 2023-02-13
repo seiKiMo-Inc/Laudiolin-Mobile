@@ -1,12 +1,12 @@
 import React from "react";
-import { View, FlatList, ListRenderItemInfo } from "react-native";
+import { View, FlatList, ListRenderItemInfo, ScrollView } from "react-native";
 import { NavigationSwitchScreenProps } from "react-navigation";
 
 import { TabView, Tab } from "@rneui/themed";
 import InAppNotification from "@components/InAppNotification";
 import User from "@components/widgets/User";
 
-import { NotificationsPageStyle } from "@styles/PageStyles";
+import { InformationPageStyle } from "@styles/PageStyles";
 
 import type { InAppNotificationData, OfflineUser, OnlineUser } from "@backend/types";
 import { registerListener, unregisterListener, dismissAll, notifications } from "@backend/notifications";
@@ -67,11 +67,11 @@ class InformationPage extends React.Component<any, IState> {
         />;
     }
 
-    renderUser(item: ListRenderItemInfo<any>) {
-        if (item.item.listeningTo) {
-            return <User key={item.index} user={item.item} />;
+    renderUser(item: OnlineUser&OfflineUser) {
+        if (item.listeningTo) {
+            return <User key={item.userId} user={item} />;
         } else {
-            return <User key={item.index} user={item.item} isOffline={true} />;
+            return <User key={item.userId} user={item} isOffline={true} />;
         }
     }
 
@@ -87,7 +87,6 @@ class InformationPage extends React.Component<any, IState> {
             .filter(user => user?.userId != userData?.userId);
         // Set the users.
         this.setState({ users });
-        console.log("Users updated." + users.length);
     }
 
     async componentDidMount() {
@@ -110,10 +109,10 @@ class InformationPage extends React.Component<any, IState> {
     render() {
         return (
             <FadeInView navigation={this.props.navigation as NavigationSwitchScreenProps["navigation"]}>
-                <View style={NotificationsPageStyle.container}>
+                <View style={InformationPageStyle.container}>
                     <Tab
                         value={this.state.tabIndex}
-                        style={NotificationsPageStyle.tab}
+                        style={InformationPageStyle.tab}
                         indicatorStyle={{ backgroundColor: "#0a3cef" }}
                         onChange={page => this.setState({ tabIndex: page })}
                     >
@@ -141,17 +140,12 @@ class InformationPage extends React.Component<any, IState> {
                         </TabView.Item>
 
                         <TabView.Item>
-                            {
-                                userData && this.state.tabIndex == 1 && (
-                                    <View style={{ padding: 10 }}>
-                                        <FlatList
-                                            data={this.state.users}
-                                            renderItem={(item) => this.renderUser(item)}
-                                            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-                                        />
-                                    </View>
-                                )
-                            }
+                            <ScrollView contentContainerStyle={InformationPageStyle.friendTabContainer}>
+                                {
+                                    userData && this.state.tabIndex == 1 &&
+                                    this.state.users.map((user) => this.renderUser(user as OnlineUser&OfflineUser))
+                                }
+                            </ScrollView>
                         </TabView.Item>
                     </TabView>
                 </View>

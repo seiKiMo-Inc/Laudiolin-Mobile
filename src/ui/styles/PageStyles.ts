@@ -1,4 +1,3 @@
-import { ScreenWidth } from "@rneui/base";
 import { Dimensions, StyleSheet } from "react-native";
 
 const screenWidth = Dimensions.get("window").width
@@ -170,6 +169,24 @@ export const SearchPageStyle = StyleSheet.create({
         paddingBottom: 10,
         paddingHorizontal: 20
     },
+});
+
+export const InformationPageStyle = StyleSheet.create({
+    friendTabContainer: {
+        padding: 10,
+        width: screenWidth,
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 10,
+    },
+    container: {
+        height: "100%",
+        width: screenWidth,
+    },
+    tab: {
+        backgroundColor: "#081126",
+        paddingTop: 30,
+    }
 });
 
 export const PlaylistsPageStyle = StyleSheet.create({
@@ -359,16 +376,5 @@ export const DownloadPageStyle = StyleSheet.create({
         position: "absolute",
         top: 0,
         left: 0,
-    }
-});
-
-export const NotificationsPageStyle = StyleSheet.create({
-    container: {
-        height: "100%",
-        width: screenWidth,
-    },
-    tab: {
-        backgroundColor: "#081126",
-        paddingTop: 30,
     }
 });

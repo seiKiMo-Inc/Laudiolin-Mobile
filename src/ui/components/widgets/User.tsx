@@ -27,7 +27,7 @@ class User extends React.PureComponent<IProps, IState> {
         super(props);
 
         this.state = {
-            isExpanded: false,
+            isExpanded: false
         }
     }
 
@@ -46,9 +46,14 @@ class User extends React.PureComponent<IProps, IState> {
             toValue: this.state.isExpanded ? 70 : 220,
             duration: 100,
             useNativeDriver: false
-        }).start();
+        }).start(() => this.setState({ isExpanded: !this.state.isExpanded }));
+    }
 
-        this.setState({ isExpanded: !this.state.isExpanded })
+    componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<never>, snapshot?: any) {
+        if (prevProps.user.userId != this.props.user.userId) {
+            this._height.setValue(70);
+            this.setState({ isExpanded: false });
+        }
     }
 
     render() {
