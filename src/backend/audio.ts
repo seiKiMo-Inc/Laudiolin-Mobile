@@ -9,6 +9,7 @@ import { getIconUrl } from "@app/utils";
 import { doSearch } from "@backend/search";
 import { getStreamingUrl } from "@backend/gateway";
 import { setCurrentPlaylist } from "@backend/playlist";
+import { dismiss, notify } from "@backend/notifications";
 import { isListeningWith, listenWith } from "@backend/social";
 
 import TrackPlayer, { Event, State } from "react-native-track-player";
@@ -80,8 +81,18 @@ export async function downloadTrack(track: TrackData, emit = true): Promise<void
     track.url = `file://${fs.getTrackPath(track)}`;
     await fs.saveData(track, fs.getDataPath(track));
 
-    // Emit the track downloaded event.
-    emit && emitter.emit("download");
+    if (emit) {
+        // Emit the track downloaded event.
+        emitter.emit("download");
+        // Send a notification.
+        await notify({
+            type: "info",
+            message: `Finished downloading ${track.title}`,
+            date: new Date(),
+            icon: "file-download",
+            onPress: dismiss
+        });
+    }
 }
 
 /**
