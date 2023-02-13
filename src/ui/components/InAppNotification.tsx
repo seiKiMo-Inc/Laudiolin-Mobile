@@ -69,7 +69,10 @@ class InAppNotification extends React.Component<IProps, never> {
                     />
 
                     <View style={{ flex: 1, justifyContent: "center" }}>
-                        <BasicText text={notification.message} />
+                        <BasicText
+                            numberOfLines={1}
+                            text={notification.message}
+                        />
                         {
                             notification.type == "progress" && notification.getProgress ? (
                                 <MixedText
