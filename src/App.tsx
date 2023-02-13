@@ -25,7 +25,6 @@ import { MenuProvider } from "react-native-popup-menu";
 
 import * as user from "@backend/user";
 import emitter from "@backend/events";
-import { gateway } from "@backend/gateway";
 import { get } from "@backend/settings";
 import { loadState, isOffline } from "@backend/offline";
 import { loadPlayerState, savePlayerState, console } from "@app/utils";
@@ -240,7 +239,6 @@ class App extends React.Component<any, IState> {
         await saveNotifications(); // Save the notifications.
         await savePlayerState(); // Save the player state.
         await TrackPlayer.reset(); // Destroy the player.
-        gateway?.close(); // Close the gateway connection.
     }
 
     render() {
