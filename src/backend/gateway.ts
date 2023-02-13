@@ -14,7 +14,6 @@ import TrackPlayer, { Event, State } from "react-native-track-player";
 import { console } from "@app/utils";
 
 let retryToken: any = null;
-let waitingForInit: boolean = false;
 
 export let connected: boolean = false;
 export let gateway: WebSocket | null = null;
@@ -100,7 +99,6 @@ function onOpen(): void {
     let wait = setInterval(async () => {
         // Check the state of the gateway.
         if (gateway?.readyState != WebSocket.OPEN) return;
-        if (!waitingForInit) return;
         clearInterval(wait);
 
         // Send the initialization message.
@@ -128,7 +126,9 @@ function onClose(close: any): void {
     connected = false;
 
     // Retry the connection.
-    retryToken = setTimeout(connect, 5000);
+    retryToken = setTimeout(() => {
+        retryToken && !connected && connect();
+    }, 5000);
 }
 
 /**
@@ -146,7 +146,6 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
     // Handle the message data.
     switch (message?.type) {
         case "initialize":
-            waitingForInit = true;
             return;
         case "latency":
             sendGatewayMessage(<LatencyMessage> {
