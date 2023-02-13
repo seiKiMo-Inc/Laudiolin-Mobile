@@ -131,9 +131,9 @@ class SearchPage extends React.Component<any, IState> {
 
 
                 <BasicButton text={"Log in with Discord"}
-                             outline={"#5b67af"} color={"#5b67af"}
-                             width={300} height={40} radius={10}
+                             color={"#5b67af"}
                              transform={"uppercase"} bold={true}
+                             width={300} height={40} radius={10}
                              press={() => this.login()}
                              hold={() => this.authCode()}
                 />
@@ -141,11 +141,11 @@ class SearchPage extends React.Component<any, IState> {
                 <BasicText text={"OR"} style={{ color: "#FFFFFF80", fontWeight: "bold" }} />
 
                 <BasicButton text={"Continue as Guest"}
-                                 button={{ alignSelf: "center" }}
-                                 color={"#FFFFFF00"} outline={"#5b67af"}
-                                 width={300} height={40} radius={10}
-                                 transform={"uppercase"} bold={true}
-                                 press={() => this.ignoreLogin()}
+                             button={{ alignSelf: "center" }}
+                             color={"#FFFFFF00"} outline={"#5b67af"}
+                             width={300} height={40} radius={10}
+                             transform={"uppercase"} bold={true}
+                             press={() => this.ignoreLogin()}
                 />
 
                 <BasicText text={"Logging in with Discord lets you create playlists, like songs, connect with friends and more!"}
