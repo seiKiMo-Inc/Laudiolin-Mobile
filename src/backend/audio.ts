@@ -118,7 +118,7 @@ export async function playTrack(
     // Check if the track has been downloaded.
     if (!local && await fs.trackExists(track)) {
         trackData = await fs.loadLocalTrack(track.id);
-        trackData.original = track;
+        trackData.original = { ...track, artwork: track.icon };
     }
 
     // Reset the listening state.
@@ -184,7 +184,7 @@ export async function toggleRepeatState(): Promise<void> {
  */
 export async function getCurrentTrack(): Promise<Track|null> {
     const playerResult = (await TrackPlayer.getQueue())[(await TrackPlayer.getCurrentTrack()) ?? 0];
-    return playerResult ? (playerResult["original"] ?? playerResult) : null;
+    return playerResult ? (playerResult.original ?? playerResult) : null;
 }
 
 /**
