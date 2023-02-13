@@ -34,7 +34,7 @@ export function setupListeners(): void {
     Platform.OS == "android" && TrackPlayer.addEventListener(Event.RemoteSkip, () => update());
 
     // Add playback event listeners.
-    emitter.on("seek", () => update(false, true));
+    emitter.on("seek", () => update(true, true));
     TrackPlayer.addEventListener(Event.PlaybackState, () => update());
     TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => update(false));
 
