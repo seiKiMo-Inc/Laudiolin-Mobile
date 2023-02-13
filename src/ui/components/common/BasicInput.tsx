@@ -37,7 +37,7 @@ class BasicInput extends React.Component<IProps, any> {
                     paddingRight: 10,
                     paddingLeft: 10,
                 }}
-                labelStyle={{ padding: 10 }}
+                labelStyle={{ paddingBottom: 10 }}
                 inputStyle={{ ...this.props.inputStyle as object, color: "#ffffff" }}
                 multiline={this.props.multiline ?? false}
                 numberOfLines={this.props.numberOfLines ?? 1}

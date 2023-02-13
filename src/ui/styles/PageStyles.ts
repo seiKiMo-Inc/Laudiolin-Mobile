@@ -12,12 +12,6 @@ export const LoginPageStyle = StyleSheet.create({
         justifyContent: "center",
         gap: 20
     },
-    divider: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 10
-    },
     image: {
         bottom: 0,
         width: 448, height: 448,
@@ -177,6 +171,24 @@ export const SearchPageStyle = StyleSheet.create({
     },
 });
 
+export const InformationPageStyle = StyleSheet.create({
+    friendTabContainer: {
+        padding: 10,
+        width: screenWidth,
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 10,
+    },
+    container: {
+        height: "100%",
+        width: screenWidth,
+    },
+    tab: {
+        backgroundColor: "#081126",
+        paddingTop: 30,
+    }
+});
+
 export const PlaylistsPageStyle = StyleSheet.create({
     container: {
         paddingHorizontal: 20,
@@ -221,8 +233,11 @@ export const PlaylistsPageStyle = StyleSheet.create({
     },
     playlistMore: {
         position: "absolute",
-        right: 20,
-        alignSelf: "center"
+        right: 10,
+        alignSelf: "center",
+        width: 40, height: 40,
+        justifyContent: "center",
+        alignItems: "center",
     }
 });
 
@@ -246,10 +261,11 @@ export const PlayingTrackPageStyle = StyleSheet.create({
     },
     topBar: {
         width: "100%",
-        height: 70,
+        height: 90,
         flexDirection: "row",
         justifyContent: "space-between",
-        padding: 20
+        padding: 20,
+        paddingTop: 40,
     },
     topBarText: {
         flexDirection: "column",
@@ -290,7 +306,7 @@ export const PlayingTrackPageStyle = StyleSheet.create({
 
 export const PlaylistPageStyle = StyleSheet.create({
     container: {
-        padding: 20,
+        paddingHorizontal: 20,
         paddingTop: 30,
         paddingBottom: 0,
         backgroundColor: "#0c0f17",
@@ -364,16 +380,5 @@ export const DownloadPageStyle = StyleSheet.create({
         position: "absolute",
         top: 0,
         left: 0,
-    }
-});
-
-export const NotificationsPageStyle = StyleSheet.create({
-    container: {
-        height: "100%",
-        width: screenWidth,
-    },
-    tab: {
-        backgroundColor: "#081126",
-        paddingTop: 30,
     }
 });

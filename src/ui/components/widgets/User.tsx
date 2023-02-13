@@ -1,17 +1,18 @@
 import React from "react";
 import { TouchableHighlight, View, Animated } from "react-native";
 
+import { Text } from "@rneui/themed";
 import FastImage from "react-native-fast-image";
 import BasicText from "@components/common/BasicText";
+import BasicButton from "@components/common/BasicButton";
 
 import { UserStyle } from "@styles/WidgetStyle";
 
 import type { OfflineUser, OnlineUser } from "@backend/types";
-import {Text} from "@rneui/themed";
-import BasicButton from "@components/common/BasicButton";
+import { listenWith, listeningWith } from "@backend/social";
 
 interface IProps {
-    user: OnlineUser&OfflineUser;
+    user: OnlineUser & OfflineUser;
     isOffline?: boolean;
 }
 
@@ -26,7 +27,7 @@ class User extends React.PureComponent<IProps, IState> {
         super(props);
 
         this.state = {
-            isExpanded: false,
+            isExpanded: false
         }
     }
 
@@ -45,9 +46,14 @@ class User extends React.PureComponent<IProps, IState> {
             toValue: this.state.isExpanded ? 70 : 220,
             duration: 100,
             useNativeDriver: false
-        }).start();
+        }).start(() => this.setState({ isExpanded: !this.state.isExpanded }));
+    }
 
-        this.setState({ isExpanded: !this.state.isExpanded })
+    componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<never>, snapshot?: any) {
+        if (prevProps.user.userId != this.props.user.userId) {
+            this._height.setValue(70);
+            this.setState({ isExpanded: false });
+        }
     }
 
     render() {
@@ -107,10 +113,13 @@ class User extends React.PureComponent<IProps, IState> {
                                     </View>
 
                                     <BasicButton
-                                        text={"Listen Along!"}
+                                        text={listeningWith?.userId == user?.userId ?
+                                            "Already Listening!" : "Listen Along!"}
+                                        disabled={listeningWith?.userId == user?.userId}
                                         button={UserStyle.button}
                                         container={{ marginTop: 15 }}
                                         title={{ color: "white", fontSize: 18, fontWeight: "bold" }}
+                                        press={() => listenWith(user?.userId ?? null)}
                                     />
                                 </View>
                             )

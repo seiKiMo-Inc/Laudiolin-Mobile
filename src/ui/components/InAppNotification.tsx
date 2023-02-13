@@ -5,8 +5,10 @@ import { InAppNotificationData } from "@backend/types";
 
 import BasicText from "@components/common/BasicText";
 import { Icon } from "@rneui/themed";
+import { notifyEmitter } from "@backend/notifications";
 
 interface IProps {
+    index: number;
     notification: InAppNotificationData;
 }
 
@@ -29,14 +31,30 @@ class InAppNotification extends React.Component<IProps, never> {
         if (diffDays > 0) return `${diffDays} days ago`;
         else if (diffHours > 0) return `${diffHours} hours ago`;
         else if (diffMinutes > 1) return `${diffMinutes} minutes ago`;
-        else if (diffMinutes === 1) return `${diffMinutes} minute ago`;
+        else if (diffMinutes == 1) return `${diffMinutes} minute ago`;
         else if (diffSeconds > 0) return `${diffSeconds} seconds ago`;
         else return "Just now";
     }
 
+    componentDidMount() {
+        // Add an event listener to update the notification data.
+        const { event, update } = this.props.notification;
+        event && update && notifyEmitter.on(event,
+            () => update(this.props.notification));
+    }
+
+    componentWillUnmount() {
+        // Remove the event listener.
+        const { event, update } = this.props.notification;
+        event && update && notifyEmitter.removeListener(event, update);
+    }
+
     render() {
         return (
-            <TouchableHighlight onPress={this.props.notification.onPress} underlayColor={"transparent"}>
+            <TouchableHighlight
+                underlayColor={"transparent"}
+                onPress={() => this.props.notification.onPress?.(this.props.index)}
+            >
                 <View style={{ width: Dimensions.get("window").width, flexDirection: "row", gap: 10, justifyContent: "center", padding: 10 }}>
                     <Icon
                         name={this.props.notification.icon}

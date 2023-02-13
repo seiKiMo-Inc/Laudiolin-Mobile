@@ -71,14 +71,24 @@ export type UISettings = {
 };
 export type SystemSettings = {
     offline: boolean;
+    broadcast_listening: "Nobody" | "Friends" | "Everyone";
 };
 export type SettingType = "boolean" | "input" | "select" | "color";
 
+export type NotificationType = "info" | "progress";
 export type InAppNotificationData = {
+    type: NotificationType;
     message: string;
     date: Date;
     icon: string;
-    onPress?: () => void;
+
+    event?: string;
+    index?: number;
+    progress?: number;
+    totalProgress?: number;
+
+    onPress?: (index: number) => void;
+    update?: (data: InAppNotificationData) => void;
 };
 
 export type PlaylistSelectInfo = {
