@@ -248,19 +248,18 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                         parallaxHeaderHeight={ScreenWidth + 20}
                         renderForeground={() => (
                             <View style={PlayingTrackPageStyle.trackInfo}>
-                                <Image
+                                <View
                                     style={{
                                             opacity: 0,
                                             width: ScreenWidth,
-                                            height: 100
+                                            height: 80
                                             }}
-                                    source={null} // this is an empty whitespace, idk which is better to use skul
                                 />
                                 <Image
                                     style={{
                                             ...PlayingTrackPageStyle.trackImage,
-                                            width: this.state.imageWidth * 0.93,
-                                            height: this.state.imageHeight * 0.93
+                                            width: this.state.imageWidth,
+                                            height: this.state.imageHeight
                                             }}
                                     source={{ uri: artwork }}
                                 />
