@@ -272,6 +272,8 @@ export async function playbackService(): Promise<void> {
     TrackPlayer.addEventListener(Event.PlaybackState, async ({ state }) => {
         if (state == State.Stopped)
             await TrackPlayer.reset();
+        if (state == State.None)
+            await TrackPlayer.reset();
         if (state == State.Ready) {
             if (forcePause) await TrackPlayer.pause();
             else await TrackPlayer.play();
