@@ -25,9 +25,9 @@ import { MenuProvider } from "react-native-popup-menu";
 
 import * as user from "@backend/user";
 import emitter from "@backend/events";
-import { get } from "@backend/settings";
+import { get, save } from "@backend/settings";
 import { loadState, isOffline } from "@backend/offline";
-import { loadPlayerState, savePlayerState, console } from "@app/utils";
+import { loadPlayerState, savePlayerState } from "@app/utils";
 import { loadNotifications, saveNotifications } from "@backend/notifications";
 import { registerListener, removeListeners } from "@backend/navigation";
 
@@ -40,6 +40,7 @@ interface IState {
     showDownloadPage: boolean;
 
     isQuickControlVisible: boolean;
+    notificationCount: number | string | undefined;
     reloadKey: "not-loaded" | "loaded";
 }
 
@@ -64,6 +65,7 @@ class App extends React.Component<any, IState> {
             showPlaylistPage: false,
             showDownloadPage: false,
 
+            notificationCount: undefined,
             isQuickControlVisible: false,
             reloadKey: "not-loaded"
         };
@@ -77,6 +79,14 @@ class App extends React.Component<any, IState> {
         if (result == "guest") {
             this.setState({ loggedIn: true });
         }
+
+        // Load notification count.
+        let notificationCount = await get("notificationCount");
+        if (!notificationCount)  notificationCount = "0";
+        if (notificationCount !== "undefined")
+            this.setState({ notificationCount: parseInt(notificationCount) > 9 ? "9+" : parseInt(notificationCount) < 1 ? undefined : notificationCount });
+        else
+            this.setState({ notificationCount: undefined });
 
         // Re-render the app.
         this.setState({ reloadKey: "loaded" });
@@ -195,6 +205,17 @@ class App extends React.Component<any, IState> {
                 .catch(err => console.error(err)); // Load the notifications.
         }, 3e3);
 
+        emitter.on("notificationReset", () => {
+            this.setState({ notificationCount: undefined })
+        });
+        emitter.on("notificationUpdate", () => {
+            this.setState({
+                notificationCount: this.state.notificationCount == undefined ?
+                    1 : this.state.notificationCount == "9+" ?
+                        "9+" : parseInt(this.state.notificationCount as string) + 1
+            })
+        });
+
         // Hide the splash screen.
         if (SplashScreen) SplashScreen.hide();
     }
@@ -203,6 +224,7 @@ class App extends React.Component<any, IState> {
         emitter.removeListener("login", this.onLogin);
         removeListeners(); // Remove navigation listeners.
 
+        await save("notificationCount", this.state.notificationCount === undefined ? "undefined" : this.state.notificationCount as string); // Save the notification count.
         await saveNotifications(); // Save the notifications.
         await savePlayerState(); // Save the player state.
         await TrackPlayer.reset(); // Destroy the player.
@@ -251,7 +273,9 @@ class App extends React.Component<any, IState> {
                     >
                         <Tab.Screen name="Home" component={Home} />
                         {!isOffline && <Tab.Screen name="Search" component={SearchPage} />}
-                        {!isOffline && <Tab.Screen name="Information" component={InformationPage} />}
+                        {!isOffline && <Tab.Screen name="Information"
+                                                   component={InformationPage}
+                                                   options={{ tabBarBadge: this.state.notificationCount, tabBarBadgeStyle: { verticalAlign: "middle" } }} />}
                         <Tab.Screen name="Settings" component={SettingsPage} />
                     </Tab.Navigator>
                 </NavigationContainer>

@@ -103,10 +103,9 @@ export async function offlineSupport(enabled: boolean): Promise<void> {
                     onPress: dismiss
                 });
 
+                notifyEmitter.emit("offlineDownload");
                 notifyEmitter.removeAllListeners("offlineDownload");
             }
-
-            notifyEmitter.emit("offlineDownload");
         }, 1e3);
 
         // Send a notification for the download progress.
@@ -116,18 +115,17 @@ export async function offlineSupport(enabled: boolean): Promise<void> {
             date: new Date(),
             icon: "file-download",
             event: "offlineDownload",
-            progress: getDownloadedObjects(),
             totalProgress: objects,
             onPress: index => {
                 getDownloadedObjects() == objects && dismiss(index);
             },
             update: data => {
-                data.progress = getDownloadedObjects();
                 if (getDownloadedObjects() == objects) {
                     dismiss(data.index ?? 0); // Dismiss the notification.
                     downloadedObjects = 0; // Reset the downloaded objects.
                 }
-            }
+            },
+            getProgress: () => getDownloadedObjects()
         });
 
         // Save the playlists to the file system.

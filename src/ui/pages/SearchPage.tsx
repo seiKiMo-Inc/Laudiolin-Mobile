@@ -21,6 +21,7 @@ interface IState {
 
 class SearchPage extends React.Component<any, IState> {
     timeout: any|null = null;
+    _unsubscribe: any|null = null;
 
     constructor(props: any) {
         super(props);
@@ -76,6 +77,20 @@ class SearchPage extends React.Component<any, IState> {
      */
     async playTrack(track: TrackData): Promise<void> {
         await playTrack(track, true, true);
+    }
+
+    componentDidMount() {
+        this._unsubscribe = this.props.navigation
+            .addListener("blur", () => {
+                this.setState({
+                    results: [],
+                    isLoading: false,
+                });
+            });
+    }
+
+    componentWillUnmount() {
+        this._unsubscribe();
     }
 
     render() {

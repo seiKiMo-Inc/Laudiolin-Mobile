@@ -90,6 +90,7 @@ class InformationPage extends React.Component<any, IState> {
     }
 
     async componentDidMount() {
+        emitter.emit("notificationReset");
         registerListener(this.notificationUpdate);
         await this.fetchUsers();
 
@@ -98,6 +99,10 @@ class InformationPage extends React.Component<any, IState> {
 
         // Set a listener for app state.
         emitter.on("appState", this.stateUpdate);
+
+        this.props.navigation.addListener("focus", () => {
+            emitter.emit("notificationReset");
+        });
     }
 
     componentWillUnmount() {

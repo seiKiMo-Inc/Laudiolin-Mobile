@@ -7,6 +7,7 @@ import BasicText from "@components/common/BasicText";
 import MixedText from "@components/common/MixedText";
 import BasicModal from "@components/common/BasicModal";
 import BasicButton from "@components/common/BasicButton";
+import FadeInView from "@components/common/FadeInView";
 
 import { Image } from "@rneui/base";
 
@@ -18,7 +19,6 @@ import { navigate } from "@backend/navigation";
 import { getCode, logout, userData } from "@backend/user";
 import { connect, connected } from "@backend/gateway";
 import { offlineSupport, isOffline } from "@backend/offline";
-import FadeInView from "@components/common/FadeInView";
 
 class Setting extends React.Component<
     {
@@ -202,12 +202,20 @@ class SearchPage extends React.Component<any, IState> {
                                 style={SettingsPageStyle.category}
                             />
 
-                            <Setting setting={"search.engine"} type={"select"}
-                                     options={["All", "YouTube", "Spotify"]} />
-                            { !isOffline && <Setting setting={"system.offline"} type={"boolean"}
-                                                     onUpdate={value => offlineSupport(value)} /> }
-                            { !isOffline && <Setting setting={"system.broadcast_listening"} type={"select"}
-                                                     options={["Nobody", "Friends", "Everyone"]} /> }
+                            {
+                                !isOffline && (
+                                    <>
+                                        <Setting setting={"search.engine"} type={"select"}
+                                                 options={["All", "YouTube", "Spotify"]} />
+                                        <Setting setting={"system.offline"} type={"boolean"}
+                                                 onUpdate={value => offlineSupport(value)} />
+                                        <Setting setting={"system.broadcast_listening"} type={"select"}
+                                                 options={["Nobody", "Friends", "Everyone"]} />
+                                        <Setting setting={"system.presence"} type={"select"}
+                                                 options={["Generic", "Simple", "None"]} />
+                                    </>
+                                )
+                            }
                         </View>
 
                         <View style={{ paddingBottom: 20 }}>

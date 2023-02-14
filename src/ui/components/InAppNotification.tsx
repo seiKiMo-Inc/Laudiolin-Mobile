@@ -3,8 +3,10 @@ import { Dimensions, View, TouchableHighlight } from "react-native";
 
 import { InAppNotificationData } from "@backend/types";
 
-import BasicText from "@components/common/BasicText";
 import { Icon } from "@rneui/themed";
+import MixedText from "@components/common/MixedText";
+import BasicText from "@components/common/BasicText";
+
 import { notifyEmitter } from "@backend/notifications";
 
 interface IProps {
@@ -50,6 +52,8 @@ class InAppNotification extends React.Component<IProps, never> {
     }
 
     render() {
+        const { notification } = this.props;
+
         return (
             <TouchableHighlight
                 underlayColor={"transparent"}
@@ -57,7 +61,7 @@ class InAppNotification extends React.Component<IProps, never> {
             >
                 <View style={{ width: Dimensions.get("window").width, flexDirection: "row", gap: 10, justifyContent: "center", padding: 10 }}>
                     <Icon
-                        name={this.props.notification.icon}
+                        name={notification.icon}
                         size={25}
                         type={"material"}
                         color={"#FFFFFF"}
@@ -65,8 +69,22 @@ class InAppNotification extends React.Component<IProps, never> {
                     />
 
                     <View style={{ flex: 1, justifyContent: "center" }}>
-                        <BasicText text={this.props.notification.message} />
-                        <BasicText text={this.getNotificationDate()} style={{ fontSize: 12, color: "#bebebe" }} />
+                        <BasicText
+                            numberOfLines={1}
+                            text={notification.message}
+                        />
+                        {
+                            notification.type == "progress" && notification.getProgress ? (
+                                <MixedText
+                                    first={this.getNotificationDate() + " "}
+                                    second={`${notification.getProgress()}/${notification.totalProgress}`}
+                                    firstStyle={{ fontSize: 12, color: "#bebebe" }}
+                                    secondStyle={{ fontSize: 12, color: "gray" }}
+                                />
+                            ) : (
+                                <BasicText text={this.getNotificationDate()} style={{ fontSize: 12, color: "#bebebe" }} />
+                            )
+                        }
                     </View>
                 </View>
             </TouchableHighlight>

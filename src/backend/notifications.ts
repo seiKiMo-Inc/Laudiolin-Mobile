@@ -2,6 +2,7 @@ import { EventEmitter } from "events";
 
 import type { InAppNotificationData } from "@backend/types";
 import { get, save } from "@backend/settings";
+import emitter from "@backend/events";
 
 /* Collection of notifications which haven't been dismissed. */
 export let notifications: InAppNotificationData[] = [];
@@ -46,6 +47,7 @@ export async function notify(notification: InAppNotificationData) {
     await saveNotifications();
     // Emit the notification event.
     notifyEmitter.emit("notification", notifications);
+    emitter.emit("notificationUpdate");
 }
 
 /**

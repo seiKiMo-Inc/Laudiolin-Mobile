@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, View, ListRenderItemInfo, ScrollView } from "react-native";
+import { FlatList, View, ListRenderItemInfo, ScrollView, TouchableHighlight } from "react-native";
 
 import { Icon, ScreenWidth } from "@rneui/base";
 
@@ -16,11 +16,14 @@ import FastImage from "react-native-fast-image";
 import { PlaylistPageStyle } from "@styles/PageStyles";
 
 import type { Playlist, TrackData } from "@backend/types";
-import { playPlaylist, playTrack } from "@backend/audio";
+import { downloadTrack, playPlaylist, playTrack } from "@backend/audio";
+import { dismiss, notify } from "@backend/notifications";
 import { getPlaylistAuthor } from "@backend/user";
 import { editPlaylist } from "@backend/playlist";
 import { navigate } from "@backend/navigation";
 import emitter from "@backend/events";
+
+import { console } from "@app/utils";
 
 interface IProps {
     showPage: boolean;
@@ -108,6 +111,24 @@ class PlaylistPage extends React.Component<IProps, IState> {
     }
 
     /**
+     * Downloads the playlist's tracks.
+     */
+    downloadPlaylist(): void {
+        // Download each track.
+        this.getPlaylistTracks().forEach(track =>
+            downloadTrack(track, false));
+
+        // Send a notification.
+        notify({
+            type: "info",
+            message: `Started download of playlist ${this.state.playlist?.name ?? "Unknown"}.`,
+            date: new Date(),
+            icon: "file-download",
+            onPress: dismiss
+        }).catch(err => console.error(err));
+    }
+
+    /**
      * Edits the playlist.
      */
     editPlaylistAsync = async (): Promise<void> => {
@@ -148,10 +169,15 @@ class PlaylistPage extends React.Component<IProps, IState> {
 
                 <Hide show={playlist != null}>
                     <View style={PlaylistPageStyle.info}>
-                        <FastImage
-                            source={{ uri: playlist?.icon }}
+                        <TouchableHighlight
                             style={PlaylistPageStyle.playlistIcon}
-                        />
+                            onLongPress={() => this.downloadPlaylist()}
+                        >
+                            <FastImage
+                                source={{ uri: playlist?.icon }}
+                                style={PlaylistPageStyle.playlistIcon}
+                            />
+                        </TouchableHighlight>
 
                         <View style={PlaylistPageStyle.text}>
                             <BasicText

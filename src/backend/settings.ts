@@ -18,7 +18,8 @@ export const defaultSettings: UserSettings = {
     },
     system: {
         offline: false,
-        broadcast_listening: "Everyone"
+        broadcast_listening: "Everyone",
+        presence: "Generic"
     },
     token: ""
 };
@@ -30,7 +31,8 @@ export const settingsKeys: {[key: string]: string} = {
     "ui.background_url": "Background URL",
     "ui.progress_fill": "Progress Fill Style",
     "system.offline": "Full Offline Support",
-    "system.broadcast_listening": "Show What I'm Listening To"
+    "system.broadcast_listening": "Show What I'm Listening To",
+    "system.presence": "Discord Rich Presence Style"
 };
 
 /**
@@ -125,7 +127,8 @@ export function ui(): UISettings {
 export function system(): SystemSettings {
     return settings?.system || <SystemSettings> {
         offline: false,
-        broadcast_listening: "Everyone"
+        broadcast_listening: "Everyone",
+        presence: "Generic"
     };
 }
 

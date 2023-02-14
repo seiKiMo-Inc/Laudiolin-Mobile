@@ -9,6 +9,7 @@ import { getIconUrl } from "@app/utils";
 import { doSearch } from "@backend/search";
 import { getStreamingUrl } from "@backend/gateway";
 import { setCurrentPlaylist } from "@backend/playlist";
+import { dismiss, notify } from "@backend/notifications";
 import { isListeningWith, listenWith } from "@backend/social";
 
 import TrackPlayer, { Event, State } from "react-native-track-player";
@@ -80,8 +81,18 @@ export async function downloadTrack(track: TrackData, emit = true): Promise<void
     track.url = `file://${fs.getTrackPath(track)}`;
     await fs.saveData(track, fs.getDataPath(track));
 
-    // Emit the track downloaded event.
-    emit && emitter.emit("download");
+    if (emit) {
+        // Emit the track downloaded event.
+        emitter.emit("download");
+        // Send a notification.
+        await notify({
+            type: "info",
+            message: `Finished downloading ${track.title}`,
+            date: new Date(),
+            icon: "file-download",
+            onPress: dismiss
+        });
+    }
 }
 
 /**
@@ -118,7 +129,7 @@ export async function playTrack(
     // Check if the track has been downloaded.
     if (!local && await fs.trackExists(track)) {
         trackData = await fs.loadLocalTrack(track.id);
-        trackData.original = track;
+        trackData.original = { ...track, artwork: track.icon };
     }
 
     // Reset the listening state.
@@ -184,7 +195,7 @@ export async function toggleRepeatState(): Promise<void> {
  */
 export async function getCurrentTrack(): Promise<Track|null> {
     const playerResult = (await TrackPlayer.getQueue())[(await TrackPlayer.getCurrentTrack()) ?? 0];
-    return playerResult ? (playerResult["original"] ?? playerResult) : null;
+    return playerResult ? (playerResult.original ?? playerResult) : null;
 }
 
 /**
@@ -260,6 +271,8 @@ export async function playPlaylist(playlist: Playlist, shuffle: boolean): Promis
 export async function playbackService(): Promise<void> {
     TrackPlayer.addEventListener(Event.PlaybackState, async ({ state }) => {
         if (state == State.Stopped)
+            await TrackPlayer.reset();
+        if (state == State.None)
             await TrackPlayer.reset();
         if (state == State.Ready) {
             if (forcePause) await TrackPlayer.pause();
