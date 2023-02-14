@@ -202,12 +202,20 @@ class SearchPage extends React.Component<any, IState> {
                                 style={SettingsPageStyle.category}
                             />
 
-                            <Setting setting={"search.engine"} type={"select"}
-                                     options={["All", "YouTube", "Spotify"]} />
-                            { !isOffline && <Setting setting={"system.offline"} type={"boolean"}
-                                                     onUpdate={value => offlineSupport(value)} /> }
-                            { !isOffline && <Setting setting={"system.broadcast_listening"} type={"select"}
-                                                     options={["Nobody", "Friends", "Everyone"]} /> }
+                            {
+                                !isOffline && (
+                                    <>
+                                        <Setting setting={"search.engine"} type={"select"}
+                                                 options={["All", "YouTube", "Spotify"]} />
+                                        <Setting setting={"system.offline"} type={"boolean"}
+                                                 onUpdate={value => offlineSupport(value)} />
+                                        <Setting setting={"system.broadcast_listening"} type={"select"}
+                                                 options={["Nobody", "Friends", "Everyone"]} />
+                                        <Setting setting={"system.presence"} type={"select"}
+                                                 options={["Generic", "Simple", "None"]} />
+                                    </>
+                                )
+                            }
                         </View>
 
                         <View style={{ paddingBottom: 20 }}>

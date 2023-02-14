@@ -170,7 +170,8 @@ async function sendInitMessage(): Promise<void> {
         gateway?.send(JSON.stringify(<InitializeMessage> {
             type: "initialize",
             token: await token(),
-            broadcast: system().broadcast_listening
+            broadcast: system().broadcast_listening,
+            presence: system().presence
         }));
     } catch (err) {
         console.error("Failed to send initialize message.", err);
@@ -222,6 +223,7 @@ export type InitializeMessage = BaseGatewayMessage & {
     type: "initialize";
     token?: string;
     broadcast?: string;
+    presence?: string;
 };
 // To server.
 export type LatencyMessage = BaseGatewayMessage & {
