@@ -1,6 +1,6 @@
 import type { OfflineUser, OnlineUser, User } from "@backend/types";
 
-import { getUserById } from "@backend/user";
+import { getUserById, token, userData } from "@backend/user";
 import { listenAlongWith } from "@backend/gateway";
 
 import emitter from "@backend/events";
@@ -39,7 +39,11 @@ export async function listenWith(user: string | null = null): Promise<void> {
  */
 export async function getAvailableUsers(active: boolean = true): Promise<OnlineUser[]> {
     const route = `${targetRoute}/social/available?active=${active}`;
-    const response = await fetch(route);
+    const response = await fetch(route, {
+        headers: {
+            Authorization: userData ? await token() : ""
+        }
+    });
 
     // Check the response.
     if (response.status != 200) {
@@ -56,7 +60,11 @@ export async function getAvailableUsers(active: boolean = true): Promise<OnlineU
  */
 export async function getRecentUsers(): Promise<OfflineUser[]> {
     const route = `${targetRoute}/social/recent`;
-    const response = await fetch(route);
+    const response = await fetch(route, {
+        headers: {
+            Authorization: userData ? await token() : ""
+        }
+    });
 
     // Check the response.
     if (response.status != 200) {
