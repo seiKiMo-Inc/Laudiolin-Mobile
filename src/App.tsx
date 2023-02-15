@@ -275,11 +275,15 @@ class App extends React.Component<any, IState> {
                         sceneContainerStyle={{ backgroundColor: "#0c0f17", marginBottom: this.state.isQuickControlVisible ? 100 : 30 }}
                     >
                         <Tab.Screen name="Home" component={Home} />
-                        {!isOffline && <Tab.Screen name="Search" component={SearchPage} />}
+                        {!isOffline && <Tab.Screen name="Search"
+                                                   component={SearchPage}
+                                                   options={{ unmountOnBlur: true }} />}
                         {!isOffline && <Tab.Screen name="Information"
                                                    component={InformationPage}
                                                    options={{ tabBarBadge: this.state.notificationCount, tabBarBadgeStyle: { verticalAlign: "middle" } }} />}
-                        <Tab.Screen name="Settings" component={SettingsPage} />
+                        <Tab.Screen name="Settings"
+                                    component={SettingsPage}
+                                    options={{ unmountOnBlur: true }} />
                     </Tab.Navigator>
                 </NavigationContainer>
 
