@@ -15,7 +15,7 @@ import { console } from "@app/utils";
 
 export let connected: boolean = false;
 export let gateway: WebSocket | null = null;
-const messageQueue: object[] = [];
+const messageQueue: BaseGatewayMessage[] = [];
 
 /**
  * Sets up track player listeners.
@@ -128,9 +128,9 @@ async function onMessage(event: WebSocketMessageEvent): Promise<void> {
         case "initialize":
             return;
         case "latency":
-            sendGatewayMessage(<LatencyMessage> {
-                type: "latency"
-            });
+            // Send another latency ping after 10s.
+            setTimeout(() => sendGatewayMessage(
+                <LatencyMessage> { type: "latency" }), 10e3);
             return;
         case "sync":
             const { track, progress, paused, seek } = message as SyncMessage;
@@ -182,12 +182,16 @@ async function sendInitMessage(): Promise<void> {
  * Sends a message to the gateway.
  * @param message The raw message data.
  */
-export function sendGatewayMessage(message: object) {
+export function sendGatewayMessage(message: BaseGatewayMessage) {
     if (!connected) {
         // Queue the message.
         messageQueue.push(message);
         return;
     }
+
+    // Check if the message contains the proper fields.
+    if (!message.type) throw new Error("Message type is required.");
+    if (!message.timestamp) message.timestamp = Date.now();
 
     // Send the message to the gateway.
     if (gateway && gateway.readyState == WebSocket.OPEN)
