@@ -42,7 +42,7 @@ export async function fetchTrackById(id: string): Promise<TrackData> {
  * @param artist The artist to parse.
  */
 export function parseArtist(artist: string): string {
-    if (artist.trim().length == 0) return "";
+    if (artist.trim().length == 0) return "Unknown Artist";
     if (artist.includes("- Topic")) artist = artist.replace("- Topic", "");
 
     return artist; // Return the artist after parsing.

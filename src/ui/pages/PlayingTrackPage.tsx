@@ -20,6 +20,7 @@ import { isOffline } from "@backend/offline";
 import { currentPlaylist } from "@backend/playlist";
 import { getIconUrl, openTrack, promptPlaylistTrackAdd } from "@app/utils";
 import { navigate } from "@backend/navigation";
+import { parseArtist } from "@backend/search";
 import { isListeningWith } from "@backend/social";
 import { favoriteTrack, favorites } from "@backend/user";
 import { getCurrentTrack, shuffleQueue, asData,
@@ -265,7 +266,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
 
                                 <BasicText
                                     style={{ color: "#a1a1a1", fontSize: 15 }}
-                                    text={track.artist ?? ""}
+                                    text={parseArtist(track.artist ?? "")}
                                     containerStyle={PlayingTrackPageStyle.title}
                                 />
                             </View>
