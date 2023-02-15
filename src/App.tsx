@@ -25,6 +25,7 @@ import { MenuProvider } from "react-native-popup-menu";
 
 import * as user from "@backend/user";
 import emitter from "@backend/events";
+import { LinkingConfig } from "@app/constants";
 import { get, save } from "@backend/settings";
 import { loadState, isOffline } from "@backend/offline";
 import { loadPlayerState, savePlayerState } from "@app/utils";
@@ -237,7 +238,9 @@ class App extends React.Component<any, IState> {
             <MenuProvider key={this.state.reloadKey} style={{ backgroundColor: "#0c0f17" }}>
                 <StatusBar translucent backgroundColor="transparent" />
 
-                <NavigationContainer>
+                <NavigationContainer
+                    linking={LinkingConfig}
+                >
                     <Tab.Navigator
                         initialRouteName="Home"
                         screenOptions={({ route }) => ({
