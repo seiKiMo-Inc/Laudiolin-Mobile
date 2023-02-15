@@ -277,7 +277,6 @@ export const PlayingTrackPageStyle = StyleSheet.create({
     },
     
     trackInfo: {
-        //alignSelf: "center",
         paddingTop: 0,
         justifyContent: "center",
         alignItems: "center",
