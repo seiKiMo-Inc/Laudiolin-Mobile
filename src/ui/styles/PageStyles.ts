@@ -274,11 +274,10 @@ export const PlayingTrackPageStyle = StyleSheet.create({
     },
     trackInfo: {
         alignSelf: "center",
-        marginTop: 20,
         justifyContent: "center",
         alignItems: "center",
-        width: screenWidth > screenHeight ? screenHeight : screenWidth,
-        height: screenWidth > screenHeight ? screenHeight : screenWidth,
+        width: (screenWidth > screenHeight ? screenHeight : screenWidth) * 0.85,
+        height: (screenWidth > screenHeight ? screenHeight : screenWidth) * 0.85,
     },
     trackImage: {
         resizeMode: "contain",

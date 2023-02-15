@@ -151,13 +151,13 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
         Image.getSize(artwork as string, (w, h) => {
             if (width < height) {
                 this.setState({
-                    imageWidth: width * 0.9,
-                    imageHeight: (width / (w / h)) * 0.9
+                    imageWidth: width * 0.85,
+                    imageHeight: (width / (w / h)) * 0.85
                 });
             } else {
                 this.setState({
-                    imageWidth: (height / (h / w)) * 0.9,
-                    imageHeight: height * 0.9
+                    imageWidth: (height / (h / w)) * 0.85,
+                    imageHeight: height * 0.85
                 });
             }
         });
