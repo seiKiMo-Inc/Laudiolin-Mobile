@@ -5,7 +5,7 @@ import LinearGradient from "react-native-linear-gradient";
 import SplashScreen from "react-native-splash-screen";
 import TrackPlayer from "react-native-track-player";
 import NetInfo from "@react-native-community/netinfo";
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
@@ -25,7 +25,6 @@ import { MenuProvider } from "react-native-popup-menu";
 
 import * as user from "@backend/user";
 import emitter from "@backend/events";
-import { LinkingConfig } from "@app/constants";
 import { get, save } from "@backend/settings";
 import { loadState, isOffline } from "@backend/offline";
 import { loadPlayerState, savePlayerState } from "@app/utils";
@@ -206,6 +205,7 @@ class App extends React.Component<any, IState> {
                 .catch(err => console.error(err)); // Load the notifications.
         }, 3e3);
 
+        // Add event listeners for notifications.
         emitter.on("notificationReset", () => {
             this.setState({ notificationCount: undefined })
         });
@@ -238,9 +238,7 @@ class App extends React.Component<any, IState> {
             <MenuProvider key={this.state.reloadKey} style={{ backgroundColor: "#0c0f17" }}>
                 <StatusBar translucent backgroundColor="transparent" />
 
-                <NavigationContainer
-                    linking={LinkingConfig}
-                >
+                <NavigationContainer>
                     <Tab.Navigator
                         initialRouteName="Home"
                         screenOptions={({ route }) => ({
