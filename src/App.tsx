@@ -5,7 +5,7 @@ import LinearGradient from "react-native-linear-gradient";
 import SplashScreen from "react-native-splash-screen";
 import TrackPlayer from "react-native-track-player";
 import NetInfo from "@react-native-community/netinfo";
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
@@ -205,6 +205,7 @@ class App extends React.Component<any, IState> {
                 .catch(err => console.error(err)); // Load the notifications.
         }, 3e3);
 
+        // Add event listeners for notifications.
         emitter.on("notificationReset", () => {
             this.setState({ notificationCount: undefined })
         });

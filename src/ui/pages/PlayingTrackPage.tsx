@@ -21,6 +21,7 @@ import { isOffline } from "@backend/offline";
 import { currentPlaylist } from "@backend/playlist";
 import { getIconUrl, openTrack, promptPlaylistTrackAdd } from "@app/utils";
 import { navigate } from "@backend/navigation";
+import { parseArtist } from "@backend/search";
 import { isListeningWith } from "@backend/social";
 import { favoriteTrack, favorites } from "@backend/user";
 import { getCurrentTrack, shuffleQueue, asData,
@@ -153,13 +154,13 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
         Image.getSize(artwork as string, (w, h) => {
             if (width < height) {
                 this.setState({
-                    imageWidth: width * 0.9,
-                    imageHeight: (width / (w / h)) * 0.9
+                    imageWidth: width * 0.85,
+                    imageHeight: (width / (w / h)) * 0.85
                 });
             } else {
                 this.setState({
-                    imageWidth: (height / (h / w)) * 0.9,
-                    imageHeight: height * 0.9
+                    imageWidth: (height / (h / w)) * 0.85,
+                    imageHeight: height * 0.85
                 });
             }
         });
@@ -278,7 +279,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
 
                                 <BasicText
                                     style={{ color: "#a1a1a1", fontSize: 15 }}
-                                    text={track.artist ?? ""}
+                                    text={parseArtist(track.artist ?? "")}
                                     containerStyle={PlayingTrackPageStyle.title}
                                 />
                             </View>
