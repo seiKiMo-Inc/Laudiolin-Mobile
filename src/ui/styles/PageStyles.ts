@@ -264,21 +264,24 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         height: 90,
         flexDirection: "row",
         justifyContent: "space-between",
-        padding: 20,
-        paddingTop: 40,
+        paddingHorizontal: 20,
+        paddingTop: 30,
+        alignItems: "center",
+        position: "absolute",
+        zIndex: 2,
     },
     topBarText: {
         flexDirection: "column",
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
     },
+    
     trackInfo: {
         alignSelf: "center",
-        marginTop: 20,
         justifyContent: "center",
         alignItems: "center",
-        width: screenWidth > screenHeight ? screenHeight : screenWidth,
-        height: screenWidth > screenHeight ? screenHeight : screenWidth,
+        width: (screenWidth > screenHeight ? screenHeight : screenWidth) * 0.85,
+        height: (screenWidth > screenHeight ? screenHeight : screenWidth) * 0.85,
     },
     trackImage: {
         resizeMode: "contain",
@@ -295,7 +298,7 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         paddingBottom: 0,
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "flex-end"
+        alignItems: "center"
     },
     lowerContainer: {
         padding: 25,
@@ -335,7 +338,6 @@ export const PlaylistPageStyle = StyleSheet.create({
     text: {
         paddingLeft: 20,
         justifyContent: "center",
-
         flex: 1
     },
     playlistName: {
