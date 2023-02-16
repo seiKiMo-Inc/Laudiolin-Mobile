@@ -21,29 +21,32 @@ const messageQueue: BaseGatewayMessage[] = [];
  * Sets up track player listeners.
  */
 export function setupListeners(): void {
+    const playerSync = (time?: number) => {
+        update() // Update the player progress.
+            .catch(err => console.warn(err));
+        playerUpdate(time) // Update the player status.
+            .catch(err => console.warn(err));
+    };
+
     // Add remote event listeners.
-    TrackPlayer.addEventListener(Event.RemotePlay, () => update());
-    TrackPlayer.addEventListener(Event.RemoteStop, () => update());
-    TrackPlayer.addEventListener(Event.RemoteSeek, () => update(true, true));
-    TrackPlayer.addEventListener(Event.RemoteNext, () => update());
-    TrackPlayer.addEventListener(Event.RemoteDuck, () => update());
-    TrackPlayer.addEventListener(Event.RemotePause, () => update());
-    TrackPlayer.addEventListener(Event.RemotePrevious, () => update());
-    Platform.OS == "android" && TrackPlayer.addEventListener(Event.RemoteSkip, () => update());
+    TrackPlayer.addEventListener(Event.RemotePlay, playerSync);
+    TrackPlayer.addEventListener(Event.RemoteStop, playerSync);
+    TrackPlayer.addEventListener(Event.RemoteSeek, () => playerSync());
+    TrackPlayer.addEventListener(Event.RemoteNext, playerSync);
+    TrackPlayer.addEventListener(Event.RemotePause, playerSync);
+    TrackPlayer.addEventListener(Event.RemotePrevious, playerSync);
+    Platform.OS == "android" && TrackPlayer.addEventListener(Event.RemoteSkip, () => playerSync());
 
     // Add playback event listeners.
-    emitter.on("seek", () => update(true, true));
-    TrackPlayer.addEventListener(Event.PlaybackState, () => update());
-    TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => update(false));
+    emitter.on("seek", time => playerSync(time));
+    TrackPlayer.addEventListener(Event.PlaybackState, () => playerSync());
+    TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => update());
 }
 
 /**
  * Updates the current track info.
  */
-async function update(
-    shouldSync: boolean = true,
-    wasSeek: boolean = false
-): Promise<void> {
+async function update(): Promise<void> {
     // Check if the track is playing.
     const currentTrack = await getCurrentTrack();
     // Check if the track is a local track.
@@ -51,14 +54,29 @@ async function update(
     if (url && url.startsWith("file://")) return;
 
     // Send player information to the gateway.
-    sendGatewayMessage(<NowPlayingMessage>{
-        type: "playing",
+    sendGatewayMessage(<SeekMessage> {
+        type: "seek",
         timestamp: Date.now(),
-        seeked: wasSeek,
-        sync: shouldSync,
-        seek: await TrackPlayer.getPosition(),
+        seek: await TrackPlayer.getPosition()
+    });
+}
+
+/**
+ * Updates the player details on the backend.
+ */
+async function playerUpdate(seek?: number): Promise<void> {
+    // Check if the track is playing.
+    const currentTrack = await getCurrentTrack();
+    // Check if the track is a local track.
+    const url = currentTrack?.url as string;
+    if (url && url.startsWith("file://")) return;
+
+    // Send player information to the gateway.
+    sendGatewayMessage(<PlayerMessage> {
+        type: "player",
+        seek: seek ?? await TrackPlayer.getPosition(),
+        track: currentTrack ? asData(currentTrack) : null,
         paused: await TrackPlayer.getState() == State.Paused,
-        track: currentTrack ? asData(currentTrack) : null
     });
 }
 
@@ -234,12 +252,9 @@ export type LatencyMessage = BaseGatewayMessage & {
     type: "latency";
 };
 // To server.
-export type NowPlayingMessage = BaseGatewayMessage & {
-    type: "playing";
-    track: TrackData | null;
+export type SeekMessage = BaseGatewayMessage & {
+    type: "seek";
     seek: number;
-    sync: boolean;
-    paused: boolean;
 };
 /**
  * From server.
@@ -248,7 +263,15 @@ export type NowPlayingMessage = BaseGatewayMessage & {
 export type ListenMessage = BaseGatewayMessage & {
     type: "listen";
     with: string;
-}
+};
+// From server.
+export type PlayerMessage = BaseGatewayMessage & {
+    type: "player";
+    track: TrackData | null;
+    seek: number; // Track progress.
+    paused: boolean; // Is the player paused.
+};
+
 // To client.
 export type SyncMessage = BaseGatewayMessage & {
     type: "sync";
