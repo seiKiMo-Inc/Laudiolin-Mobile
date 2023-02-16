@@ -1,6 +1,5 @@
 import React from "react";
-import { View, ImageBackground, ScrollView, Dimensions } from "react-native";
-import ParallaxScrollView from 'react-native-parallax-scroll-view';
+import { View, ImageBackground } from "react-native";
 
 import { Icon, Image } from "@rneui/themed";
 import Hide from "@components/common/Hide";
@@ -11,6 +10,7 @@ import Controls from "@components/player/Controls";
 
 import TextTicker from "react-native-text-ticker";
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
+import ImageView from "react-native-image-viewing";
 
 import { TrackMenuStyle } from "@styles/MenuStyle";
 import { PlayingTrackPageStyle } from "@styles/PageStyles";
@@ -29,7 +29,6 @@ import { getCurrentTrack, shuffleQueue, asData,
 
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
-import { ScreenWidth } from "@rneui/base";
 
 interface IProps {
     showPage: boolean;
@@ -42,8 +41,7 @@ interface IState {
     favorite: boolean;
     playlist: Playlist|null;
     repeatMode: RepeatMode;
-    imageWidth: number;
-    imageHeight: number;
+    isImageViewVisible: boolean;
 }
 
 class PlayingTrackPage extends React.Component<IProps, IState> {
@@ -57,8 +55,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
             favorite: false,
             playlist: null,
             repeatMode: RepeatMode.Off,
-            imageWidth: 0,
-            imageHeight: 0
+            isImageViewVisible: false
         };
     }
 
@@ -145,39 +142,12 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
         }
     }
 
-    setImageSize() {
-        let artwork = this.state.track?.artwork as string;
-        if (!artwork) artwork = getIconUrl(asData(this.state.track as Track));
-
-        const { width, height } = Dimensions.get("window");
-
-        Image.getSize(artwork as string, (w, h) => {
-            if (width < height) {
-                this.setState({
-                    imageWidth: width * 0.85,
-                    imageHeight: (width / (w / h)) * 0.85
-                });
-            } else {
-                this.setState({
-                    imageWidth: (height / (h / w)) * 0.85,
-                    imageHeight: height * 0.85
-                });
-            }
-        });
-    }
-
     componentDidMount() {
         // Register track player listeners.
         TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, () => this.positionUpdate());
         TrackPlayer.addEventListener(Event.PlaybackTrackChanged, () => this.update());
         TrackPlayer.addEventListener(Event.PlaybackQueueEnded, () => this.update());
         TrackPlayer.addEventListener(Event.PlaybackState, () => this.update());
-    }
-
-    componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any) {
-        if (this.state.track != prevState.track) {
-            this.setImageSize();
-        }
     }
 
     render() {
@@ -197,6 +167,13 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                     >
                         <View style={{ ...PlayingTrackPageStyle.background, backgroundColor: "rgba(0,0,0, 0.6)" }} />
                     </ImageBackground>
+
+                    <ImageView
+                        images={[{ uri: artwork }]}
+                        imageIndex={0}
+                        visible={this.state.isImageViewVisible}
+                        onRequestClose={() => this.setState({ isImageViewVisible: false })}
+                    />
 
                     <View style={PlayingTrackPageStyle.topBar}>
                         <Icon
@@ -242,30 +219,16 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                             </MenuOptions>
                         </Menu>
                     </View>
-                    <ParallaxScrollView
-                        showsVerticalScrollIndicator={false}
-                        backgroundColor="#00000000"
-                        contentBackgroundColor="#00000000"
-                        parallaxHeaderHeight={ScreenWidth + 20}
-                        renderForeground={() => (
-                            <View style={PlayingTrackPageStyle.trackInfo}>
-                                <View
-                                    style={{
-                                            opacity: 0,
-                                            width: ScreenWidth,
-                                            height: 80
-                                            }}
-                                />
-                                <Image
-                                    style={{
-                                            ...PlayingTrackPageStyle.trackImage,
-                                            width: this.state.imageWidth,
-                                            height: this.state.imageHeight
-                                            }}
-                                    source={{ uri: artwork }}
-                                />
-                            </View>
-                        )}>
+
+                    <View>
+                        <View style={PlayingTrackPageStyle.trackInfo}>
+                            <Image
+                                style={PlayingTrackPageStyle.trackImage}
+                                source={{ uri: artwork }}
+                                onPress={() => this.setState({ isImageViewVisible: true })}
+                            />
+                        </View>
+
                         <View style={PlayingTrackPageStyle.middleContainer}>
                             <View>
                                 <View style={PlayingTrackPageStyle.title}>
@@ -318,7 +281,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                                 repeatMode={this.state.repeatMode}
                             />
                         </View>
-                    </ParallaxScrollView>
+                    </View>
                 </JumpInView>
             )
         : null;

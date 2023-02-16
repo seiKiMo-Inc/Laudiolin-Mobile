@@ -2,7 +2,17 @@
   "name": "Laudiolin",
   "displayName": "Laudiolin",
 
+  "dev": false,
+
   "encrypted": true,
   "address": "app.seikimo.moe",
-  "port": 443
+  "port": 443,
+
+  "localEncrypted": false,
+  "localAddress": "192.168.1.2",
+  "localPort": 3000,
+
+  "adbEncrypted": false,
+  "adbAddress": "10.0.2.2",
+  "adbPort": 3000
 }

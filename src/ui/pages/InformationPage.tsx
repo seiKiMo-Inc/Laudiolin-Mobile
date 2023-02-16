@@ -49,6 +49,7 @@ class InformationPage extends React.Component<any, IState> {
     };
 
     reloadInterval: any = null;
+    _unsubscribe: any|null = null;
 
     constructor(props: any) {
         super(props);
@@ -85,8 +86,15 @@ class InformationPage extends React.Component<any, IState> {
         // Filter users that are the current user.
         const users = availableUsers.concat(recentUsers)
             .filter(user => user?.userId != userData?.userId);
+        // Filter out duplicate users.
+        const filteredUsers: (OnlineUser|OfflineUser)[] = [];
+        users.forEach(user => {
+            if (!filteredUsers.find(u => u.userId == user.userId)) {
+                filteredUsers.push(user);
+            }
+        });
         // Set the users.
-        this.setState({ users });
+        this.setState({ users: filteredUsers });
     }
 
     async componentDidMount() {
@@ -100,13 +108,15 @@ class InformationPage extends React.Component<any, IState> {
         // Set a listener for app state.
         emitter.on("appState", this.stateUpdate);
 
-        this.props.navigation.addListener("focus", () => {
+        this._unsubscribe = this.props.navigation.addListener("focus", () => {
             emitter.emit("notificationReset");
+            this.forceUpdate();
         });
     }
 
     componentWillUnmount() {
         unregisterListener(this.notificationUpdate);
+        this._unsubscribe && this._unsubscribe();
         this.reloadInterval && clearInterval(this.reloadInterval);
         emitter.removeListener("appState", this.stateUpdate);
     }
@@ -148,7 +158,8 @@ class InformationPage extends React.Component<any, IState> {
                             <ScrollView contentContainerStyle={InformationPageStyle.friendTabContainer}>
                                 {
                                     userData && this.state.tabIndex == 1 &&
-                                    this.state.users.map((user) => this.renderUser(user as OnlineUser&OfflineUser))
+                                    this.state.users.map((user) =>
+                                        this.renderUser(user as OnlineUser & OfflineUser))
                                 }
                             </ScrollView>
                         </TabView.Item>
