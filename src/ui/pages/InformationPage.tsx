@@ -85,8 +85,18 @@ class InformationPage extends React.Component<any, IState> {
         // Filter users that are the current user.
         const users = availableUsers.concat(recentUsers)
             .filter(user => user?.userId != userData?.userId);
+        // Filter out duplicate userIds.
+        const userIds = new Set();
+        const filteredUsers = users.filter(user => {
+            if (userIds.has(user.userId)) {
+                return false;
+            } else {
+                userIds.add(user.userId);
+                return true;
+            }
+        });
         // Set the users.
-        this.setState({ users });
+        this.setState({ users: filteredUsers });
     }
 
     async componentDidMount() {
