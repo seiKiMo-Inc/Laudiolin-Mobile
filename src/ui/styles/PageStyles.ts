@@ -267,7 +267,6 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: 30,
         alignItems: "center",
-        position: "absolute",
         zIndex: 2,
     },
     topBarText: {
@@ -275,17 +274,25 @@ export const PlayingTrackPageStyle = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    
+
     trackInfo: {
+        marginTop: 20,
+        marginBottom: 20,
         alignSelf: "center",
         justifyContent: "center",
         alignItems: "center",
-        width: (screenWidth > screenHeight ? screenHeight : screenWidth) * 0.85,
-        height: (screenWidth > screenHeight ? screenHeight : screenWidth) * 0.85,
+        width: screenWidth - 40,
+        height: screenWidth - 40,
+        maxWidth: 400,
+        maxHeight: 400,
     },
     trackImage: {
-        resizeMode: "contain",
+        resizeMode: "cover",
+        flex: 1,
+        width: "100%",
+        height: "100%",
         borderRadius: 10,
+        aspectRatio: 1,
     },
     alert: {
         alignSelf: "center"
