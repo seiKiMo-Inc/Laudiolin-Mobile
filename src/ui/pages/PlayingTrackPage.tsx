@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ImageBackground, ScrollView } from "react-native";
+import { View, ImageBackground } from "react-native";
 
 import { Icon, Image } from "@rneui/themed";
 import Hide from "@components/common/Hide";
@@ -219,7 +219,8 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                             </MenuOptions>
                         </Menu>
                     </View>
-                    <ScrollView>
+
+                    <View>
                         <View style={PlayingTrackPageStyle.trackInfo}>
                             <Image
                                 style={PlayingTrackPageStyle.trackImage}
@@ -280,7 +281,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                                 repeatMode={this.state.repeatMode}
                             />
                         </View>
-                    </ScrollView>
+                    </View>
                 </JumpInView>
             )
         : null;
