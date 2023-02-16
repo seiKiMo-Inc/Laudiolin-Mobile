@@ -1,5 +1,6 @@
 import React from "react";
 import { View, ImageBackground, ScrollView, Dimensions } from "react-native";
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 
 import { Icon, Image } from "@rneui/themed";
 import Hide from "@components/common/Hide";
@@ -20,6 +21,7 @@ import { isOffline } from "@backend/offline";
 import { currentPlaylist } from "@backend/playlist";
 import { getIconUrl, openTrack, promptPlaylistTrackAdd } from "@app/utils";
 import { navigate } from "@backend/navigation";
+import { parseArtist } from "@backend/search";
 import { isListeningWith } from "@backend/social";
 import { favoriteTrack, favorites } from "@backend/user";
 import { getCurrentTrack, shuffleQueue, asData,
@@ -27,6 +29,7 @@ import { getCurrentTrack, shuffleQueue, asData,
 
 import TrackPlayer, { Event, State, Track } from "react-native-track-player";
 import { RepeatMode } from "react-native-track-player/lib/interfaces";
+import { ScreenWidth } from "@rneui/base";
 
 interface IProps {
     showPage: boolean;
@@ -217,7 +220,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                             </View>
                         </Hide>
 
-                        <Menu style={{ justifyContent: "center" }}>
+                        <Menu>
                             <MenuTrigger>
                                 <Icon
                                     size={30}
@@ -239,19 +242,30 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                             </MenuOptions>
                         </Menu>
                     </View>
-
-                    <ScrollView>
-                        <View style={PlayingTrackPageStyle.trackInfo}>
-                            <Image
-                                style={{
-                                    ...PlayingTrackPageStyle.trackImage,
-                                    width: this.state.imageWidth,
-                                    height: this.state.imageHeight
-                                }}
-                                source={{ uri: artwork }}
-                            />
-                        </View>
-
+                    <ParallaxScrollView
+                        showsVerticalScrollIndicator={false}
+                        backgroundColor="#00000000"
+                        contentBackgroundColor="#00000000"
+                        parallaxHeaderHeight={ScreenWidth + 20}
+                        renderForeground={() => (
+                            <View style={PlayingTrackPageStyle.trackInfo}>
+                                <View
+                                    style={{
+                                            opacity: 0,
+                                            width: ScreenWidth,
+                                            height: 80
+                                            }}
+                                />
+                                <Image
+                                    style={{
+                                            ...PlayingTrackPageStyle.trackImage,
+                                            width: this.state.imageWidth,
+                                            height: this.state.imageHeight
+                                            }}
+                                    source={{ uri: artwork }}
+                                />
+                            </View>
+                        )}>
                         <View style={PlayingTrackPageStyle.middleContainer}>
                             <View>
                                 <View style={PlayingTrackPageStyle.title}>
@@ -265,7 +279,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
 
                                 <BasicText
                                     style={{ color: "#a1a1a1", fontSize: 15 }}
-                                    text={track.artist ?? ""}
+                                    text={parseArtist(track.artist ?? "")}
                                     containerStyle={PlayingTrackPageStyle.title}
                                 />
                             </View>
@@ -304,7 +318,7 @@ class PlayingTrackPage extends React.Component<IProps, IState> {
                                 repeatMode={this.state.repeatMode}
                             />
                         </View>
-                    </ScrollView>
+                    </ParallaxScrollView>
                 </JumpInView>
             )
         : null;

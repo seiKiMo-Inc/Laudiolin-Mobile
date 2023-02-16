@@ -20,6 +20,7 @@ import { getIconUrl, openTrack, promptPlaylistTrackAdd } from "@app/utils";
 import { removeTrackFromPlaylist } from "@backend/playlist";
 
 import { console } from "@app/utils";
+import { parseArtist } from "@backend/search";
 
 interface IProps {
     track: TrackData;
@@ -104,7 +105,7 @@ class Track extends React.Component<IProps, IState> {
                             </TextTicker>
 
                             <BasicText
-                                text={track.artist}
+                                text={parseArtist(track.artist)}
                                 style={TrackStyle.artist}
                                 numberOfLines={1}
                             />

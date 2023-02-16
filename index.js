@@ -13,6 +13,7 @@ import { console } from "@app/utils";
 
 // Setup event listeners.
 import * as fs from "@backend/fs";
+import * as link from "@backend/link";
 import * as gateway from "@backend/gateway";
 import * as settings from "@backend/settings";
 
@@ -35,6 +36,9 @@ fs.createFolders()
 // Initialize the gateway.
 gateway.setupListeners();
 gateway.connect();
+
+// Initialize deep linking.
+link.setupListeners();
 
 // Initialize the track player.
 TrackPlayer.setupPlayer()

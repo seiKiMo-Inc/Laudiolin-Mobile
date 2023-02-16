@@ -1,5 +1,4 @@
 import { updateTargetRoute } from "@backend/user";
-import { LinkingOptions } from "@react-navigation/native/lib/typescript/src/types";
 
 let app: any = {
     encrypted: false,
@@ -27,17 +26,4 @@ export let Gateway = {
     socket: `${app.encrypted ? "wss:" : "ws:"}//${app.address}:${app.port}`,
 
     getUrl: () => Gateway.url,
-};
-
-export let LinkingConfig: LinkingOptions<any> = {
-    prefixes: [
-        "laudiolin://", "https://laudiolin.seikimo.moe"
-    ],
-    config: {
-        screens: {
-            Listen: "listen?id=:id",
-            PlayTrack: "track?id=:id",
-            Home: "*"
-        }
-    }
 };

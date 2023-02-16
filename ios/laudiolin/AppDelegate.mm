@@ -42,4 +42,14 @@
   return [RCTLinkingManager application:application openURL:url options:options];
 }
 
+/// React Native universal deep linking
+/// @see: https://reactnavigation.org/docs/deep-linking/
+- (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
+ restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
+{
+ return [RCTLinkingManager application:application
+                  continueUserActivity:userActivity
+                    restorationHandler:restorationHandler];
+}
+
 @end
