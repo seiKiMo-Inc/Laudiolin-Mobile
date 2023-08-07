@@ -1,5 +1,7 @@
 import { Linking } from "react-native";
 
+import * as settings from "@backend/settings";
+import { login } from "@backend/user";
 import { listenWith } from "@backend/social";
 import { navigate } from "@backend/navigation";
 import { console } from "@app/utils";
@@ -23,6 +25,10 @@ let _unsubscribe: any = null;
 export async function setupListeners() {
     _unsubscribe = Linking.addEventListener("url",
         ({ url }) => onLinked(url));
+
+    // Invoke the onLinked function with the initial URL.
+    const url = await Linking.getInitialURL();
+    url && await onLinked(url);
 }
 
 /**
@@ -73,6 +79,14 @@ async function onLinked(payload: string) {
             if (playlist) {
                 emitter.emit("showPlaylist", playlist);
                 navigate("Playlist");
+            }
+            return;
+        case "login":
+            if (action != "token") break;
+            if (await login(value)) {
+                // Attempt to log in.
+                await settings.setToken(value); // Save the token.
+                await settings.save("authenticated", "discord");
             }
             return;
     }
