@@ -6,8 +6,7 @@ import * as settings from "@backend/settings";
 
 import { Gateway } from "@app/constants";
 
-import { console } from "@app/utils";
-import { setToken } from "@backend/settings";
+import { console } from "@app/utils"
 
 export const updateTargetRoute = () => targetRoute = Gateway.getUrl();
 export let targetRoute = Gateway.getUrl(); // The base address for the backend.
@@ -39,7 +38,7 @@ export const loaders = {
  * Returns the URL for logging in.
  */
 export function getLoginUrl(): string {
-    return `${targetRoute}/discord`
+    return `${targetRoute}/login`;
 }
 
 /**
@@ -61,64 +60,13 @@ export function userId(): string {
  */
 
 /**
- * Attempts to generate a code for the user to authenticate with.
- * @returns The generated code.
- */
-export async function getCode(): Promise<string | null> {
-    const code = await token(); // Get the token.
-    if (code == "") return null; // Check if the user is authenticated.
-
-    const route = `${targetRoute}/user/auth`;
-    const response = await fetch(route, {
-        method: "GET", headers: { Authorization: code }
-    });
-
-    // Check the response code.
-    if (response.status != 200) {
-        console.error(`Failed to get code from the backend. Status code: ${response.status}`);
-        return null;
-    }
-
-    return (await response.json()).authCode;
-}
-
-/**
- * Attempts to get a token from an authentication code.
- * @param code The authentication code.
- * @returns Whether the token was successfully retrieved.
- */
-export async function getToken(code: string): Promise<boolean> {
-    // Validate the authentication code.
-    if (code == "" || code.length != 6 || isNaN(Number(code))) return false;
-
-    const route = `${targetRoute}/user/auth`;
-    const response = await fetch(route, {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code })
-    });
-
-    // Check the response code.
-    if (response.status != 200) {
-        console.error(`Failed to get token from the backend. Status code: ${response.status}`);
-        return false;
-    }
-
-    // Fetch the token from the response.
-    const { token } = await response.json();
-    // Save the token.
-    await setToken(token);
-
-    return true;
-}
-
-/**
  * Attempts to get user data from the backend.
  * @param code The user's authentication token.
  * @param loadData Whether to load the user data.
  */
-export async function login(code: string = "", loadData: boolean = true): Promise<void> {
+export async function login(code: string = "", loadData: boolean = true): Promise<boolean> {
     if (code == "") code = await token(); // If no code is provided, use the token.
-    if (!code || code == "") return; // If no code is provided, exit.
+    if (!code || code == "") return false; // If no code is provided, exit.
 
     const route = `${targetRoute}/user`;
     const response = await fetch(route, {
@@ -131,7 +79,7 @@ export async function login(code: string = "", loadData: boolean = true): Promis
         await logout(); // Log the user out.
         navigate("Login"); // Redirect to the login page.
 
-        return;
+        return false;
     }
 
     userData = await response.json(); // Load the data into the user data variable.
@@ -148,6 +96,8 @@ export async function login(code: string = "", loadData: boolean = true): Promis
         loadFavorites() // Load favorite tracks.
             .catch(err => console.error(err));
     }
+
+    return true;
 }
 
 /**

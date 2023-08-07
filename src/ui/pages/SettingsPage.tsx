@@ -1,11 +1,10 @@
 import React from "react";
-import { Dimensions, ScrollView, TouchableHighlight, View } from "react-native";
+import { Dimensions, ScrollView, View } from "react-native";
 import { NavigationSwitchScreenProps } from "react-navigation";
 
 import Hide from "@components/common/Hide";
 import BasicText from "@components/common/BasicText";
 import MixedText from "@components/common/MixedText";
-import BasicModal from "@components/common/BasicModal";
 import BasicButton from "@components/common/BasicButton";
 import FadeInView from "@components/common/FadeInView";
 
@@ -16,7 +15,7 @@ import { SettingsPageStyle } from "@styles/PageStyles";
 import type { User, SettingType } from "@backend/types";
 import * as settings from "@backend/settings";
 import { navigate } from "@backend/navigation";
-import { getCode, logout, userData } from "@backend/user";
+import { logout, userData } from "@backend/user";
 import { connect, connected } from "@backend/gateway";
 import { offlineSupport, isOffline } from "@backend/offline";
 
@@ -96,10 +95,6 @@ class Setting extends React.Component<
 
 interface IState {
     user: User|null;
-
-    code: string;
-    showCode: boolean;
-    showAuthModal: boolean;
 }
 
 class SearchPage extends React.Component<any, IState> {
@@ -107,10 +102,7 @@ class SearchPage extends React.Component<any, IState> {
         super(props);
 
         this.state = {
-            user: userData,
-            code: "",
-            showCode: false,
-            showAuthModal: false
+            user: userData
         };
     }
 
@@ -119,26 +111,6 @@ class SearchPage extends React.Component<any, IState> {
      */
     reconnect(): void {
         connect();
-    }
-
-    /**
-     * Hides the auth code modal.
-     */
-    hideCodeModal(): void {
-        this.setState({
-            showAuthModal: false,
-            showCode: false, code: ""
-        });
-    }
-
-    /**
-     * Shows the user's auth code.
-     */
-    async showAuthCode(): Promise<void> {
-        this.setState({
-            showCode: !this.state.showCode,
-            code: !this.state.showCode ? (await getCode() ?? "") : ""
-        });
     }
 
     render() {
@@ -161,7 +133,6 @@ class SearchPage extends React.Component<any, IState> {
                                         <Image
                                             style={SettingsPageStyle.userImage}
                                             source={{ uri: user?.avatar ?? "" }}
-                                            onLongPress={() => !isOffline && this.setState({ showAuthModal: true })}
                                         />
                                     </View>
 
@@ -184,7 +155,7 @@ class SearchPage extends React.Component<any, IState> {
                                 </>
                             ) : (
                                 <View style={{ alignItems: "center", width: Dimensions.get("window").width - 20 }}>
-                                    <BasicButton text={"Log in with Discord"}
+                                    <BasicButton text={"Log in with seiKiMo"}
                                                  color={"#5b67af"} bold={true}
                                                  width={200} height={40} radius={10}
                                                  transform={"uppercase"}
@@ -240,25 +211,6 @@ class SearchPage extends React.Component<any, IState> {
                             />
                         </Hide>
                     </View>
-
-                    <BasicModal
-                        title={"Authentication Code"} buttonText={"Close"}
-                        showModal={this.state.showAuthModal}
-                        onSubmit={() => this.hideCodeModal()}
-                        onBackdropPress={() => this.hideCodeModal()}
-                    >
-                        <TouchableHighlight
-                            underlayColor={"transparent"}
-                            onPress={() => this.showAuthCode()}
-                        >
-                            <>
-                                <BasicText text={`Press to ${this.state.showCode ? "hide" : "show"} code.`} />
-                                <Hide show={this.state.showCode}>
-                                    <BasicText text={`Authentication Code: ${this.state.code}`} />
-                                </Hide>
-                            </>
-                        </TouchableHighlight>
-                    </BasicModal>
                 </ScrollView>
             </FadeInView>
         );
