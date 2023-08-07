@@ -117,6 +117,14 @@ class SearchPage extends React.Component<any, IState> {
         // Pull the user.
         const { user } = this.state;
 
+        // Resolve the discriminator.
+        let discriminator = user?.discriminator ?? "";
+        if (discriminator == null || discriminator.length == 0 || discriminator == "0") {
+            discriminator = "";
+        } else {
+            discriminator = "#" + discriminator;
+        }
+
         return (
             <FadeInView navigation={this.props.navigation as NavigationSwitchScreenProps["navigation"]}>
                 <ScrollView contentContainerStyle={{ paddingLeft: 20, paddingTop: 20 }}>
@@ -139,7 +147,7 @@ class SearchPage extends React.Component<any, IState> {
                                     <View style={{ justifyContent: "center" }}>
                                         <BasicText text={"Logged in as"} style={{ fontSize: 13 }} />
                                         <MixedText
-                                            first={user?.username ?? ""} second={"#" + (user?.discriminator ?? "0000")}
+                                            first={user?.username ?? ""} second={discriminator}
                                             firstStyle={{ ...SettingsPageStyle.userText, color: "white" }}
                                             secondStyle={{ ...SettingsPageStyle.userText, color: "#888787" }}
                                         />

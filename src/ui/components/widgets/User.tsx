@@ -60,6 +60,10 @@ class User extends React.PureComponent<IProps, IState> {
     render() {
         const { user } = this.props;
 
+        let discriminator = user.discriminator ?? "";
+        if (discriminator && discriminator != "0")
+            discriminator = "#" + discriminator;
+
         return (
             <TouchableHighlight
                 underlayColor={`rgba(0, 0, 0, 0.9)`}
@@ -80,7 +84,7 @@ class User extends React.PureComponent<IProps, IState> {
                         />
 
                         <View style={UserStyle.text}>
-                            <BasicText text={`${user.username}#${user.discriminator}`} style={UserStyle.title} />
+                            <BasicText text={`${user.username}${discriminator}`} style={UserStyle.title} />
                             { !this.state.isExpanded ? this.props.isOffline ?
                                 <BasicText text={"Last listening to: " + user.lastListeningTo?.title} numberOfLines={1} containerStyle={UserStyle.subtitle} /> :
                                 <BasicText text={"Listening to: " + user.listeningTo?.title} numberOfLines={1} containerStyle={UserStyle.subtitle} /> :

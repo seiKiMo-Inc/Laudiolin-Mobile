@@ -234,13 +234,27 @@ export async function getPlaylistAuthor(playlist: Playlist): Promise<string> {
     if (owner == "") return "Unknown"; // If no owner is provided, return "Unknown".
 
     // If the owner is the current user, return the user's username.
-    if (owner == getUserId()) return `${userData?.username}#${userData?.discriminator}`;
+    if (owner == getUserId()) {
+        let discriminator = userData?.discriminator ?? null;
+        if (discriminator && discriminator == "0") {
+            discriminator = null;
+        }
+
+        return `${userData?.username}${discriminator ? "#" : ""}${discriminator ?? ""}`;
+    }
 
     // Otherwise, load the owner's data.
     const user = await getUserById(owner);
     if (!user) return "Unknown"; // If the user data could not be loaded, return "Unknown".
 
-    return `${user.username}#${user.discriminator}`; // Return the user's username.
+    // Resolve the discriminator.
+    let discriminator = userData?.discriminator ?? null;
+    if (discriminator && discriminator == "0") {
+        discriminator = null;
+    }
+
+    // Return the user's username.
+    return `${user.username}${discriminator ? "#" : ""}${discriminator ?? ""}`;
 }
 
 /*
