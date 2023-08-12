@@ -1,10 +1,8 @@
 import React from "react";
-import { View, ImageBackground } from "react-native";
+import { View, ImageBackground, Linking } from "react-native";
 
 import WebView, { WebViewNavigation } from "react-native-webview";
-import BasicTextInput from "@components/common/BasicTextInput";
 import BasicButton from "@components/common/BasicButton";
-import BasicModal from "@components/common/BasicModal";
 import BasicText from "@components/common/BasicText";
 import { ScreenWidth } from "@rneui/base";
 
@@ -12,7 +10,7 @@ import { LoginPageStyle } from "@styles/PageStyles";
 
 import * as settings from "@backend/settings";
 import { navigate } from "@backend/navigation";
-import { getLoginUrl, getToken, login } from "@backend/user";
+import { getLoginUrl, login } from "@backend/user";
 
 import { console } from "@app/utils";
 
@@ -20,8 +18,6 @@ interface IState {
     showCode: boolean;
     showLogin: boolean;
     webViewUrl: string;
-
-    authCode: string;
 }
 
 class SearchPage extends React.Component<any, IState> {
@@ -31,8 +27,7 @@ class SearchPage extends React.Component<any, IState> {
         this.state = {
             showCode: false,
             showLogin: false,
-            webViewUrl: "",
-            authCode: ""
+            webViewUrl: ""
         };
     }
 
@@ -40,10 +35,8 @@ class SearchPage extends React.Component<any, IState> {
      * Changes the state to show the login page.
      */
     login(): void {
-        this.setState({
-            showLogin: true,
-            webViewUrl: getLoginUrl()
-        });
+        Linking.openURL(getLoginUrl())
+            .catch(err => console.error(err));
     }
 
     /**
@@ -66,28 +59,6 @@ class SearchPage extends React.Component<any, IState> {
         // Navigate to the home page.
         navigate("Home");
         this.setState({ showLogin: false });
-    }
-
-    /**
-     * Invoked when the authorization code modal is submitted.
-     */
-    onSubmit(): void {
-        // Login with the specified code.
-        getToken(this.state.authCode)
-            .then(async () => {
-                // Set the user as authenticated.
-                await settings.save("authenticated", "discord");
-                // Login with the account.
-                await login();
-
-                // Navigate to the home page.
-                navigate("Home");
-                this.setState({
-                    showLogin: false,
-                    showCode: false
-                });
-            })
-            .catch(err => console.error(err));
     }
 
     /**
@@ -130,7 +101,7 @@ class SearchPage extends React.Component<any, IState> {
                 />
 
 
-                <BasicButton text={"Log in with Discord"}
+                <BasicButton text={"Log in with seiKiMo"}
                              color={"#5b67af"}
                              transform={"uppercase"} bold={true}
                              width={300} height={40} radius={10}
@@ -148,21 +119,8 @@ class SearchPage extends React.Component<any, IState> {
                              press={() => this.ignoreLogin()}
                 />
 
-                <BasicText text={"Logging in with Discord lets you create playlists, like songs, connect with friends and more!"}
+                <BasicText text={"Logging in lets you create playlists, like songs, connect with friends and more!"}
                              style={{ width: ScreenWidth, maxWidth: "90%", alignSelf: "center", textAlign: "center"}} />
-
-                <BasicModal
-                    title={"Enter an Authorization Code"}
-                    showModal={this.state.showCode} onSubmit={() => this.onSubmit()}
-                    onBackdropPress={() => this.setState({ showCode: false })}
-                >
-                    <BasicTextInput
-                        containerStyle={LoginPageStyle.authContainer}
-                        default={"123456"} maxLength={6} content={"none"}
-                        onChange={authCode => this.setState({ authCode })}
-                    />
-                </BasicModal>
-
             </View>
 
         ) : (

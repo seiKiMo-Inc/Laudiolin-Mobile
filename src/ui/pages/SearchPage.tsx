@@ -61,9 +61,14 @@ class SearchPage extends React.Component<any, IState> {
 
         this.timeout = setTimeout(async () => {
             // Perform a search.
-            const { results } = await doSearch(query);
+            const { top, results } = await doSearch(query);
+
+            let tracks: TrackData[] = [];
+            tracks.push(top);
+            tracks = tracks.concat(results);
+
             // Update the state.
-            this.setState({ results });
+            this.setState({ results: tracks });
             this.setState({ isLoading: false });
 
             // Clear the timeout.

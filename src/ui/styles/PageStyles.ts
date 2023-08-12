@@ -59,6 +59,7 @@ export const HomePageStyle = StyleSheet.create({
     },
     playlists: {
         paddingLeft: 20,
+        marginRight: 20,
         flexDirection: "row"
     },
     playlist: {
