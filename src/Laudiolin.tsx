@@ -1,12 +1,13 @@
-import { SafeAreaView, StatusBar } from "react-native";
+import { SafeAreaView, StatusBar, View } from "react-native";
 
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 
 import Home from "@app/Home";
 
 import Search from "@ui/Search";
 import Settings from "@ui/Settings";
+import StyledText, { Size } from "@components/StyledText";
 
 import { HomeIcon, SearchIcon, SettingsIcon } from "@ui/Icons";
 
@@ -26,6 +27,14 @@ function Laudiolin(props: IProps) {
             <SafeAreaView style={style.App} onLayout={props.onLoad}>
                 <NavigationContainer>
                     <Tab.Navigator
+                        tabBar={props => (
+                            <>
+                                <View>
+                                    <StyledText text={"Laudiolin"} size={Size.Title} />
+                                </View>
+                                <BottomTabBar {...props} />
+                            </>
+                        )}
                         screenOptions={{
                             headerShown: false,
                             tabBarShowLabel: false,
