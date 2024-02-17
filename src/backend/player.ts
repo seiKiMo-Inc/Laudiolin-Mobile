@@ -1,8 +1,9 @@
 import TrackPlayer, { AddTrack, Event } from "react-native-track-player";
 
 import Backend from "@backend/backend";
-import { PlaylistInfo, TrackInfo } from "@backend/types";
 import { useGlobal } from "@backend/stores";
+import { resolveIcon } from "@backend/utils";
+import { PlaylistInfo, TrackInfo } from "@backend/types";
 
 const requestData = {
     userAgent: "seiKiMo/Laudiolin-Mobile",
@@ -33,7 +34,7 @@ function transform(track: TrackInfo): AddTrack {
         url: `${Backend.getBaseUrl()}/download?id=${track.id}`,
         title: track.title,
         artist: track.artist,
-        artwork: track.icon,
+        artwork: resolveIcon(track.icon),
     };
 }
 
