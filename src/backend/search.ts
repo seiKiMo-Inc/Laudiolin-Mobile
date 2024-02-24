@@ -57,7 +57,9 @@ export function tracks({ results, top }: SearchResult): TrackInfo[] {
  *
  * @param track The track to parse.
  */
-export function artist(track: TrackInfo): string {
-    const artist = track.artist.trim();
+export function artist(track: TrackInfo | string | undefined): string {
+    if (!track) return "Unknown";
+
+    let artist = typeof track == "string" ? track : track.artist;
     return artist.length == 0 ? "Unknown" : artist;
 }
