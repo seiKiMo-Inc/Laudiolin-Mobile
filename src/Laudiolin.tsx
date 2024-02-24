@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { StatusBar, Text, View } from "react-native";
 
 interface IProps {
     onLoad?: () => void;
@@ -6,9 +6,13 @@ interface IProps {
 
 function Laudiolin(props: IProps) {
     return (
-        <View onLayout={props.onLoad}>
-            <Text>Hello World!</Text>
-        </View>
+        <>
+            <StatusBar barStyle={"dark-content"} />
+
+            <View onLayout={props.onLoad}>
+                <Text>Hello World!</Text>
+            </View>
+        </>
     );
 }
 
