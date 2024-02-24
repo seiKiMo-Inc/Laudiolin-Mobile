@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "laudiolin-mobile-v2",
-    "slug": "laudiolin-mobile-v2",
-    "version": "1.0.0",
+    "name": "Laudiolin",
+    "slug": "laudiolin-mobile",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -21,10 +21,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "moe.seikimo.laudiolin"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d5374d36-2b36-42ee-b013-dc1450d439a8"
+      }
     }
   }
 }
