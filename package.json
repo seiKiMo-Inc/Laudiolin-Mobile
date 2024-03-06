@@ -19,7 +19,6 @@
     "@react-navigation/stack": "^6.3.25",
     "@rneui/base": "^4.0.0-rc.8",
     "@rneui/themed": "^4.0.0-rc.8",
-    "@types/react-native-vector-icons": "^6.4.18",
     "expo": "~50.0.11",
     "expo-auth-session": "~5.4.0",
     "expo-crypto": "~12.8.1",
@@ -53,6 +52,7 @@
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.45",
     "babel-plugin-module-resolver": "^5.0.0",
+    "@types/react-native-vector-icons": "^6.4.18",
     "prettier": "^3.2.5",
     "typescript": "^5.1.3"
   },
