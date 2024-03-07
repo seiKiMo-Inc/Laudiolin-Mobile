@@ -8,7 +8,7 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "store"
     },
     "production": {}
   },

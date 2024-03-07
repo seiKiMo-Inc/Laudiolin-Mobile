@@ -15,7 +15,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "infoPlist": {
+        "UIBackgroundModes": ["audio"]
+      },
+      "supportsTablet": true,
+      "bundleIdentifier": "moe.seikimo.laudiolin"
     },
     "android": {
       "adaptiveIcon": {

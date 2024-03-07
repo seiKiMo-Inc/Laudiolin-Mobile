@@ -7,7 +7,8 @@ module.exports = (api) => {
                 "module-resolver",
                 {
                     alias: {
-                        "@app": "./src"
+                        "@app": "./src",
+                        "@backend": "./src/backend",
                     }
                 }
             ]
