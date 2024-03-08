@@ -23,7 +23,7 @@ function TextPlayground({ navigation }: IProps) {
         }}>
             <StyledButton
                 text={"Go Back"}
-                onPress={() => navigation.navigate("Summary")}
+                onPress={() => navigation.goBack()}
             />
 
             <TextInput

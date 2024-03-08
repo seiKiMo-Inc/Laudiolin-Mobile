@@ -11,12 +11,17 @@ interface IProps {
     navigation: NavigationProp<any>;
 }
 
-function Summary(props: IProps) {
+function Summary({ navigation }: IProps) {
     return (
-        <View style={{ backgroundColor: "#a8bbe6" }}>
+        <View style={{ gap: 35 }}>
             <StyledButton
                 text={"Text Playground"}
-                onPress={() => props.navigation.navigate("Text Playground")}
+                onPress={() => navigation.navigate("Text Playground")}
+            />
+
+            <StyledButton
+                text={"Track Playground"}
+                onPress={() => navigation.navigate("Track Playground")}
             />
         </View>
     );
