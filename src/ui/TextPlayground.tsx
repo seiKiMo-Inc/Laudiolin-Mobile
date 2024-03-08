@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { TextInput, View } from "react-native";
 
+import { NavigationProp } from "@react-navigation/native";
+
 import StyledText, { Size } from "@components/StyledText";
+import StyledButton from "@components/StyledButton";
 
 import style from "@style/Laudiolin";
 
-function TextPlayground() {
+interface IProps {
+    navigation: NavigationProp<any>;
+}
+
+function TextPlayground({ navigation }: IProps) {
     const [text, setText] = useState("Hello World!");
 
     return (
@@ -14,6 +21,11 @@ function TextPlayground() {
             padding: 10,
             gap: 15
         }}>
+            <StyledButton
+                text={"Go Back"}
+                onPress={() => navigation.navigate("Summary")}
+            />
+
             <TextInput
                 style={{
                     color: "white", borderColor: "white", borderWidth: 1, width: "80%",

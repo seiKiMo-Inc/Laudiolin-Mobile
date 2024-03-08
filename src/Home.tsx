@@ -14,7 +14,7 @@ function Home() {
                 headerShown: false,
                 cardStyle: style.Home
             }}
-            initialRouteName={"Text Playground"}
+            initialRouteName={"Summary"}
         >
             <Stack.Screen name={"Summary"} component={Summary} />
             <Stack.Screen name={"Text Playground"} component={TextPlayground} />

@@ -8,8 +8,9 @@ import Home from "@app/Home";
 import Search from "@ui/Search";
 import Settings from "@ui/Settings";
 
-import style from "@style/Laudiolin";
 import { HomeIcon, SearchIcon, SettingsIcon } from "@ui/Icons";
+
+import style from "@style/Laudiolin";
 
 interface IProps {
     onLoad?: () => void;
