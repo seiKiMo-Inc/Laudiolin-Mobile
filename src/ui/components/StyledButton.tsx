@@ -8,6 +8,7 @@ interface IProps {
     icon?: IconNode;
 
     style?: StyleProp<ViewStyle>;
+    buttonStyle?: StyleProp<ViewStyle>;
 
     onPress?: () => void;
 }
@@ -17,7 +18,9 @@ function StyledButton(props: IProps) {
         <Button
             title={props.text}
             icon={props.icon}
-            style={props.style}
+            buttonStyle={props.buttonStyle}
+            containerStyle={props.style}
+            activeOpacity={0.7}
             onPress={props.onPress}
         />
     );

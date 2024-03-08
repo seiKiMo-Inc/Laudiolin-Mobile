@@ -33,7 +33,7 @@ function NowPlaying() {
 
                 <View style={style.NowPlaying_Source}>
                     <StyledText uppercase text={"Playing from Playlist"}
-                                style={{ color: "gray" }}
+                                style={{ color: colors.gray }}
                     />
                     <StyledText bold text={"Playlist"} />
                 </View>
@@ -55,7 +55,7 @@ function NowPlaying() {
                 />
 
                 <StyledText text={track?.artist ?? "---"}
-                            style={{ color: "gray" }}
+                            style={{ color: colors.gray }}
                             size={Size.Text} lines={3}
                 />
             </View>

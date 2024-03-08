@@ -70,7 +70,7 @@ const style = StyleSheet.create({
         flexDirection: "column"
     },
     ProgressBar_Text: {
-        color: "gray"
+        color: colors.gray
     },
     ProgressBar_Time: {
         flexDirection: "row",

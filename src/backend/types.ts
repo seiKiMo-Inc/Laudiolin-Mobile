@@ -19,6 +19,8 @@ export const blank_TrackInfo: TrackInfo = {
 };
 
 export type PlaylistInfo = {
+    id: string;
+    author: string;
     name: string;
     description: string;
     icon: string;
@@ -27,6 +29,8 @@ export type PlaylistInfo = {
 };
 
 export const blank_PlaylistInfo: PlaylistInfo = {
+    id: "",
+    author: "",
     name: "",
     description: "",
     icon: "",

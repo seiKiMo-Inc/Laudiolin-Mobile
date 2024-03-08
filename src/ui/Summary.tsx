@@ -49,6 +49,8 @@ const aTrack = {
 }
 
 const aPlaylist = {
+    id: "test",
+    author: "caramels.",
     name: "a really long playlist name",
     description: "the playlist description",
     icon: "https://picsum.photos/256/256?random=1",
@@ -79,7 +81,13 @@ function Summary({ navigation }: IProps) {
                 <Header navigation={navigation} to={"Playlists"}>Playlists</Header>
                 <FlatList
                     data={[aPlaylist, aPlaylist, aPlaylist, aPlaylist, aPlaylist]}
-                    renderItem={({ item }) => <Playlist playlist={item} />}
+                    renderItem={({ item }) => (
+                        <Playlist
+                            key={item.id}
+                            playlist={item}
+                            onPress={() => navigation.navigate("Playlist", { playlist: item })}
+                        />
+                    )}
                     contentContainerStyle={style.Summary_Playlist}
                     horizontal showsHorizontalScrollIndicator={false}
                 />

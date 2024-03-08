@@ -37,6 +37,34 @@ async function play(track: TrackInfo): Promise<void> {
 }
 
 /**
+ * Adds a list of tracks to the queue.
+ *
+ * @param props The tracks to add to the queue.
+ */
+async function queue(props: {
+    tracks: TrackInfo[];
+    clear?: boolean;
+    shuffle?: boolean;
+    start?: boolean;
+}): Promise<void> {
+    let tracks = props.tracks;
+    if (tracks == null || tracks.length == 0) return;
+
+    if (props.clear) {
+        await TrackPlayer.reset();
+    }
+
+    if (props.shuffle) {
+        tracks = tracks.sort(() => Math.random() - 0.5);
+    }
+
+    await TrackPlayer.add(tracks);
+    if (props.start) {
+        await TrackPlayer.play();
+    }
+}
+
+/**
  * Shuffles the track queue.
  */
 async function shuffle(): Promise<void> {
@@ -48,5 +76,6 @@ async function shuffle(): Promise<void> {
 
 export default {
     play,
+    queue,
     shuffle
 };

@@ -8,13 +8,15 @@ import style from "@style/Playlist";
 
 interface IProps {
     playlist: PlaylistInfo;
+    onPress?: () => void;
 }
 
-function Playlist({ playlist }: IProps) {
+function Playlist({ playlist, onPress }: IProps) {
     return (
         <TouchableOpacity
             activeOpacity={0.7}
             style={style.Playlist}
+            onPress={onPress}
         >
             <ImageBackground
                 source={{ uri: playlist.icon }}

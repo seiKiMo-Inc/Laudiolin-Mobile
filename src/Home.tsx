@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
 
 import Summary from "@ui/Summary";
-import NowPlaying from "@ui/NowPlaying";
+import Playlist from "@ui/Playlist";
 import TextPlayground from "@ui/TextPlayground";
 import TrackPlayground from "@ui/TrackPlayground";
 
@@ -19,7 +19,7 @@ function Home() {
             initialRouteName={"Summary"}
         >
             <Stack.Screen name={"Summary"} component={Summary} />
-            <Stack.Screen name={"Now Playing"} component={NowPlaying} />
+            <Stack.Screen name={"Playlist"} component={Playlist} />
             <Stack.Screen name={"Text Playground"} component={TextPlayground} />
             <Stack.Screen name={"Track Playground"} component={TrackPlayground} />
         </Stack.Navigator>
