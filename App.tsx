@@ -4,7 +4,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
 import {
-    Poppins_400Regular
+    Poppins_400Regular, Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
 
 import Laudiolin from "@app/Laudiolin";
@@ -14,7 +14,8 @@ function App() {
 
     // Load app assets & fonts.
     const [fontsLoaded] = useFonts({
-        Poppins_400Regular
+        Poppins_400Regular,
+        Poppins_700Bold
     });
 
     // Wait for our fonts to load.
