@@ -15,6 +15,7 @@ export enum Size {
 
 interface IProps {
     text: string;
+    lines?: number;
     size?: Size | number;
 
     bold?: boolean;
@@ -34,6 +35,7 @@ function StyledText(props: IProps) {
                 fontSize: props.size || Size.Text,
                 ...props.style
             }}
+            numberOfLines={props.lines ?? 1}
             onPress={props.onPress}
         >
             {props.text}

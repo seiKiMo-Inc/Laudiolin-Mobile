@@ -18,6 +18,22 @@ export const blank_TrackInfo: TrackInfo = {
     duration: 0,
 };
 
+export type PlaylistInfo = {
+    name: string;
+    description: string;
+    icon: string;
+    isPrivate: boolean;
+    tracks: TrackInfo[];
+};
+
+export const blank_PlaylistInfo: PlaylistInfo = {
+    name: "",
+    description: "",
+    icon: "",
+    isPrivate: true,
+    tracks: [],
+};
+
 export interface SearchResult {
     top: TrackInfo | null;
     results: TrackInfo[];

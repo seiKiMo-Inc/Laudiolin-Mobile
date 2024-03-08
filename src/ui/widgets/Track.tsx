@@ -8,6 +8,7 @@ import Player from "@backend/player";
 import { TrackInfo } from "@backend/types";
 
 import style from "@style/Track";
+import FastImage from "react-native-fast-image";
 
 interface IProps {
     data: TrackInfo;
@@ -29,8 +30,8 @@ function Track(props: IProps) {
             onLongPress={() => console.log("Open Context Menu")}
         >
             <View style={style.Track_Container}>
-                <Image
-                    src={data.icon}
+                <FastImage
+                    source={{ uri: data.icon }}
                     style={style.Track_Icon}
                 />
 
