@@ -16,7 +16,12 @@
     ],
     "ios": {
       "infoPlist": {
-        "UIBackgroundModes": ["audio"]
+        "UIBackgroundModes": [
+          "audio"
+        ]
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       },
       "supportsTablet": true,
       "bundleIdentifier": "moe.seikimo.laudiolin"
@@ -32,7 +37,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      "expo-secure-store"
     ],
     "extra": {
       "eas": {
