@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { Image, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 
 import { NavigationProp } from "@react-navigation/native";
 
 import StyledButton from "@components/StyledButton";
 
-import Player from "@backend/Player";
 import { search } from "@backend/search";
 import { blank_SearchResult, SearchResult } from "@backend/types";
+import Track from "@widgets/Track";
 
 interface IProps {
     navigation: NavigationProp<any>;
@@ -19,7 +19,7 @@ function TrackPlayground({ navigation }: IProps) {
     const [results, setResults] = useState<SearchResult>(blank_SearchResult);
 
     return (
-        <View style={{ gap: 35 }}>
+        <View style={{ gap: 35, padding: 15 }}>
             <StyledButton
                 text={"Go Back"}
                 onPress={() => navigation.goBack()}
@@ -38,13 +38,7 @@ function TrackPlayground({ navigation }: IProps) {
 
                 {
                     results.top != null &&
-                    <Image
-                        src={results.top.icon}
-                        style={{
-                            width: 128, height: 128, alignSelf: "center",
-                            borderRadius: 10
-                        }}
-                    />
+                    <Track data={results.top} style={{ alignSelf: "center" }} />
                 }
             </View>
 
@@ -52,16 +46,6 @@ function TrackPlayground({ navigation }: IProps) {
                 text={"Do Search"}
                 onPress={async() => setResults(await search(query))}
             />
-
-            {
-                results.top != null &&
-                <View>
-                    <StyledButton
-                        text={"Play Track"}
-                        onPress={async() => Player.play(results.top!)}
-                    />
-                </View>
-            }
         </View>
     );
 }

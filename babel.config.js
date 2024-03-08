@@ -10,6 +10,7 @@ module.exports = (api) => {
                         "@app": "./src",
                         "@ui": "./src/ui",
                         "@style": "./src/ui/style",
+                        "@widgets": "./src/ui/widgets",
                         "@components": "./src/ui/components",
                         "@backend": "./src/backend",
                     }
