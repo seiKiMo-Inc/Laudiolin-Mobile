@@ -5,7 +5,7 @@ import TrackPlayer, { Capability, IOSCategory, IOSCategoryOptions } from "react-
 
 import App from "./App";
 
-import { PlaybackService } from "@backend/Player";
+import { PlaybackService } from "@backend/player";
 
 registerRootComponent(App);
 TrackPlayer.registerPlaybackService(() => PlaybackService);

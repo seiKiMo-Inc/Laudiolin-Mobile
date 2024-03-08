@@ -4,7 +4,7 @@ import EnIcon from "react-native-vector-icons/Entypo";
 
 import StyledText, { Size } from "@components/StyledText";
 
-import Player from "@backend/Player";
+import Player from "@backend/player";
 import { TrackInfo } from "@backend/types";
 
 import style from "@style/Track";
