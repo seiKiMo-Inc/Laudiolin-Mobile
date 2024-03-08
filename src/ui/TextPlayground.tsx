@@ -41,6 +41,7 @@ function TextPlayground({ navigation }: IProps) {
                 <StyledText text={text} size={Size.Text} />
                 <StyledText text={text} size={Size.Subheader} />
                 <StyledText text={text} size={Size.Header} />
+                <StyledText text={text} size={Size.Subtitle} />
                 <StyledText text={text} size={Size.Title} />
             </View>
 
@@ -49,6 +50,7 @@ function TextPlayground({ navigation }: IProps) {
                 <StyledText text={text} bold size={Size.Text} />
                 <StyledText text={text} bold size={Size.Subheader} />
                 <StyledText text={text} bold size={Size.Header} />
+                <StyledText text={text} bold size={Size.Subtitle} />
                 <StyledText text={text} bold size={Size.Title} />
             </View>
         </View>
