@@ -1,4 +1,8 @@
-import { SearchResult, SearchEngine } from "@backend/types";
+import { logger } from "react-native-logs";
+
+import { SearchResult, SearchEngine, TrackInfo, blank_SearchResult } from "@backend/types";
+
+const log = logger.createLogger();
 
 /**
  * Performs a track search on the backend.
@@ -13,5 +17,47 @@ export async function search(
         `https://app.seikimo.moe/search/${query}?engine=${engine}`,
         { cache: "default" }
     );
-    return (await response.json()) as SearchResult;
+
+    if (response.status == 404)
+        return blank_SearchResult;
+
+    try {
+        return (await response.json()) as SearchResult;
+    } catch (error) {
+        log.error("Failed to parse search result.", error);
+        return {
+            top: null,
+            results: []
+        };
+    }
+}
+
+/**
+ * Parses the tracks from a search result.
+ *
+ * @param result The search result to parse.
+ */
+export function tracks({ results, top }: SearchResult): TrackInfo[] {
+    if (!top || results.length == 0) return [];
+
+    const tracks: { [key: string]: TrackInfo } = {};
+    tracks[top.id] = top;
+
+    for (const track of results) {
+        if (!tracks[track.id]) {
+            tracks[track.id] = track;
+        }
+    }
+
+    return Object.values(tracks);
+}
+
+/**
+ * Parses the author of a track.
+ *
+ * @param track The track to parse.
+ */
+export function artist(track: TrackInfo): string {
+    const artist = track.artist.trim();
+    return artist.length == 0 ? "Unknown" : artist;
 }

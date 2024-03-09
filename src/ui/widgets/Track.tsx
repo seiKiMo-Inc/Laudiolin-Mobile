@@ -1,14 +1,15 @@
-import { Image, View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 
+import FastImage from "react-native-fast-image";
 import EnIcon from "react-native-vector-icons/Entypo";
 
 import StyledText, { Size } from "@components/StyledText";
 
 import Player from "@backend/player";
+import { artist } from "@backend/search";
 import { TrackInfo } from "@backend/types";
 
 import style from "@style/Track";
-import FastImage from "react-native-fast-image";
 
 interface IProps {
     data: TrackInfo;
@@ -36,8 +37,9 @@ function Track(props: IProps) {
                 />
 
                 <View style={style.Track_Info}>
-                    <StyledText text={data.title} />
-                    <StyledText text={data.artist} size={Size.Footnote} />
+                    <StyledText style={style.Track_Title} text={data.title}
+                                ticker={data.title.length > 25} />
+                    <StyledText text={artist(data)} size={Size.Footnote} />
                 </View>
             </View>
 

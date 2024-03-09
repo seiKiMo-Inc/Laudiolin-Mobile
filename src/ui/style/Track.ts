@@ -1,5 +1,7 @@
 import { StyleSheet } from "react-native";
 
+import { value } from "@style/Laudiolin";
+
 export default StyleSheet.create({
     Track: {
         flexDirection: "row",
@@ -18,6 +20,9 @@ export default StyleSheet.create({
     Track_Info: {
         flexDirection: "column",
         alignSelf: "center"
+    },
+    Track_Title: {
+        width: value.width - 140
     },
     Track_ContextMenu: {
         color: "white",

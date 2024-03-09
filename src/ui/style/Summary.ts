@@ -1,12 +1,14 @@
 import { StyleSheet } from "react-native";
 
+import { value } from "@style/Laudiolin";
+
 export default StyleSheet.create({
     Summary: {
         flexGrow: 0,
         flexShrink: 0,
         width: "100%",
         gap: 35,
-        padding: 15,
+        padding: value.padding,
         paddingTop: 25,
         overflow: "scroll"
     },
