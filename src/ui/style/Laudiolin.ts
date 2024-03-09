@@ -2,6 +2,7 @@ import { Dimensions, StyleSheet } from "react-native";
 
 export const colors = {
     primary: "#0c0f17",
+    secondary: "#1b273a",
     accent: "#4e7abe"
 };
 

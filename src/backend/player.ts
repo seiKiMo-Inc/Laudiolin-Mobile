@@ -36,6 +36,17 @@ async function play(track: TrackInfo): Promise<void> {
     await TrackPlayer.play();
 }
 
+/**
+ * Shuffles the track queue.
+ */
+async function shuffle(): Promise<void> {
+    let queue = await TrackPlayer.getQueue();
+    queue = queue.sort(() => Math.random() - 0.5);
+
+    await TrackPlayer.setQueue(queue);
+}
+
 export default {
-    play
+    play,
+    shuffle
 };

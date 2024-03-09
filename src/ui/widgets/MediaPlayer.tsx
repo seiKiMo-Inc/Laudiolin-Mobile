@@ -6,9 +6,13 @@ import McIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import TrackPlayer, { State, useActiveTrack, usePlaybackState } from "react-native-track-player";
 
 import StyledText, { Size } from "@components/StyledText";
+
 import { artist } from "@backend/search";
+import { useGlobal } from "@backend/stores";
 
 function MediaPlayer() {
+    const global = useGlobal();
+
     const track = useActiveTrack();
     const { state } = usePlaybackState();
 
@@ -22,6 +26,7 @@ function MediaPlayer() {
                 <TouchableOpacity
                     activeOpacity={0.8}
                     style={style.MediaPlayer_Background}
+                    onPress={() => global.setShowTrackPage(true)}
                 >
                     <View style={style.MediaPlayer_Info}>
                         <StyledText text={track.title ?? "---"} size={Size.Text} />

@@ -21,6 +21,7 @@ interface IProps {
 
     bold?: boolean;
     ticker?: boolean;
+    uppercase?: boolean;
     underlined?: boolean;
 
     style?: StyleProp<TextStyle> | any;
@@ -32,6 +33,7 @@ function StyledText(props: IProps) {
         ...base,
         fontFamily: `Poppins_${props.bold ? "700Bold" : "400Regular"}`,
         textDecorationLine: props.underlined ? "underline" : "none",
+        textTransform: props.uppercase ? "uppercase" : "none",
         fontSize: props.size || Size.Text,
         ...props.style
     };
