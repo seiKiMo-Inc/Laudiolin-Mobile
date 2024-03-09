@@ -4,11 +4,13 @@ import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import AdIcon from "react-native-vector-icons/AntDesign";
 import FaIcon from "react-native-vector-icons/FontAwesome";
 import Fa6Icon from "react-native-vector-icons/FontAwesome6";
+import EnIcon from "react-native-vector-icons/Entypo";
 
 import FastImage from "react-native-fast-image";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 
 import Track from "@widgets/Track";
+import BackButton from "@widgets/BackButton";
 import StyledButton from "@components/StyledButton";
 import StyledText, { Size } from "@components/StyledText";
 
@@ -17,7 +19,6 @@ import Playlists from "@backend/playlist";
 import { PlaylistInfo } from "@backend/types";
 
 import { colors, value } from "@style/Laudiolin";
-import EnIcon from "react-native-vector-icons/Entypo";
 
 interface RouteParams {
     playlist: PlaylistInfo;
@@ -43,12 +44,7 @@ function Playlist(props: IProps) {
 
     return playlist ? (
         <View style={style.Playlist}>
-            <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => navigation.goBack()}
-            >
-                <AdIcon name={"left"} size={28} color={"white"} />
-            </TouchableOpacity>
+            <BackButton navigation={navigation} />
 
             <View style={style.Playlist_Info}>
                 <FastImage

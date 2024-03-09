@@ -11,17 +11,19 @@ import StyledText, { Size } from "@components/StyledText";
 import { welcomeText } from "@backend/utils";
 
 import style from "@style/Summary";
+import { PlaylistInfo, TrackInfo } from "@backend/types";
+import PlaylistStripe from "@widgets/PlaylistStripe";
 
 interface IHeaderProps {
     navigation: NavigationProp<any>;
     children: string;
-    to: string;
+    data: any;
 }
 
-function Header(props: IHeaderProps) {
+function Header({ navigation, children, data }: IHeaderProps) {
     return (
         <View style={style.Summary_Header}>
-            <StyledText text={props.children}
+            <StyledText text={children}
                         size={Size.Subtitle}
                         bold />
 
@@ -29,7 +31,7 @@ function Header(props: IHeaderProps) {
                 underlined
                 text={"More"}
                 size={Size.Footnote}
-                onPress={() => props.navigation.navigate(props.to)}
+                onPress={() => navigation.navigate("Named List", data)}
             />
         </View>
     )
@@ -48,6 +50,9 @@ const aTrack = {
     url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
 }
 
+const tracks = [aTrack, aTrack, aTrack, aTrack, aTrack,
+    aTrack, aTrack, aTrack, aTrack, aTrack];
+
 const aPlaylist = {
     id: "test",
     author: "caramels.",
@@ -57,6 +62,9 @@ const aPlaylist = {
     isPrivate: true,
     tracks: []
 }
+
+const lots = [aPlaylist, aPlaylist, aPlaylist, aPlaylist, aPlaylist,
+    aPlaylist, aPlaylist, aPlaylist, aPlaylist, aPlaylist];
 
 function Summary({ navigation }: IProps) {
     return (
@@ -78,7 +86,13 @@ function Summary({ navigation }: IProps) {
             <StyledText text={welcomeText()} size={Size.Subheader} />
 
             <View style={style.Summary_Block}>
-                <Header navigation={navigation} to={"Playlists"}>Playlists</Header>
+                <Header
+                    navigation={navigation}
+                    data={{ title: "Playlists", items: lots, render: "playlists" }}
+                >
+                    Playlists
+                </Header>
+
                 <FlatList
                     data={[aPlaylist, aPlaylist, aPlaylist, aPlaylist, aPlaylist]}
                     renderItem={({ item }) => (
@@ -94,7 +108,13 @@ function Summary({ navigation }: IProps) {
             </View>
 
             <View style={style.Summary_Block}>
-                <Header navigation={navigation} to={"Downloads"}>Downloads</Header>
+                <Header
+                    navigation={navigation}
+                    data={{ title: "Downloads", items: tracks, render: "tracks" }}
+                >
+                    Downloads
+                </Header>
+
                 <View style={style.Summary_TrackList}>
                     <Track data={aTrack} />
                     <Track data={aTrack} />
@@ -103,12 +123,17 @@ function Summary({ navigation }: IProps) {
             </View>
 
             <View style={style.Summary_Block}>
-                <Header navigation={navigation} to={"Recents"}>Recents</Header>
+                <Header
+                    navigation={navigation}
+                    data={{ title: "Recents", items: tracks, render: "tracks" }}
+                >
+                    Recents
+                </Header>
+
                 <View style={style.Summary_TrackList}>
                     <Track data={aTrack} />
                     <Track data={aTrack} />
                     <Track data={aTrack} />
-
                 </View>
             </View>
 
