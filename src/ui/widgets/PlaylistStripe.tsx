@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import EnIcon from "react-native-vector-icons/Entypo";
 
+import { getColors } from "react-native-image-colors";
 import { LinearGradient } from "expo-linear-gradient";
 import FastImage from "react-native-fast-image";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
@@ -10,12 +12,29 @@ import StyledText, { Size } from "@components/StyledText";
 
 import { PlaylistInfo } from "@backend/types";
 
+import { colors } from "@style/Laudiolin";
+
 interface IProps {
     playlist: PlaylistInfo;
 }
 
 function PlaylistStripe(props: IProps) {
     const navigation: NavigationProp<any> = useNavigation();
+    const [color, setColor] = useState<string>(colors.contrast);
+
+    useEffect(() => {
+        getColors(props.playlist.icon, {
+            fallback: colors.contrast,
+            cache: true,
+            key: props.playlist.icon
+        }).then(colors => {
+            if (colors.platform == "android") {
+                setColor(colors.dominant);
+            } else if (colors.platform == "ios") {
+                setColor(colors.primary);
+            }
+        });
+    }, [props]);
 
     return (
         <TouchableOpacity
@@ -25,7 +44,7 @@ function PlaylistStripe(props: IProps) {
         >
             <LinearGradient
                 start={[0.4, 0]} end={[1, 0]}
-                colors={["#aaeeff", "transparent"]}
+                colors={[color, "transparent"]}
                 style={style.PlaylistStripe_Gradient}
             >
                 <View style={{ flexDirection: "row", gap: 10 }}>

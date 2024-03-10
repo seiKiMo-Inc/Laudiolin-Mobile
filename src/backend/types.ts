@@ -1,4 +1,4 @@
-export type SearchEngine = "youtube" | "spotify" | "all";
+export type SearchEngine = "YouTube" | "Spotify" | "All";
 
 export type TrackInfo = {
     id: string;
@@ -7,15 +7,6 @@ export type TrackInfo = {
     icon: string;
     url: string;
     duration: number;
-};
-
-export const blank_TrackInfo: TrackInfo = {
-    id: "",
-    title: "",
-    artist: "",
-    icon: "",
-    url: "",
-    duration: 0,
 };
 
 export type PlaylistInfo = {
@@ -28,16 +19,6 @@ export type PlaylistInfo = {
     tracks: TrackInfo[];
 };
 
-export const blank_PlaylistInfo: PlaylistInfo = {
-    id: "",
-    author: "",
-    name: "",
-    description: "",
-    icon: "",
-    isPrivate: true,
-    tracks: [],
-};
-
 export interface SearchResult {
     top: TrackInfo | null;
     results: TrackInfo[];
@@ -46,4 +27,20 @@ export interface SearchResult {
 export const blank_SearchResult: SearchResult = {
     top: null,
     results: [],
+};
+
+export type BasicUser = {
+    username?: string;
+    userId?: string;
+    avatar?: string;
+    connections?: {
+        google: boolean;
+        discord: boolean;
+    };
+};
+
+export type User = BasicUser & {
+    playlists?: string[];
+    likedSongs?: TrackInfo[];
+    recentlyPlayed?: TrackInfo[];
 };

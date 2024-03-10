@@ -45,6 +45,7 @@ function NamedList<T>(props: IProps) {
 
             <FlatList
                 data={items}
+                initialNumToRender={5}
                 contentContainerStyle={style.NamedList_List}
                 renderItem={({ item }) => renderer(item)}
             />

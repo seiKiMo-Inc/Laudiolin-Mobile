@@ -11,7 +11,7 @@ const log = logger.createLogger();
  * @param engine The engine to use for the search.
  */
 export async function search(
-    query: string, engine: SearchEngine = "youtube"
+    query: string, engine: SearchEngine = "YouTube"
 ): Promise<SearchResult> {
     const response = await fetch(
         `https://app.seikimo.moe/search/${query}?engine=${engine}`,
