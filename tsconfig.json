@@ -9,7 +9,8 @@
       "@style/*": ["src/ui/style/*"],
       "@widgets/*": ["src/ui/widgets/*"],
       "@components/*": ["src/ui/components/*"],
-      "@backend/*": ["src/backend/*"]
+      "@backend/*": ["src/backend/*"],
+      "@assets/*": ["assets/*"]
     }
   }
 }

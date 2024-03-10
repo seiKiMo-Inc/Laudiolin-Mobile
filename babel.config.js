@@ -13,6 +13,7 @@ module.exports = (api) => {
                         "@widgets": "./src/ui/widgets",
                         "@components": "./src/ui/components",
                         "@backend": "./src/backend",
+                        "@assets": "./assets",
                     }
                 }
             ]

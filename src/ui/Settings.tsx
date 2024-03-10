@@ -7,7 +7,7 @@ import StyledButton from "@components/StyledButton";
 import StyledText, { Size } from "@components/StyledText";
 import StyledTextInput from "@components/StyledTextInput";
 
-import { useSettings, useUser } from "@backend/stores";
+import { useGlobal, useSettings, useUser } from "@backend/stores";
 import { validateAddress, validateSocket } from "@backend/utils";
 
 import { colors, value } from "@style/Laudiolin";
@@ -130,6 +130,7 @@ function Section(props: SectionProps) {
 
 function Settings() {
     const user = useUser();
+    const global = useGlobal();
 
     const discordEnabled = user?.connections?.discord ?? undefined;
 
@@ -163,7 +164,7 @@ function Settings() {
                                 text={"Login"}
                                 style={style.Settings_Login}
                                 buttonStyle={{ backgroundColor: colors.accent }}
-                                onPress={() => null}
+                                onPress={() => global.setShowLoginPage(true)}
                             />
                         </View>
                 }

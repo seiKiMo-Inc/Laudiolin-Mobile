@@ -1,18 +1,20 @@
 import { SafeAreaView, StatusBar } from "react-native";
 
 import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer, useRoute } from "@react-navigation/native";
-
-import Home from "@app/Home";
-import Search from "@ui/Search";
-import Settings from "@ui/Settings";
-import MediaPlayer from "@widgets/MediaPlayer";
+import { NavigationContainer } from "@react-navigation/native";
 
 import { HomeIcon, SearchIcon, SettingsIcon } from "@ui/Icons";
 
-import style from "@style/Laudiolin";
-import { useGlobal } from "@backend/stores";
+import Home from "@app/Home";
+import Login from "@ui/Login";
+import Search from "@ui/Search";
+import Settings from "@ui/Settings";
 import NowPlaying from "@ui/NowPlaying";
+import MediaPlayer from "@widgets/MediaPlayer";
+
+import { useGlobal } from "@backend/stores";
+
+import style from "@style/Laudiolin";
 
 interface IProps {
     onLoad?: () => void;
@@ -30,6 +32,9 @@ function Laudiolin(props: IProps) {
             <SafeAreaView style={style.App} onLayout={props.onLoad}>
                 {
                     global.showTrackPage && <NowPlaying />
+                }
+                {
+                    global.showLoginPage && <Login />
                 }
 
                 {

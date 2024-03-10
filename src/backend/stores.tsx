@@ -7,19 +7,23 @@ import { User, SearchEngine } from "@backend/types";
 
 export interface GlobalState {
     showTrackPage: boolean;
+    showLoginPage: boolean;
 
     showingAny: () => boolean;
     setShowTrackPage: (show: boolean) => void;
+    setShowLoginPage: (show: boolean) => void;
 }
 
 export const useGlobal = create<GlobalState>((set, get) => ({
     showTrackPage: false,
+    showLoginPage: false,
 
     showingAny: () => {
         const state = get();
-        return state.showTrackPage;
+        return state.showTrackPage || state.showLoginPage;
     },
-    setShowTrackPage: (show) => set({ showTrackPage: show })
+    setShowTrackPage: (show) => set({ showTrackPage: show }),
+    setShowLoginPage: (show) => set({ showLoginPage: show })
 }));
 
 export interface SettingsState {
