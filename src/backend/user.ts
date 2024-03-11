@@ -4,7 +4,8 @@
  * @param token The user's authentication token.
  */
 async function login(token: string): Promise<boolean> {
-    console.log("logged in! " + token);
+    if (token == "") return false;
+
     return true;
 }
 

@@ -56,8 +56,8 @@ export const useSettings = create<SettingsState>()(persist(
         system: {
             broadcast_listening: "Nobody",
             presence: "None",
-            server: "https://laudiol.in",
-            gateway: "https://laudiol.in"
+            server: "https://demo.laudiol.in",
+            gateway: "https://demo.laudiol.in"
         },
 
         update: (name, value) => set((state) => {

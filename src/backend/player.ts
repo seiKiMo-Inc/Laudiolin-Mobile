@@ -1,4 +1,6 @@
 import TrackPlayer, { Event } from "react-native-track-player";
+
+import Backend from "@backend/backend";
 import { TrackInfo } from "@backend/types";
 
 const requestData = {
@@ -28,7 +30,7 @@ async function play(track: TrackInfo): Promise<void> {
     await TrackPlayer.add({
         ...requestData,
         id: track.id,
-        url: `https://app.seikimo.moe/download?id=${track.id}`,
+        url: `${Backend.getBaseUrl()}/download?id=${track.id}`,
         title: track.title,
         artist: track.artist,
         artwork: track.icon,

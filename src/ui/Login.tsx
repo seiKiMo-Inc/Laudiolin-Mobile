@@ -8,6 +8,7 @@ import StyledButton from "@components/StyledButton";
 import StyledText, { Size } from "@components/StyledText";
 
 import User from "@backend/user";
+import Backend from "@backend/backend";
 import { useGlobal } from "@backend/stores";
 
 import { colors, value } from "@style/Laudiolin";
@@ -32,7 +33,7 @@ async function waitForLogin(onLogin: () => void) {
     const callbackUrl = Linking.createURL("/login", { scheme: "laudiolin" });
 
     try {
-        const result = await openAuthSessionAsync("https://app.seikimo.moe/login", callbackUrl);
+        const result = await openAuthSessionAsync(Backend.getLoginUrl(), callbackUrl);
         if (result.type == "success") {
             const redirectUrl = result.url;
 

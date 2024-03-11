@@ -1,5 +1,6 @@
 import { logger } from "react-native-logs";
 
+import Backend from "@backend/backend";
 import { SearchResult, SearchEngine, TrackInfo, blank_SearchResult } from "@backend/types";
 
 const log = logger.createLogger();
@@ -14,7 +15,7 @@ export async function search(
     query: string, engine: SearchEngine = "YouTube"
 ): Promise<SearchResult> {
     const response = await fetch(
-        `https://app.seikimo.moe/search/${query}?engine=${engine}`,
+        `${Backend.getBaseUrl()}/search/${query}?engine=${engine}`,
         { cache: "default" }
     );
 
