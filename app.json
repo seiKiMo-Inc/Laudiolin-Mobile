@@ -5,6 +5,7 @@
     "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "scheme": "laudiolin",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -24,14 +25,37 @@
         "usesNonExemptEncryption": false
       },
       "supportsTablet": true,
-      "bundleIdentifier": "moe.seikimo.laudiolin"
+      "bundleIdentifier": "moe.seikimo.laudiolin",
+      "associatedDomains": [
+        "applinks:laudiol.in",
+        "applinks:laudiolin.seikimo.moe"
+      ]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "moe.seikimo.laudiolin"
+      "package": "moe.seikimo.laudiolin",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "*.laudiol.in",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "https",
+              "host": "laudiolin.seikimo.moe",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

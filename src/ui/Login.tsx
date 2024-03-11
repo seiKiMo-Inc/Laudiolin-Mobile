@@ -1,10 +1,18 @@
 import { StyleSheet, View, Image } from "react-native";
 
-import StyledText, { Size } from "@components/StyledText";
+import * as Linking from "expo-linking";
+import { logger } from "react-native-logs";
+import { openAuthSessionAsync } from "expo-web-browser";
+
 import StyledButton from "@components/StyledButton";
-import { colors, value } from "@style/Laudiolin";
+import StyledText, { Size } from "@components/StyledText";
+
+import User from "@backend/user";
 import { useGlobal } from "@backend/stores";
 
+import { colors, value } from "@style/Laudiolin";
+
+const log = logger.createLogger();
 const prompt = "Logging in with seiKiMo lets you create playlists, create a list of favorite songs, connect with friends, and more!";
 
 function OrDivider() {
@@ -14,7 +22,34 @@ function OrDivider() {
             <StyledText text={"OR"} size={Size.Footnote} />
             <View style={{ borderBottomWidth: 1, borderColor: "white", width: "45%" }} />
         </View>
-    )
+    );
+}
+
+/**
+ * Opens a web browser to the login page.
+ */
+async function waitForLogin(onLogin: () => void) {
+    const callbackUrl = Linking.createURL("/login", { scheme: "laudiolin" });
+
+    try {
+        const result = await openAuthSessionAsync("https://app.seikimo.moe/login", callbackUrl);
+        if (result.type == "success") {
+            const redirectUrl = result.url;
+
+            // Extract the ?token= part of the URL.
+            const token = redirectUrl.split("?token=")[1];
+            if (token) {
+                await User.login(token);
+                onLogin();
+            } else {
+                log.error("Failed to parse authentication token", redirectUrl);
+            }
+        } else {
+            log.error("Failed to authenticate", result);
+        }
+    } catch (error) {
+        log.error("Failed to authenticate", error);
+    }
 }
 
 function Login() {
@@ -27,6 +62,7 @@ function Login() {
                     <StyledButton text={"Login with seiKiMo!"}
                                   style={style.Login_Button}
                                   buttonStyle={{ backgroundColor: colors.accent }}
+                                  onPress={() => waitForLogin(() => global.setShowLoginPage(false))}
                     />
                     <OrDivider />
                     <StyledButton text={"Continue as a Guest"}
