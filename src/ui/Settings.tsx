@@ -1,17 +1,18 @@
 import { ReactElement, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
+import { Overlay } from "@rneui/base";
 import FastImage from "react-native-fast-image";
 
 import StyledButton from "@components/StyledButton";
 import StyledText, { Size } from "@components/StyledText";
 import StyledTextInput from "@components/StyledTextInput";
 
+import User from "@backend/user";
 import { useGlobal, useSettings, useUser } from "@backend/stores";
 import { validateAddress, validateSocket } from "@backend/utils";
 
 import { colors, value } from "@style/Laudiolin";
-import { Overlay } from "@rneui/base";
 
 interface SettingProps {
     title: string;
@@ -152,7 +153,7 @@ function Settings() {
                                 </View>
                             </View>
 
-                            <TouchableOpacity onPress={() => null}>
+                            <TouchableOpacity onPress={() => User.logOut()}>
                                 <StyledText text={"Log out"} underlined size={Size.Footnote} />
                             </TouchableOpacity>
                         </>

@@ -18,7 +18,7 @@ function setup() {
     linkRegister = Linking.addEventListener("url", async ({ url }) => {
         if (url.includes("login") && url.includes("token")) {
             const token = url.split("token=")[1];
-            await login(token);
+            await logIn(token);
         }
     });
 }
@@ -54,7 +54,7 @@ async function getToken(): Promise<string> {
  *
  * @param token The user's authentication token.
  */
-async function login(token: string): Promise<boolean> {
+async function logIn(token: string): Promise<boolean> {
     if (token == "") return false;
 
     const response = await fetch(`${Backend.getBaseUrl()}/user`, {
@@ -78,6 +78,11 @@ async function login(token: string): Promise<boolean> {
     loadPlaylists()
         .catch(error => log.error("Failed to load playlists", error));
 
+    // Check if the login page is shown.
+    if (useGlobal.getState().showLoginPage) {
+        useGlobal.setState({ showLoginPage: false });
+    }
+
     return true;
 }
 
@@ -86,9 +91,28 @@ async function login(token: string): Promise<boolean> {
  */
 async function authenticate(): Promise<void> {
     const token = await getToken();
-    if (token == "" || !await login(token)) {
+    if (token == "" || !await logIn(token)) {
         useGlobal.setState({ showLoginPage: true });
     }
+}
+
+/**
+ * Logs the user out of the app.
+ *
+ * @param toLogin Should the user be shown the login page after logging out?
+ */
+async function logOut(toLogin: boolean = true): Promise<void> {
+    await SecureStore.deleteItemAsync("userToken");
+    useUser.setState(null);
+    useRecents.setState([]);
+    useFavorites.setState([]);
+    usePlaylists.setState([]);
+
+    if (toLogin) {
+        useGlobal.setState({ showLoginPage: true });
+    }
+
+    log.info("Removed user data.");
 }
 
 /**
@@ -199,7 +223,8 @@ async function getUserById(userId: string): Promise<BasicUser | null> {
 }
 
 export default {
-    login,
+    login: logIn,
+    logOut,
     authenticate,
     setup,
     disableLink,
