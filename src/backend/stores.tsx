@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { User, SearchEngine } from "@backend/types";
+import { User, SearchEngine, TrackInfo, PlaylistInfo } from "@backend/types";
 
 export interface GlobalState {
     showTrackPage: boolean;
@@ -57,7 +57,7 @@ export const useSettings = create<SettingsState>()(persist(
             broadcast_listening: "Nobody",
             presence: "None",
             server: "https://demo.laudiol.in",
-            gateway: "https://demo.laudiol.in"
+            gateway: "wss://demo.laudiol.in"
         },
 
         update: (name, value) => set((state) => {
@@ -89,3 +89,6 @@ export const useSettings = create<SettingsState>()(persist(
 ));
 
 export const useUser = create<User | null>(() => null);
+export const useRecents = create<TrackInfo[]>(() => []);
+export const useFavorites = create<TrackInfo[]>(() => []);
+export const usePlaylists = create<PlaylistInfo[]>(() => []);

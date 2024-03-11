@@ -45,7 +45,7 @@ async function waitForLogin(onLogin: () => void) {
             } else {
                 log.error("Failed to parse authentication token", redirectUrl);
             }
-        } else {
+        } else if (result.type != "cancel") {
             log.error("Failed to authenticate", result);
         }
     } catch (error) {

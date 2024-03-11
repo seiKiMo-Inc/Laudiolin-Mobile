@@ -8,11 +8,10 @@ import Playlist from "@widgets/Playlist";
 import StyledButton from "@components/StyledButton";
 import StyledText, { Size } from "@components/StyledText";
 
-import { welcomeText } from "@backend/utils";
+import { first, welcomeText } from "@backend/utils";
+import { usePlaylists, useRecents } from "@backend/stores";
 
 import style from "@style/Summary";
-import { PlaylistInfo, TrackInfo } from "@backend/types";
-import PlaylistStripe from "@widgets/PlaylistStripe";
 
 interface IHeaderProps {
     navigation: NavigationProp<any>;
@@ -41,32 +40,13 @@ interface IProps {
     navigation: NavigationProp<any>;
 }
 
-const aTrack = {
-    id: "test",
-    title: "test track",
-    artist: "test artist",
-    icon: "https://picsum.photos/256/256?random=2",
-    duration: 420,
-    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-}
-
-const tracks = [aTrack, aTrack, aTrack, aTrack, aTrack,
-    aTrack, aTrack, aTrack, aTrack, aTrack];
-
-const aPlaylist = {
-    id: "test",
-    author: "caramels.",
-    name: "a really long playlist name",
-    description: "the playlist description",
-    icon: "https://picsum.photos/256/256?random=1",
-    isPrivate: true,
-    tracks: []
-}
-
-const lots = [aPlaylist, aPlaylist, aPlaylist, aPlaylist, aPlaylist,
-    aPlaylist, aPlaylist, aPlaylist, aPlaylist, aPlaylist];
-
 function Summary({ navigation }: IProps) {
+    let recents = useRecents();
+    recents = Object.values(recents);
+
+    let playlists = usePlaylists();
+    playlists = Object.values(playlists);
+
     return (
         <ScrollView
             contentContainerStyle={style.Summary}
@@ -88,13 +68,13 @@ function Summary({ navigation }: IProps) {
             <View style={style.Summary_Block}>
                 <Header
                     navigation={navigation}
-                    data={{ title: "Playlists", items: lots, render: "playlists" }}
+                    data={{ title: "Playlists", items: playlists, render: "playlists" }}
                 >
                     Playlists
                 </Header>
 
                 <FlatList
-                    data={[aPlaylist, aPlaylist, aPlaylist, aPlaylist, aPlaylist]}
+                    data={playlists}
                     renderItem={({ item }) => (
                         <Playlist
                             key={item.id}
@@ -110,30 +90,36 @@ function Summary({ navigation }: IProps) {
             <View style={style.Summary_Block}>
                 <Header
                     navigation={navigation}
-                    data={{ title: "Downloads", items: tracks, render: "tracks" }}
+                    data={{ title: "Downloads", items: recents, render: "tracks" }}
                 >
                     Downloads
                 </Header>
 
                 <View style={style.Summary_TrackList}>
-                    <Track data={aTrack} />
-                    <Track data={aTrack} />
-                    <Track data={aTrack} />
+                    {first(recents, 3).map((track) => (
+                        <Track
+                            key={track.id}
+                            data={track}
+                        />
+                    ))}
                 </View>
             </View>
 
             <View style={style.Summary_Block}>
                 <Header
                     navigation={navigation}
-                    data={{ title: "Recents", items: tracks, render: "tracks" }}
+                    data={{ title: "Recents", items: recents, render: "tracks" }}
                 >
                     Recents
                 </Header>
 
                 <View style={style.Summary_TrackList}>
-                    <Track data={aTrack} />
-                    <Track data={aTrack} />
-                    <Track data={aTrack} />
+                    {first(recents, 3).map((track) => (
+                        <Track
+                            key={track.id}
+                            data={track}
+                        />
+                    ))}
                 </View>
             </View>
 

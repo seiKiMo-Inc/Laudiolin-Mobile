@@ -41,3 +41,15 @@ export function validateSocket(address: string): string | null {
 
     return null; // All checks passed!
 }
+
+/**
+ * Finds the first `many` elements in an array.
+ *
+ * @param array The array to search.
+ * @param many The number of elements to find.
+ */
+export function first<T>(array: T[], many: number): T[] {
+    if (!array) return [];
+    if (array.length <= many) return array;
+    return array.slice(0, many);
+}
