@@ -25,7 +25,7 @@ export async function search(
     try {
         return (await response.json()) as SearchResult;
     } catch (error) {
-        log.error("Failed to parse search result.", error);
+        log.error("Failed to parse search result.", response.status, error);
         return {
             top: null,
             results: []
