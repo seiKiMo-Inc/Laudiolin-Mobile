@@ -30,6 +30,7 @@ function OrDivider() {
  * Opens a web browser to the login page.
  */
 async function waitForLogin(onLogin: () => void) {
+    User.disableLink();
     const callbackUrl = Linking.createURL("/login", { scheme: "laudiolin" });
 
     try {
@@ -50,6 +51,8 @@ async function waitForLogin(onLogin: () => void) {
         }
     } catch (error) {
         log.error("Failed to authenticate", error);
+    } finally {
+        User.setup();
     }
 }
 

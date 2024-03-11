@@ -1,11 +1,37 @@
 import { logger } from "react-native-logs";
+import * as Linking from "expo-linking";
 import * as SecureStore from "expo-secure-store";
 
 import Backend from "@backend/backend";
 import { useFavorites, useGlobal, usePlaylists, useRecents, useUser } from "@backend/stores";
-import { PlaylistInfo, TrackInfo, User } from "@backend/types";
+import { BasicUser, PlaylistInfo, TrackInfo, User } from "@backend/types";
+import { EmitterSubscription } from "react-native";
 
 const log = logger.createLogger();
+
+let linkRegister: EmitterSubscription | null = null;
+
+/**
+ * Sets up the deep link listener for logging in.
+ */
+function setup() {
+    linkRegister = Linking.addEventListener("url", async ({ url }) => {
+        if (url.includes("login") && url.includes("token")) {
+            const token = url.split("token=")[1];
+            await login(token);
+        }
+    });
+}
+
+/**
+ * Removes the event listener for the login deep link.
+ */
+function disableLink() {
+    if (linkRegister) {
+        linkRegister.remove();
+        linkRegister = null;
+    }
+}
 
 /**
  * Stores a user's token in the secure store.
@@ -60,12 +86,7 @@ async function login(token: string): Promise<boolean> {
  */
 async function authenticate(): Promise<void> {
     const token = await getToken();
-    if (token == "") {
-        useGlobal.setState({ showLoginPage: true });
-        return;
-    }
-
-    if (!await login(token)) {
+    if (token == "" || !await login(token)) {
         useGlobal.setState({ showLoginPage: true });
     }
 }
@@ -159,9 +180,31 @@ function loadFavorites(): void {
     log.info(`Loaded ${user.likedSongs.length} favorite tracks!`);
 }
 
+/**
+ * Fetches a user by their ID.
+ *
+ * @param userId The ID of the user to fetch.
+ */
+async function getUserById(userId: string): Promise<BasicUser | null> {
+    const response = await fetch(`${Backend.getBaseUrl()}/user/${userId}`, {
+        headers: { authorization: await getToken() }, cache: "no-cache"
+    });
+
+    if (response.status != 301) {
+        log.error("Failed to load user", userId, response.status);
+        return null;
+    }
+
+    return await response.json();
+}
+
 export default {
     login,
+    authenticate,
+    setup,
+    disableLink,
     getToken,
+    getUserById,
     loadRecents,
-    loadPlaylists
+    loadPlaylists,
 };

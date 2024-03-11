@@ -11,7 +11,7 @@ export type TrackInfo = {
 
 export type PlaylistInfo = {
     id: string;
-    author: string;
+    owner: string;
     name: string;
     description: string;
     icon: string;

@@ -35,12 +35,20 @@ function Playlist(props: IProps) {
     const { playlist: data, playlistId } = route.params as RouteParams;
 
     const [playlist, setPlaylist] = useState<PlaylistInfo | null | undefined>(data);
+    const [author, setAuthor] = useState<string>("Unknown");
 
     useEffect(() => {
         if (playlistId && !playlist) {
             Playlists.fetchPlaylist(playlistId).then(setPlaylist);
         }
     }, [playlistId]);
+
+    useEffect(() => {
+        if (playlist) {
+            Playlists.getAuthor(playlist.owner)
+                .then(author => setAuthor(author ?? "Unknown"));
+        }
+    }, [playlist]);
 
     return playlist ? (
         <View style={style.Playlist}>
@@ -54,7 +62,7 @@ function Playlist(props: IProps) {
 
                 <View style={{ width: "50%", flexDirection: "column" }}>
                     <StyledText text={playlist.name} bold lines={2} size={Size.Subheader} />
-                    <StyledText text={playlist.author} lines={1} size={Size.Text} />
+                    <StyledText text={author} lines={1} size={Size.Text} />
                 </View>
             </View>
 
@@ -71,13 +79,6 @@ function Playlist(props: IProps) {
                             backgroundColor: colors.secondary
                         }}
                     />
-
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        onPress={() => null}
-                    >
-                        <AdIcon name={"heart"} size={28} color={colors.red} />
-                    </TouchableOpacity>
                 </View>
 
                 <View style={style.Playlist_ActionBar}>
@@ -115,6 +116,7 @@ function Playlist(props: IProps) {
                 playlist.tracks.length > 0 ?
                     <FlatList
                         data={playlist.tracks}
+                        contentContainerStyle={{ gap: 10 }}
                         renderItem={({ item }) => <Track key={item.id} data={item} />}
                     />
                     :

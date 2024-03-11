@@ -57,7 +57,7 @@ function PlaylistStripe(props: IProps) {
                         <StyledText text={props.playlist.name}
                                     ticker bold size={Size.Subheader} />
 
-                        <StyledText text={props.playlist.author} />
+                        <StyledText text={props.playlist.owner} />
                     </View>
                 </View>
 

@@ -11,6 +11,7 @@ import Laudiolin from "@app/Laudiolin";
 
 function App() {
     const [loaded, setLoaded] = useState(false);
+    const [rendered, setRendered] = useState(false);
 
     // Load app assets & fonts.
     const [fontsLoaded] = useFonts({
@@ -25,7 +26,12 @@ function App() {
 
     // Hide splash screen when the app is done loading.
     const onLoad = useCallback(async() => {
-        if (loaded) await SplashScreen.hideAsync();
+        if (rendered) return;
+
+        if (loaded) {
+            await SplashScreen.hideAsync();
+            setRendered(true);
+        }
     }, [loaded]);
 
     return loaded ? <Laudiolin onLoad={onLoad} /> : null;
