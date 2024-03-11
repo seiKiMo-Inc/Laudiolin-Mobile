@@ -110,8 +110,6 @@ function Setting(props: SettingProps) {
 type Element = ReactElement | undefined;
 interface SectionProps {
     title: string;
-    avoid?: boolean;
-
     children: Element | Element[];
 }
 
@@ -171,7 +169,7 @@ function Settings() {
             </View>
 
             <ScrollView
-                style={{ marginBottom: "40%" }}
+                style={{ marginBottom: `${user ? "50" : "40"}%` }}
                 contentContainerStyle={{ gap: 30 }}
             >
                 <Section title={"General"}>
@@ -195,7 +193,7 @@ function Settings() {
                     />
                 </Section>
 
-                <Section title={"System"} avoid>
+                <Section title={"System"}>
                     <Setting title={"Broadcast Current Song"} type={"options"}
                              setting={"system.broadcast_listening"}
                              options={["Nobody", "Friends", "Everyone"]}
