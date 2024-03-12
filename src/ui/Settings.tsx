@@ -1,9 +1,9 @@
 import { ReactElement, useState } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
-import { Overlay } from "@rneui/base";
 import FastImage from "react-native-fast-image";
 
+import StyledModal from "@components/StyledModal";
 import StyledButton from "@components/StyledButton";
 import StyledText, { Size } from "@components/StyledText";
 import StyledTextInput from "@components/StyledTextInput";
@@ -70,40 +70,37 @@ function Setting(props: SettingProps) {
                 />
             </TouchableOpacity>
 
-            <Overlay
-                isVisible={showOverlay}
-                overlayStyle={{ backgroundColor: "transparent" }}
-                onBackdropPress={() => setShowOverlay(false)}
+            <StyledModal
+                title={props.title}
+                visible={showOverlay}
+                style={style.Settings_Overlay}
+                onPressOutside={() => setShowOverlay(false)}
             >
-                <View style={style.Settings_Overlay}>
-                    <StyledText text={props.title} bold size={Size.Subheader} />
+                <StyledTextInput
+                    value={newValue}
+                    autoCorrect={false}
+                    textStyle={style.Settings_Input_Text}
+                    inputStyle={style.Settings_Input}
+                    errorMessage={error}
+                    onChange={text => {
+                        if (error != "") setError("");
+                        setNewValue(text);
+                    }}
+                    onFinish={() => {
+                        if (!newValue) {
+                            setError("This field is required.");
+                            return;
+                        }
 
-                    <StyledTextInput
-                        value={newValue}
-                        autoCorrect={false}
-                        textStyle={style.Settings_Input_Text}
-                        inputStyle={style.Settings_Input}
-                        errorMessage={error}
-                        onChange={text => {
-                            if (error != "") setError("");
-                            setNewValue(text);
-                        }}
-                        onFinish={() => {
-                            if (!newValue) {
-                                setError("This field is required.");
-                                return;
-                            }
-
-                            const result = props.validate?.(newValue);
-                            if (props.validate && result == null) {
-                                settings.update(setting, newValue);
-                            } else if (result != null) {
-                                setError(result);
-                            }
-                        }}
-                    />
-                </View>
-            </Overlay>
+                        const result = props.validate?.(newValue);
+                        if (props.validate && result == null) {
+                            settings.update(setting, newValue);
+                        } else if (result != null) {
+                            setError(result);
+                        }
+                    }}
+                />
+            </StyledModal>
         </>
     )
 }
@@ -263,12 +260,6 @@ const style = StyleSheet.create({
     },
     Settings_Overlay: {
         width: 250,
-        height: 80,
-        borderRadius: 25,
-        backgroundColor: colors.secondary,
-        overflow: "hidden",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: value.padding
+        height: 80
     }
 });
