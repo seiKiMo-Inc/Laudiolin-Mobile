@@ -117,7 +117,8 @@ function Playlist(props: IProps) {
                     <FlatList
                         data={playlist.tracks}
                         contentContainerStyle={{ gap: 10 }}
-                        renderItem={({ item }) => <Track key={item.id} data={item} />}
+                        renderItem={({ item }) =>
+                            <Track key={item.id} data={item} playlist={playlist} />}
                     />
                     :
                     <View>

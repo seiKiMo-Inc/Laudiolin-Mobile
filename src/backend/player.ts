@@ -1,7 +1,8 @@
 import TrackPlayer, { Event } from "react-native-track-player";
 
 import Backend from "@backend/backend";
-import { TrackInfo } from "@backend/types";
+import { PlaylistInfo, TrackInfo } from "@backend/types";
+import { useGlobal } from "@backend/stores";
 
 const requestData = {
     userAgent: "seiKiMo/Laudiolin-Mobile",
@@ -24,8 +25,11 @@ export const PlaybackService = async () => {
  * Plays a track from the given info.
  *
  * @param track The track to play.
+ * @param props Additional parameters.
  */
-async function play(track: TrackInfo): Promise<void> {
+async function play(track: TrackInfo, props: {
+    playlist?: PlaylistInfo;
+}): Promise<void> {
     await TrackPlayer.reset();
     await TrackPlayer.add({
         ...requestData,
@@ -36,6 +40,10 @@ async function play(track: TrackInfo): Promise<void> {
         artwork: track.icon,
     });
     await TrackPlayer.play();
+
+    if (props.playlist) {
+        useGlobal.setState({ fromPlaylist: props.playlist.name });
+    }
 }
 
 /**

@@ -7,18 +7,19 @@ import StyledText, { Size } from "@components/StyledText";
 
 import Player from "@backend/player";
 import { artist } from "@backend/search";
-import { TrackInfo } from "@backend/types";
+import { PlaylistInfo, TrackInfo } from "@backend/types";
 
 import style from "@style/Track";
 
 interface IProps {
     data: TrackInfo;
+    playlist?: PlaylistInfo;
 
     style?: any;
 }
 
 function Track(props: IProps) {
-    const { data } = props;
+    const { data, playlist } = props;
 
     return (
         <TouchableOpacity
@@ -27,7 +28,7 @@ function Track(props: IProps) {
                 ...style.Track,
                 ...props.style
             }}
-            onPress={() => Player.play(data)}
+            onPress={() => Player.play(data, { playlist })}
             onLongPress={() => console.log("Open Context Menu")}
         >
             <View style={style.Track_Container}>

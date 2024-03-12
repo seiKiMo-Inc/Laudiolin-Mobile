@@ -8,6 +8,7 @@ import { User, SearchEngine, TrackInfo, PlaylistInfo } from "@backend/types";
 export interface GlobalState {
     showTrackPage: boolean;
     showLoginPage: boolean;
+    fromPlaylist: string | null;
 
     showingAny: () => boolean;
     setShowTrackPage: (show: boolean) => void;
@@ -17,6 +18,7 @@ export interface GlobalState {
 export const useGlobal = create<GlobalState>((set, get) => ({
     showTrackPage: false,
     showLoginPage: false,
+    fromPlaylist: null,
 
     showingAny: () => {
         const state = get();
