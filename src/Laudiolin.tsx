@@ -1,4 +1,4 @@
-import { SafeAreaView, StatusBar } from "react-native";
+import { SafeAreaView, StatusBar, View } from "react-native";
 
 import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
@@ -37,33 +37,34 @@ function Laudiolin(props: IProps) {
                     global.showLoginPage && <Login />
                 }
 
-                {
-                    !global.showingAny() && (
-                        <NavigationContainer>
-                            <Tab.Navigator
-                                tabBar={props => (
-                                    <>
-                                        <MediaPlayer />
-                                        <BottomTabBar {...props} />
-                                    </>
-                                )}
-                                screenOptions={{
-                                    headerShown: false,
-                                    tabBarShowLabel: false,
-                                    tabBarStyle: style.App_TabBar,
-                                }}
-                                sceneContainerStyle={style.App_Scene}
-                            >
-                                <Tab.Screen options={{ tabBarIcon: ({ focused }) => HomeIcon(focused) }}
-                                            name={"Home"} component={Home} />
-                                <Tab.Screen options={{ tabBarIcon: ({ focused }) => SearchIcon(focused) }}
-                                            name={"Search"} component={Search} />
-                                <Tab.Screen options={{ tabBarIcon: ({ focused }) => SettingsIcon(focused) }}
-                                            name={"Settings"} component={Settings} />
-                            </Tab.Navigator>
-                        </NavigationContainer>
-                    )
-                }
+                <View style={{
+                    ...style.App,
+                    display: global.showingAny() ? "none" : "flex"
+                }}>
+                    <NavigationContainer>
+                        <Tab.Navigator
+                            tabBar={props => (
+                                <>
+                                    <MediaPlayer />
+                                    <BottomTabBar {...props} />
+                                </>
+                            )}
+                            screenOptions={{
+                                headerShown: false,
+                                tabBarShowLabel: false,
+                                tabBarStyle: style.App_TabBar,
+                            }}
+                            sceneContainerStyle={style.App_Scene}
+                        >
+                            <Tab.Screen options={{ tabBarIcon: ({ focused }) => HomeIcon(focused) }}
+                                        name={"Home"} component={Home} />
+                            <Tab.Screen options={{ tabBarIcon: ({ focused }) => SearchIcon(focused) }}
+                                        name={"Search"} component={Search} />
+                            <Tab.Screen options={{ tabBarIcon: ({ focused }) => SettingsIcon(focused) }}
+                                        name={"Settings"} component={Settings} />
+                        </Tab.Navigator>
+                    </NavigationContainer>
+                </View>
             </SafeAreaView>
         </>
     );

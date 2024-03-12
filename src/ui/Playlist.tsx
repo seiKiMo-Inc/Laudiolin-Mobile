@@ -105,6 +105,7 @@ function Playlist(props: IProps) {
                         />}
                         buttonStyle={{ backgroundColor: colors.accent }}
                         onPress={() => Player.queue({
+                            playlist,
                             tracks: playlist?.tracks,
                             clear: true, start: true, shuffle: true
                         })}

@@ -1,4 +1,4 @@
-import TrackPlayer, { Event } from "react-native-track-player";
+import TrackPlayer, { AddTrack, Event } from "react-native-track-player";
 
 import Backend from "@backend/backend";
 import { PlaylistInfo, TrackInfo } from "@backend/types";
@@ -22,6 +22,22 @@ export const PlaybackService = async () => {
 };
 
 /**
+ * Transforms a track info into a track player track.
+ *
+ * @param track The track to transform.
+ */
+function transform(track: TrackInfo): AddTrack {
+    return {
+        ...requestData,
+        id: track.id,
+        url: `${Backend.getBaseUrl()}/download?id=${track.id}`,
+        title: track.title,
+        artist: track.artist,
+        artwork: track.icon,
+    };
+}
+
+/**
  * Plays a track from the given info.
  *
  * @param track The track to play.
@@ -31,14 +47,7 @@ async function play(track: TrackInfo, props: {
     playlist?: PlaylistInfo;
 }): Promise<void> {
     await TrackPlayer.reset();
-    await TrackPlayer.add({
-        ...requestData,
-        id: track.id,
-        url: `${Backend.getBaseUrl()}/download?id=${track.id}`,
-        title: track.title,
-        artist: track.artist,
-        artwork: track.icon,
-    });
+    await TrackPlayer.add(transform(track));
     await TrackPlayer.play();
 
     if (props.playlist) {
@@ -53,6 +62,7 @@ async function play(track: TrackInfo, props: {
  */
 async function queue(props: {
     tracks: TrackInfo[];
+    playlist?: PlaylistInfo;
     clear?: boolean;
     shuffle?: boolean;
     start?: boolean;
@@ -65,12 +75,16 @@ async function queue(props: {
     }
 
     if (props.shuffle) {
-        tracks = tracks.sort(() => Math.random() - 0.5);
+        tracks = tracks.sort(() => Math.random() - 0.5)
     }
 
-    await TrackPlayer.add(tracks);
+    await TrackPlayer.add(tracks.map(transform));
     if (props.start) {
         await TrackPlayer.play();
+    }
+
+    if (props.playlist) {
+        useGlobal.setState({ fromPlaylist: props.playlist.name });
     }
 }
 
