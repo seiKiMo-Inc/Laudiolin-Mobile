@@ -7,6 +7,7 @@ import StyledText, { Size } from "@components/StyledText";
 
 import Player from "@backend/player";
 import { artist } from "@backend/search";
+import { resolveIcon } from "@backend/utils";
 import { PlaylistInfo, TrackInfo } from "@backend/types";
 
 import style from "@style/Track";
@@ -33,7 +34,7 @@ function Track(props: IProps) {
         >
             <View style={style.Track_Container}>
                 <FastImage
-                    source={{ uri: data.icon }}
+                    source={{ uri: resolveIcon(data.icon) }}
                     style={style.Track_Icon}
                 />
 

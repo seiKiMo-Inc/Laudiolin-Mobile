@@ -13,6 +13,7 @@ import ProgressBar from "@widgets/ProgressBar";
 import StyledText, { Size } from "@components/StyledText";
 
 import Player from "@backend/player";
+import { resolveIcon } from "@backend/utils";
 import { useGlobal } from "@backend/stores";
 
 import { colors, value } from "@style/Laudiolin";
@@ -47,7 +48,7 @@ function NowPlaying() {
 
             <FastImage
                 style={style.NowPlaying_Cover}
-                source={{ uri: track?.artwork }}
+                source={{ uri: resolveIcon(track?.artwork ?? "") }}
                 resizeMode={"contain"}
             />
 

@@ -1,3 +1,9 @@
+import { logger } from "react-native-logs";
+
+import Backend from "@backend/backend";
+
+const log = logger.createLogger();
+
 /**
  * Determines which welcoming text to show the user.
  */
@@ -52,4 +58,31 @@ export function first<T>(array: T[], many: number): T[] {
     if (!array) return [];
     if (array.length <= many) return array;
     return array.slice(0, many);
+}
+
+/**
+ * Determines which icon URL to use for a track.
+ *
+ * @param icon The provided track icon URL.
+ */
+export function resolveIcon(icon: string): string {
+    if (icon == "") return ""; // No icon or ID, so no icon.
+    if (icon.includes("file://")) return icon; // Skip local files.
+    if (icon.includes(Backend.getBaseUrl())) return icon; // The icon is already proxied.
+
+    let url = `${Backend.getBaseUrl()}/proxy/{ico}?from={src}`;
+    let split = icon.split("/");
+
+    if (icon.includes("i.ytimg.com")) {
+        return url.replace("{ico}", split[4]).replace("{src}", "yt");
+    }
+    if (icon.includes("i.scdn.co")) {
+        return url.replace("{ico}", split[4]).replace("{src}", "spot");
+    }
+    if (icon.includes("lh3.googleusercontent.com")) {
+        return url.replace("{ico}", split[3]).replace("{src}", "cart");
+    }
+
+    log.warn("Unknown icon URL:", icon);
+    return icon; // Fallback to whatever is provided if all else fails.
 }
