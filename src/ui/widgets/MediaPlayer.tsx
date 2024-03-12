@@ -44,7 +44,7 @@ function MediaPlayer() {
                                 }
                             }}
                         >
-                            <MdIcon name={state == State.Paused ? "play-arrow" : "pause"} size={32} color={"white"} />
+                            <MdIcon name={state == State.Playing ? "pause" : "play-arrow"} size={32} color={"white"} />
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => TrackPlayer.skipToNext()}>

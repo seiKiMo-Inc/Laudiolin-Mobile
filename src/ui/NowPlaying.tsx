@@ -84,7 +84,7 @@ function NowPlaying() {
                         await TrackPlayer.pause();
                     }
                 }}>
-                    <MdIcon name={state == State.Paused ? "play-arrow" : "pause"} color={"white"} size={32} />
+                    <MdIcon name={state == State.Playing ? "pause" : "play-arrow"} color={"white"} size={32} />
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => TrackPlayer.skipToNext()}>
