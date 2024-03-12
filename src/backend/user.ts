@@ -103,10 +103,10 @@ async function authenticate(): Promise<void> {
  */
 async function logOut(toLogin: boolean = true): Promise<void> {
     await SecureStore.deleteItemAsync("userToken");
-    useUser.setState(null);
-    useRecents.setState([]);
-    useFavorites.setState([]);
-    usePlaylists.setState([]);
+    useUser.setState(null, true);
+    useRecents.setState([], true);
+    useFavorites.setState([], true);
+    usePlaylists.setState([], true);
 
     if (toLogin) {
         useGlobal.setState({ showLoginPage: true });
