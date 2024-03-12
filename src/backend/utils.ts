@@ -69,6 +69,10 @@ export function resolveIcon(icon: string): string {
     if (icon == "") return ""; // No icon or ID, so no icon.
     if (icon.includes("file://")) return icon; // Skip local files.
     if (icon.includes(Backend.getBaseUrl())) return icon; // The icon is already proxied.
+    if (icon.includes("app.magix.lol")) {
+        // The icon is a legacy URL, so we need to change its base.
+        return icon.replace("https://app.magix.lol", Backend.getBaseUrl());
+    }
 
     let url = `${Backend.getBaseUrl()}/proxy/{ico}?from={src}`;
     let split = icon.split("/");
