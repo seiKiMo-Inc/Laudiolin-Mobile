@@ -10,7 +10,7 @@ import StyledText, { Size } from "@components/StyledText";
 
 import Backend from "@backend/backend";
 import { first, welcomeText } from "@backend/utils";
-import { useFavorites, usePlaylists, useRecents, useUser } from "@backend/stores";
+import { useDownloads, useFavorites, usePlaylists, useRecents, useUser } from "@backend/stores";
 import { PlaylistInfo, TrackInfo, User } from "@backend/types";
 
 import style from "@style/Summary";
@@ -101,6 +101,9 @@ function Summary({ navigation }: IProps) {
     let playlists = usePlaylists();
     playlists = Object.values(playlists);
 
+    let downloads = useDownloads();
+    downloads = Object.values(downloads);
+
     const user = useUser();
     const favorites = useFavorites();
 
@@ -155,24 +158,24 @@ function Summary({ navigation }: IProps) {
                 />
             </View>
 
-            { recents.length == 0 && (
+            { recents.length == 0 && downloads.length == 0 && (
                 <StyledText text={"No content found, go download tracks or listen to music!"} lines={2}
                             style={{ textAlign: "center" }} size={Size.Subheader}
                 />
             ) }
 
-            { recents.length > 0 && (
+            { downloads.length > 0 && (
                 <View style={style.Summary_Block}>
                     <Header
                         navigation={navigation}
-                        data={{ title: "Downloads", items: recents,
+                        data={{ title: "Downloads", items: downloads,
                             render: "tracks", more: 3 }}
                     >
                         Downloads
                     </Header>
 
                     <View style={style.Summary_TrackList}>
-                        {first(recents, 3).map((track) => (
+                        {first(downloads, 3).map((track) => (
                             <Track
                                 key={track.id}
                                 data={track}

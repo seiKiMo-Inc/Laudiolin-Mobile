@@ -1,12 +1,23 @@
 export type SearchEngine = "YouTube" | "Spotify" | "All";
 
-export type TrackInfo = {
+export type TrackInfo = RemoteInfo | DownloadInfo;
+
+type TrackData = {
     id: string;
     title: string;
     artist: string;
     icon: string;
     url: string;
     duration: number;
+};
+
+export type RemoteInfo = TrackData & {
+    type: "remote";
+};
+
+export type DownloadInfo = TrackData & {
+    type: "download";
+    encoded: boolean;
 };
 
 export type PlaylistInfo = {
