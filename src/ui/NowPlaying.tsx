@@ -54,12 +54,13 @@ function NowPlaying() {
 
             <View style={style.NowPlaying_Info}>
                 <StyledText text={track?.title ?? "Not Playing"}
-                            size={Size.Header} lines={3} bold
+                            size={Size.Header} bold
+                            lines={value.height > 700 ? 3 : 2}
                 />
 
                 <StyledText text={track?.artist ?? "---"}
                             style={{ color: colors.gray }}
-                            size={Size.Text} lines={3}
+                            size={Size.Text} lines={1}
                 />
             </View>
 

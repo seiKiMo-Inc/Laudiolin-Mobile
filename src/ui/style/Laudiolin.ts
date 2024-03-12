@@ -11,7 +11,8 @@ export const colors = {
 
 export const value = {
     padding: 15,
-    width: Dimensions.get("screen").width
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height
 };
 
 export default StyleSheet.create({
