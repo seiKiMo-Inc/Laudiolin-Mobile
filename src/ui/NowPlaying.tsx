@@ -31,12 +31,14 @@ function NowPlaying() {
                     <AdIcon name={"left"} size={28} color={"white"} />
                 </TouchableOpacity>
 
-                <View style={style.NowPlaying_Source}>
-                    <StyledText uppercase text={"Playing from Playlist"}
-                                style={{ color: colors.gray }}
-                    />
-                    <StyledText bold text={"Playlist"} />
-                </View>
+                { global.fromPlaylist && (
+                    <View style={style.NowPlaying_Source}>
+                        <StyledText uppercase text={"Playing from Playlist"}
+                                    style={{ color: colors.gray }}
+                        />
+                        <StyledText bold text={global.fromPlaylist} />
+                    </View>
+                ) }
 
                 <TouchableOpacity onPress={() => null}>
                     <EnIcon name={"dots-three-vertical"} size={24} color={"white"} />

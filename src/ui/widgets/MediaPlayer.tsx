@@ -1,8 +1,9 @@
-import { ImageBackground, StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import MdIcon from "react-native-vector-icons/MaterialIcons";
 import McIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
+import FastImage from "react-native-fast-image";
 import TrackPlayer, { State, useActiveTrack, usePlaybackState } from "react-native-track-player";
 
 import StyledText, { Size } from "@components/StyledText";
@@ -18,8 +19,8 @@ function MediaPlayer() {
 
     return track ? (
         <View style={style.MediaPlayer}>
-            <ImageBackground
-                imageStyle={style.MediaPlayer_Image}
+            <FastImage
+                style={style.MediaPlayer_Image}
                 source={{ uri: track.artwork }}
                 resizeMode={"cover"}
             >
@@ -51,7 +52,7 @@ function MediaPlayer() {
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
-            </ImageBackground>
+            </FastImage>
         </View>
     ) : undefined;
 }

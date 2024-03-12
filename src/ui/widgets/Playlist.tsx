@@ -1,4 +1,6 @@
-import { ImageBackground, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
+
+import FastImage from "react-native-fast-image";
 
 import StyledText, { Size } from "@components/StyledText";
 
@@ -18,7 +20,7 @@ function Playlist({ playlist, onPress }: IProps) {
             style={style.Playlist}
             onPress={onPress}
         >
-            <ImageBackground
+            <FastImage
                 source={{ uri: playlist.icon }}
                 style={style.Playlist_Image}
             >
@@ -29,7 +31,7 @@ function Playlist({ playlist, onPress }: IProps) {
                     text={playlist.name}
                     style={style.Playlist_Text}
                 />
-            </ImageBackground>
+            </FastImage>
         </TouchableOpacity>
     );
 }
