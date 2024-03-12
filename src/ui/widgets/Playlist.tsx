@@ -4,12 +4,10 @@ import FastImage from "react-native-fast-image";
 
 import StyledText, { Size } from "@components/StyledText";
 
-import { PlaylistInfo } from "@backend/types";
-
 import style from "@style/Playlist";
 
 interface IProps {
-    playlist: PlaylistInfo;
+    playlist: { icon: string; name: string; };
     onPress?: () => void;
 }
 

@@ -10,6 +10,7 @@ export type TrackInfo = {
 };
 
 export type PlaylistInfo = {
+    type: "info";
     id: string;
     owner: string;
     name: string;
