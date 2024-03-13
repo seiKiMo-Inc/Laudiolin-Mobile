@@ -12,6 +12,7 @@ module.exports = (api) => {
                         "@style": "./src/ui/style",
                         "@widgets": "./src/ui/widgets",
                         "@components": "./src/ui/components",
+                        "@modals": "./src/ui/modals",
                         "@backend": "./src/backend",
                         "@assets": "./assets",
                     }
