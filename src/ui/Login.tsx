@@ -4,6 +4,7 @@ import * as Linking from "expo-linking";
 import { logger } from "react-native-logs";
 import { openAuthSessionAsync } from "expo-web-browser";
 
+import OrDivider from "@components/OrDivider";
 import StyledButton from "@components/StyledButton";
 import StyledText, { Size } from "@components/StyledText";
 
@@ -15,16 +16,6 @@ import { colors, value } from "@style/Laudiolin";
 
 const log = logger.createLogger();
 const prompt = "Logging in with seiKiMo lets you create playlists, create a list of favorite songs, connect with friends, and more!";
-
-function OrDivider() {
-    return (
-        <View style={style.Login_Divider}>
-            <View style={{ borderBottomWidth: 1, borderColor: "white", width: "45%" }} />
-            <StyledText text={"OR"} size={Size.Footnote} />
-            <View style={{ borderBottomWidth: 1, borderColor: "white", width: "45%" }} />
-        </View>
-    );
-}
 
 /**
  * Opens a web browser to the login page.
@@ -119,12 +110,5 @@ const style = StyleSheet.create({
     Login_Button: {
         borderRadius: 10,
         width: "90%"
-    },
-    Login_Divider: {
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 10
     }
 });

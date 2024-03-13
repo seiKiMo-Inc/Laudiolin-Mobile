@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ScrollView, View, Dimensions, FlatList } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
@@ -7,6 +8,8 @@ import Track from "@widgets/Track";
 import Playlist from "@widgets/Playlist";
 import StyledButton from "@components/StyledButton";
 import StyledText, { Size } from "@components/StyledText";
+
+import CreatePlaylist from "@modals/CreatePlaylist";
 
 import Backend from "@backend/backend";
 import { first, welcomeText } from "@backend/utils";
@@ -28,10 +31,12 @@ type PlaylistIcon = PlaylistInfo | {
  * @param playlists The list of playlists.
  * @param user The user's information.
  * @param favorites The user's favorite tracks.
+ * @param showPlaylistModal Callback function to show the playlist modal.
  */
-function getPlaylists(
+function formPlaylists(
     playlists: PlaylistInfo[],
-    user: User | null, favorites: TrackInfo[]
+    user: User | null, favorites: TrackInfo[],
+    showPlaylistModal: () => void
 ): PlaylistIcon[] {
     const items: PlaylistIcon[] = [];
     if (user) {
@@ -51,7 +56,7 @@ function getPlaylists(
         ...playlists,
         {
             type: "button", id: "add", icon: "", name: "Add a Playlist",
-            onPress: () => console.log("Add a Playlist")
+            onPress: showPlaylistModal
         }
     );
 
@@ -107,9 +112,13 @@ function Summary({ navigation }: IProps) {
     const user = useUser();
     const favorites = useFavorites();
 
-    const playlistItems = getPlaylists(
+    const [makePlaylist, setMakePlaylist] = useState(false);
+
+    const playlistItems = formPlaylists(
         first(playlists, 5),
-        user, Object.values(favorites));
+        user, Object.values(favorites),
+        () => setMakePlaylist(true)
+    );
 
     return (
         <ScrollView
@@ -219,6 +228,8 @@ function Summary({ navigation }: IProps) {
                     />
                 </>
             }
+
+            <CreatePlaylist visible={makePlaylist} hide={() => setMakePlaylist(false)} />
         </ScrollView>
     );
 }
