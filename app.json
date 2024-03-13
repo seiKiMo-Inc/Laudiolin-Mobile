@@ -62,7 +62,11 @@
     },
     "plugins": [
       "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        { "photosPermission": "Laudiolin needs this to allow selecting an icon for making a playlist." }
+      ]
     ],
     "extra": {
       "eas": {
