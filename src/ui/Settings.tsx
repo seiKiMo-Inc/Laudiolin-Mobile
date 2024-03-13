@@ -169,6 +169,7 @@ function Settings() {
             <ScrollView
                 style={{ marginBottom: `${user ? "50" : "40"}%` }}
                 contentContainerStyle={{ gap: 30 }}
+                showsVerticalScrollIndicator={false}
             >
                 <Section title={"General"}>
                     <Setting title={"Search Engine"} type={"options"}
