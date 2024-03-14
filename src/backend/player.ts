@@ -1,5 +1,5 @@
 import { logger } from "react-native-logs";
-import TrackPlayer, { AddTrack, Event, RepeatMode, State, Track } from "react-native-track-player";
+import TrackPlayer, { AddTrack, Event, RepeatMode, State } from "react-native-track-player";
 
 import Backend from "@backend/backend";
 import { useDebug, useGlobal } from "@backend/stores";
@@ -25,6 +25,11 @@ export const PlaybackService = async () => {
     TrackPlayer.addEventListener(Event.RemoteSeek, ({ position }) => TrackPlayer.seekTo(position));
 
     TrackPlayer.addEventListener(Event.PlaybackState, (data) => {
+        if (data == undefined || data.state == undefined) {
+            TrackPlayer.reset();
+            return;
+        }
+
         if (useDebug.getState().playbackState) {
             log.info(`Playback state changed: ${data.state}`);
         }
@@ -37,7 +42,7 @@ export const PlaybackService = async () => {
                 TrackPlayer.skipToNext();
             } else {
                 state.incrementTries();
-                TrackPlayer.skipToPrevious();
+                TrackPlayer.retry();
             }
         }
     });
