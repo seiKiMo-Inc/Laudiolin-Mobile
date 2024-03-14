@@ -1,3 +1,4 @@
+import { ReactElement, useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import AdIcon from "react-native-vector-icons/AntDesign";
@@ -5,9 +6,16 @@ import EnIcon from "react-native-vector-icons/Entypo";
 import FaIcon from "react-native-vector-icons/FontAwesome6";
 import IoIcon from "react-native-vector-icons/Ionicons";
 import MdIcon from "react-native-vector-icons/MaterialIcons";
+import McIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FastImage from "react-native-fast-image";
-import TrackPlayer, { State, useActiveTrack, usePlaybackState, useProgress } from "react-native-track-player";
+import TrackPlayer, {
+    RepeatMode,
+    State,
+    useActiveTrack,
+    usePlaybackState,
+    useProgress,
+} from "react-native-track-player";
 
 import ProgressBar from "@widgets/ProgressBar";
 import StyledText, { Size } from "@components/StyledText";
@@ -17,12 +25,29 @@ import { useGlobal } from "@backend/stores";
 
 import { colors, value } from "@style/Laudiolin";
 
+function RepeatIcon({ loop }: { loop: RepeatMode }) {
+    switch (loop) {
+        case RepeatMode.Off:
+            return <McIcon name={"repeat"} color={"white"} size={28} />;
+        case RepeatMode.Track:
+            return <McIcon name={"repeat-once"} color={colors.accent} size={28} />;
+        case RepeatMode.Queue:
+            return <McIcon name={"repeat"} color={colors.accent} size={28} />;
+    }
+}
+
 function NowPlaying() {
     const global = useGlobal();
 
     const track = useActiveTrack();
     const { state } = usePlaybackState();
     const progress = useProgress(500);
+
+    const [repeatMode, setRepeatMode] = useState(RepeatMode.Off);
+
+    useEffect(() => {
+        TrackPlayer.getRepeatMode().then(setRepeatMode);
+    });
 
     return (
         <View style={style.NowPlaying}>
@@ -42,6 +67,7 @@ function NowPlaying() {
 
                 <TouchableOpacity onPress={() => null}>
                     <EnIcon name={"dots-three-vertical"} size={24} color={"white"} />
+                    {/* TODO: Move favorite track into context menu. */}
                 </TouchableOpacity>
             </View>
 
@@ -92,8 +118,8 @@ function NowPlaying() {
                     <IoIcon name={"play-skip-forward"} color={"white"} size={28} />
                 </TouchableOpacity>
 
-                <TouchableOpacity>
-                    <AdIcon name={"heart"} color={"white"} size={28} />
+                <TouchableOpacity onPress={() => Player.nextRepeatMode().then(setRepeatMode)}>
+                    <RepeatIcon loop={repeatMode} />
                 </TouchableOpacity>
             </View>
 

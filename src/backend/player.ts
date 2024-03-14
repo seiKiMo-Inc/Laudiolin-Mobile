@@ -1,5 +1,5 @@
 import { logger } from "react-native-logs";
-import TrackPlayer, { AddTrack, Event, State, Track } from "react-native-track-player";
+import TrackPlayer, { AddTrack, Event, RepeatMode, State, Track } from "react-native-track-player";
 
 import Backend from "@backend/backend";
 import { useDebug, useGlobal } from "@backend/stores";
@@ -120,8 +120,27 @@ async function shuffle(): Promise<void> {
     await TrackPlayer.setQueue(queue);
 }
 
+const nextRepeat = {
+    [RepeatMode.Off]: RepeatMode.Queue,
+    [RepeatMode.Queue]: RepeatMode.Track,
+    [RepeatMode.Track]: RepeatMode.Off
+};
+
+/**
+ * Sets the player to the next repeat mode.
+ *
+ * @return The new repeat mode.
+ */
+async function nextRepeatMode(): Promise<RepeatMode> {
+    const mode = await TrackPlayer.getRepeatMode();
+    const next = nextRepeat[mode];
+    await TrackPlayer.setRepeatMode(next);
+    return next;
+}
+
 export default {
     play,
     queue,
-    shuffle
+    shuffle,
+    nextRepeatMode
 };
