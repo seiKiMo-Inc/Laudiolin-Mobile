@@ -86,16 +86,18 @@ function Playlist(props: IProps) {
 
             <View style={style.Playlist_Actions}>
                 <View style={style.Playlist_ActionBar}>
-                    <StyledButton
-                        text={"Edit"}
-                        style={style.Playlist_Button}
-                        icon={<FaIcon
-                            name={"edit"} size={20} color={"white"}
-                            style={{ marginRight: 5 }}
-                        />}
-                        buttonStyle={{ backgroundColor: colors.secondary }}
-                        onPress={() => setShowEdit(true)}
-                    />
+                    { playlist.id != "favorites" && (
+                        <StyledButton
+                            text={"Edit"}
+                            style={style.Playlist_Button}
+                            icon={<FaIcon
+                                name={"edit"} size={20} color={"white"}
+                                style={{ marginRight: 5 }}
+                            />}
+                            buttonStyle={{ backgroundColor: colors.secondary }}
+                            onPress={() => setShowEdit(true)}
+                        />
+                    ) }
                 </View>
 
                 <View style={style.Playlist_ActionBar}>
@@ -133,6 +135,7 @@ function Playlist(props: IProps) {
             {
                 playlist.tracks.length > 0 ?
                     <DraggableFlatList
+                        activationDistance={30}
                         data={tracks}
                         renderItem={renderItem}
                         keyExtractor={item => item.id}
@@ -141,8 +144,9 @@ function Playlist(props: IProps) {
                             const oldTracks = [...playlist.tracks];
 
                             setTracks(data); // Update locally so there is no delay.
-                            if (!await Playlists.editPlaylist(
-                                { ...playlist, tracks: data })) {
+                            if (playlist.id != "favorites" &&
+                                !await Playlists.editPlaylist(
+                                    { ...playlist, tracks: data })) {
                                 setTracks(oldTracks); // Revert the changes.
                             }
                         }}
