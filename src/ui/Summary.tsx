@@ -226,6 +226,11 @@ function Summary({ navigation }: IProps) {
                         text={"Track Playground"}
                         onPress={() => navigation.navigate("Track Playground")}
                     />
+
+                    <StyledButton
+                        text={"Debug"}
+                        onPress={() => navigation.navigate("Debug")}
+                    />
                 </>
             }
 
