@@ -138,8 +138,13 @@ function Playlist(props: IProps) {
                         keyExtractor={item => item.id}
                         style={{ marginBottom: 230 }}
                         onDragEnd={async ({ data }) => {
+                            const oldTracks = [...playlist.tracks];
+
                             setTracks(data); // Update locally so there is no delay.
-                            setPlaylist({ ...playlist, tracks: data }); // Update the playlist.
+                            if (!await Playlists.editPlaylist(
+                                { ...playlist, tracks: data })) {
+                                setTracks(oldTracks); // Revert the changes.
+                            }
                         }}
                     />
                     :
