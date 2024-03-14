@@ -66,7 +66,7 @@ function Debug() {
                     <StyledText text={`Songs in queue: ${queue.length}`} bold />
                     <StyledButton
                         text={"Clear Queue"}
-                        onPress={() => TrackPlayer.setQueue([])}
+                        onPress={() => TrackPlayer.removeUpcomingTracks()}
                     />
                 </View>
             ) }
