@@ -1,9 +1,12 @@
+import { logger } from "react-native-logs";
 import TrackPlayer, { AddTrack, Event } from "react-native-track-player";
 
 import Backend from "@backend/backend";
-import { useGlobal } from "@backend/stores";
+import { useDebug, useGlobal } from "@backend/stores";
 import { resolveIcon } from "@backend/utils";
 import { PlaylistInfo, TrackInfo } from "@backend/types";
+
+const log = logger.createLogger();
 
 const requestData = {
     userAgent: "seiKiMo/Laudiolin-Mobile",
@@ -20,6 +23,12 @@ export const PlaybackService = async () => {
     TrackPlayer.addEventListener(Event.RemoteNext, () => TrackPlayer.skipToNext());
     TrackPlayer.addEventListener(Event.RemotePrevious, () => TrackPlayer.skipToPrevious());
     TrackPlayer.addEventListener(Event.RemoteSeek, ({ position }) => TrackPlayer.seekTo(position));
+
+    TrackPlayer.addEventListener(Event.PlaybackState, (data) => {
+        if (useDebug.getState().playbackState) {
+            log.info(`Playback state changed: ${data.state}`);
+        }
+    });
 };
 
 /**

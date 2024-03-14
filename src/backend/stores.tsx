@@ -14,7 +14,6 @@ export interface GlobalState {
     setShowTrackPage: (show: boolean) => void;
     setShowLoginPage: (show: boolean) => void;
 }
-
 export const useGlobal = create<GlobalState>((set, get) => ({
     showTrackPage: false,
     showLoginPage: false,
@@ -26,6 +25,17 @@ export const useGlobal = create<GlobalState>((set, get) => ({
     },
     setShowTrackPage: (show) => set({ showTrackPage: show }),
     setShowLoginPage: (show) => set({ showLoginPage: show })
+}));
+
+export interface DebugState {
+    playbackState: boolean;
+
+    update(object: any): void;
+}
+export const useDebug = create<DebugState>((set) => ({
+    playbackState: false,
+
+    update: (object: any) => set(object)
 }));
 
 export interface SettingsState {
