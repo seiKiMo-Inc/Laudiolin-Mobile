@@ -27,7 +27,7 @@ TrackPlayer.registerPlaybackService(() => PlaybackService);
     await TrackPlayer.updateOptions({
         capabilities: [
             Capability.Play, Capability.Pause, Capability.SkipToNext, Capability.SkipToPrevious,
-            Capability.Like, Capability.SeekTo, Capability.Stop
+            Capability.SeekTo, Capability.Stop
         ],
         compactCapabilities: [Capability.Play, Capability.Pause]
     });
