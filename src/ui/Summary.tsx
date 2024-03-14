@@ -14,11 +14,11 @@ import CreatePlaylist from "@modals/CreatePlaylist";
 import Backend from "@backend/backend";
 import { first, welcomeText } from "@backend/utils";
 import { useDownloads, useFavorites, usePlaylists, useRecents, useUser } from "@backend/stores";
-import { PlaylistInfo, TrackInfo, User } from "@backend/types";
+import { OwnedPlaylist, TrackInfo, User } from "@backend/types";
 
 import style from "@style/Summary";
 
-type PlaylistIcon = PlaylistInfo | {
+type PlaylistIcon = OwnedPlaylist | {
     type: "button";
     id: string;
     icon: string; name: string;
@@ -34,7 +34,7 @@ type PlaylistIcon = PlaylistInfo | {
  * @param showPlaylistModal Callback function to show the playlist modal.
  */
 function formPlaylists(
-    playlists: PlaylistInfo[],
+    playlists: OwnedPlaylist[],
     user: User | null, favorites: TrackInfo[],
     showPlaylistModal: () => void
 ): PlaylistIcon[] {

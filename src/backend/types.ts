@@ -20,15 +20,20 @@ export type DownloadInfo = TrackData & {
     encoded: boolean;
 };
 
-export type PlaylistInfo = {
-    type: "info";
-    id: string;
-    owner: string;
+export type PlaylistInfo = OwnedPlaylist | PlaylistData;
+
+export type PlaylistData = {
     name: string;
     description: string;
     icon: string;
     isPrivate: boolean;
     tracks: TrackInfo[];
+};
+
+export type OwnedPlaylist = PlaylistData & {
+    type: "info";
+    id: string;
+    owner: string;
 };
 
 export interface SearchResult {
@@ -53,6 +58,6 @@ export type BasicUser = {
 
 export type User = BasicUser & {
     playlists?: string[];
-    likedSongs?: TrackInfo[];
-    recentlyPlayed?: TrackInfo[];
+    likedSongs?: RemoteInfo[];
+    recentlyPlayed?: RemoteInfo[];
 };

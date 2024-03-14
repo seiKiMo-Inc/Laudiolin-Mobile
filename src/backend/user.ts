@@ -4,7 +4,7 @@ import * as SecureStore from "expo-secure-store";
 
 import Backend from "@backend/backend";
 import { useFavorites, useGlobal, usePlaylists, useRecents, useUser } from "@backend/stores";
-import { BasicUser, PlaylistInfo, TrackInfo, User } from "@backend/types";
+import { BasicUser, OwnedPlaylist, RemoteInfo, User } from "@backend/types";
 import { EmitterSubscription } from "react-native";
 
 const log = logger.createLogger();
@@ -121,7 +121,7 @@ async function logOut(toLogin: boolean = true): Promise<void> {
  *
  * @param tracks The list of tracks to replace the recents with.
  */
-function loadRecents(tracks: TrackInfo[] | null = null): void {
+function loadRecents(tracks: RemoteInfo[] | null = null): void {
     if (tracks) {
         useRecents.setState(tracks);
     } else {
@@ -156,7 +156,7 @@ async function loadPlaylists(): Promise<void> {
         return;
     }
 
-    let playlists: PlaylistInfo[] = [];
+    let playlists: OwnedPlaylist[] = [];
     const route = `${Backend.getBaseUrl()}/playlist`;
     for (const id of user.playlists) {
         const response = await fetch(`${route}/${id}`, {

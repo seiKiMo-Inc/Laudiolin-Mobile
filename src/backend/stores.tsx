@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { User, SearchEngine, PlaylistInfo, DownloadInfo, RemoteInfo } from "@backend/types";
+import { User, SearchEngine, DownloadInfo, RemoteInfo, OwnedPlaylist } from "@backend/types";
 
 export interface GlobalState {
     showTrackPage: boolean;
@@ -107,5 +107,5 @@ export const useSettings = create<SettingsState>()(persist(
 export const useUser = create<User | null>(() => null);
 export const useRecents = create<RemoteInfo[]>(() => []);
 export const useFavorites = create<RemoteInfo[]>(() => []);
-export const usePlaylists = create<PlaylistInfo[]>(() => []);
+export const usePlaylists = create<OwnedPlaylist[]>(() => []);
 export const useDownloads = create<DownloadInfo[]>(() => []);

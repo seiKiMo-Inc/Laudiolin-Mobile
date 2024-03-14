@@ -10,12 +10,12 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 import StyledText, { Size } from "@components/StyledText";
 
-import { PlaylistInfo } from "@backend/types";
+import { OwnedPlaylist } from "@backend/types";
 
 import { colors } from "@style/Laudiolin";
 
 interface IProps {
-    playlist: PlaylistInfo;
+    playlist: OwnedPlaylist;
 }
 
 function PlaylistStripe(props: IProps) {

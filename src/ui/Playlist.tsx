@@ -16,12 +16,12 @@ import StyledText, { Size } from "@components/StyledText";
 
 import Player from "@backend/player";
 import Playlists from "@backend/playlist";
-import { PlaylistInfo, TrackInfo } from "@backend/types";
+import { OwnedPlaylist, TrackInfo } from "@backend/types";
 
 import { colors, value } from "@style/Laudiolin";
 
 interface RouteParams {
-    playlist: PlaylistInfo;
+    playlist: OwnedPlaylist;
     playlistId?: string;
 }
 
@@ -34,7 +34,7 @@ function Playlist(props: IProps) {
     const { route, navigation } = props;
     const { playlist: data, playlistId } = route.params as RouteParams;
 
-    const [playlist, setPlaylist] = useState<PlaylistInfo | null | undefined>(data);
+    const [playlist, setPlaylist] = useState<OwnedPlaylist | null | undefined>(data);
 
     const [tracks, setTracks] = useState<TrackInfo[]>(data.tracks);
     const [author, setAuthor] = useState("Unknown");
