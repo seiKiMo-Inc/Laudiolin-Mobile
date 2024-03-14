@@ -66,6 +66,10 @@
       [
         "expo-image-picker",
         { "photosPermission": "Laudiolin needs this to allow selecting an icon for making a playlist." }
+      ],
+      [
+        "expo-document-picker",
+        { "iCloudContainerEnvironment": "Production" }
       ]
     ],
     "extra": {
