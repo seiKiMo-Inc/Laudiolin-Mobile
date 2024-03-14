@@ -40,6 +40,7 @@ function Search() {
                 icon={<FaIcon size={24} name={"search"} color={"white"} />}
                 inputStyle={style.Search_Input}
                 onChange={setQuery}
+                onFinish={() => setQuery(query)}
             />
 
             <FlatList
