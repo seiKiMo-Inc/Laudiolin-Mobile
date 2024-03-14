@@ -1,5 +1,5 @@
 import { logger } from "react-native-logs";
-import TrackPlayer, { AddTrack, Event } from "react-native-track-player";
+import TrackPlayer, { AddTrack, Event, State, Track } from "react-native-track-player";
 
 import Backend from "@backend/backend";
 import { useDebug, useGlobal } from "@backend/stores";
@@ -27,6 +27,18 @@ export const PlaybackService = async () => {
     TrackPlayer.addEventListener(Event.PlaybackState, (data) => {
         if (useDebug.getState().playbackState) {
             log.info(`Playback state changed: ${data.state}`);
+        }
+
+        if (data.state == State.Error) {
+            const state = useGlobal.getState();
+            if (state.loadTries > 3) {
+                log.error("Failed to load track after 3 tries.");
+                useGlobal.setState({ loadTries: 0 });
+                TrackPlayer.skipToNext();
+            } else {
+                state.incrementTries();
+                TrackPlayer.skipToPrevious();
+            }
         }
     });
 };

@@ -9,22 +9,26 @@ export interface GlobalState {
     showTrackPage: boolean;
     showLoginPage: boolean;
     fromPlaylist: string | null;
+    loadTries: number;
 
     showingAny: () => boolean;
     setShowTrackPage: (show: boolean) => void;
     setShowLoginPage: (show: boolean) => void;
+    incrementTries: () => void;
 }
 export const useGlobal = create<GlobalState>((set, get) => ({
     showTrackPage: false,
     showLoginPage: false,
     fromPlaylist: null,
+    loadTries: 0,
 
     showingAny: () => {
         const state = get();
         return state.showTrackPage || state.showLoginPage;
     },
     setShowTrackPage: (show) => set({ showTrackPage: show }),
-    setShowLoginPage: (show) => set({ showLoginPage: show })
+    setShowLoginPage: (show) => set({ showLoginPage: show }),
+    incrementTries: () => set((state) => ({ loadTries: state.loadTries + 1 }))
 }));
 
 export interface DebugState {
