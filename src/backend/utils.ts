@@ -1,4 +1,5 @@
 import { logger } from "react-native-logs";
+import { ImagePickerResult, launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
 
 import Backend from "@backend/backend";
 
@@ -103,4 +104,18 @@ export function copy(source: any, dest: any): any {
             dest[key] = source[key];
     }
     return dest;
+}
+
+/**
+ * Default settings for picking an icon.
+ */
+export async function pickIcon(): Promise<ImagePickerResult> {
+    return await launchImageLibraryAsync({
+        mediaTypes: MediaTypeOptions.Images,
+        allowsMultipleSelection: false,
+        allowsEditing: true,
+        base64: true,
+        aspect: [4, 3],
+        quality: 1,
+    });
 }

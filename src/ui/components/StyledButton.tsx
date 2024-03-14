@@ -11,6 +11,7 @@ interface IProps {
     buttonStyle?: StyleProp<ViewStyle>;
 
     onPress?: () => void;
+    onHold?: () => void;
 }
 
 function StyledButton(props: IProps) {
@@ -22,6 +23,7 @@ function StyledButton(props: IProps) {
             containerStyle={props.style}
             activeOpacity={0.7}
             onPress={props.onPress}
+            onLongPress={props.onHold}
         />
     );
 }

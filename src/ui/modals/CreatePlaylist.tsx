@@ -4,6 +4,7 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { logger } from "react-native-logs";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 
 import Toggle from "react-native-toggle-element";
@@ -17,6 +18,8 @@ import StyledTextInput from "@components/StyledTextInput";
 import Playlist from "@backend/playlist";
 
 import { colors, value } from "@style/Laudiolin";
+import { pickIcon } from "@backend/utils";
+import StyledToggle from "@components/StyledToggle";
 
 const log = logger.createLogger();
 
@@ -26,6 +29,8 @@ interface IProps {
 }
 
 function CreatePlaylist(props: IProps) {
+    const navigation: NavigationProp<any> = useNavigation();
+
     const [name, setName] = useState("");
     const [isPrivate, setPrivate] = useState(true);
     const [cover, setCover] = useState<string | null>(null); // This is a Base64 image string.
@@ -56,8 +61,12 @@ function CreatePlaylist(props: IProps) {
                     style={style.CreatePlaylist_Button}
                     buttonStyle={{ backgroundColor: colors.accent }}
                     onPress={async () => {
-                        if (await Playlist.createPlaylist(importUrl)) {
+                        if (importUrl == "") return;
+
+                        const [success, playlistId] = await Playlist.createPlaylist(importUrl);
+                        if (success) {
                             props.hide();
+                            navigation.navigate("Playlist", { playlistId });
                         } else {
                             log.warn("Unable to import playlist.");
                         }
@@ -93,38 +102,18 @@ function CreatePlaylist(props: IProps) {
                         style={style.CreatePlaylist_Button}
                         buttonStyle={{ backgroundColor: colors.accent }}
                         onPress={async () => {
-                            const result = await launchImageLibraryAsync({
-                                mediaTypes: MediaTypeOptions.Images,
-                                allowsMultipleSelection: false,
-                                allowsEditing: true,
-                                base64: true,
-                                aspect: [4, 3],
-                                quality: 1,
-                            });
-
+                            const result = await pickIcon();
                             if (!result.canceled) {
                                 setCover(result.assets[0].base64 ?? "");
                             }
                         }}
                     />
 
-                    <View style={style.CreatePlaylist_Toggle}>
-                        <StyledText text={"Private Playlist?"} />
-                        <Toggle
-                            animationDuration={200}
-                            value={isPrivate} onPress={() => setPrivate(!isPrivate)}
-                            trackBar={{
-                                ...style.CreatePlaylist_Toggle_Track,
-                                activeBackgroundColor: colors.accent,
-                                inActiveBackgroundColor: colors.gray
-                            }}
-                            thumbButton={{
-                                ...style.CreatePlaylist_Toggle_Thumb,
-                                activeBackgroundColor: "white",
-                                inActiveBackgroundColor: "white"
-                            }}
-                        />
-                    </View>
+                    <StyledToggle
+                        value={isPrivate}
+                        onPress={setPrivate}
+                        title={"Private Playlist?"}
+                    />
                 </View>
 
                 <StyledButton
@@ -132,13 +121,17 @@ function CreatePlaylist(props: IProps) {
                     style={style.CreatePlaylist_Button}
                     buttonStyle={{ backgroundColor: colors.accent }}
                     onPress={async () => {
-                        if (await Playlist.createPlaylist({
+                        if (name == "") return;
+
+                        const [success, playlistId] = await Playlist.createPlaylist({
                             name, isPrivate,
                             description: "My wonderful playlist!",
-                            icon: "https://i.pinimg.com/564x/e2/26/98/e22698a130ad38d08d3b3d650c2cb4b3.",
+                            icon: "https://i.pinimg.com/564x/e2/26/98/e22698a130ad38d08d3b3d650c2cb4b3.jpg",
                             tracks: []
-                        })) {
+                        });
+                        if (success) {
                             props.hide();
+                            navigation.navigate("Playlist", { playlistId });
                         } else {
                             log.warn("Unable to create playlist.");
                         }
@@ -171,20 +164,6 @@ const style = StyleSheet.create({
     },
     CreatePlaylist_Text: {
         textAlign: "center"
-    },
-    CreatePlaylist_Toggle: {
-        width: "100%",
-        alignItems: "center",
-        flexDirection: "row",
-        justifyContent: "space-between"
-    },
-    CreatePlaylist_Toggle_Track: {
-        width: 50,
-        height: 15
-    },
-    CreatePlaylist_Toggle_Thumb: {
-        width: 20,
-        height: 20
     },
     CreatePlaylist_Button: {
         width: "100%",

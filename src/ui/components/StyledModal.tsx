@@ -10,7 +10,7 @@ interface IProps {
     visible: boolean;
 
     title?: string;
-    children?: ReactElement | ReactElement[] | undefined;
+    children?: ReactElement | ReactElement[] | any | undefined;
 
     style?: StyleProp<ViewStyle> | any;
     overlayStyle?: StyleProp<ViewStyle>;

@@ -9,6 +9,8 @@ import FastImage from "react-native-fast-image";
 import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 
+import EditPlaylist from "@modals/EditPlaylist";
+
 import Track from "@widgets/Track";
 import BackButton from "@widgets/BackButton";
 import StyledButton from "@components/StyledButton";
@@ -36,8 +38,10 @@ function Playlist(props: IProps) {
 
     const [playlist, setPlaylist] = useState<OwnedPlaylist | null | undefined>(data);
 
-    const [tracks, setTracks] = useState<TrackInfo[]>(data.tracks);
+    const [tracks, setTracks] = useState<TrackInfo[]>(data?.tracks ?? []);
     const [author, setAuthor] = useState("Unknown");
+
+    const [showEdit, setShowEdit] = useState(false);
 
     useEffect(() => {
         if (playlistId && !playlist) {
@@ -46,7 +50,7 @@ function Playlist(props: IProps) {
     }, [playlistId]);
 
     useEffect(() => {
-        if (playlist) {
+        if (playlist != null) {
             Playlists.getAuthor(playlist.owner)
                 .then(author => setAuthor(author ?? "Unknown"));
 
@@ -89,9 +93,8 @@ function Playlist(props: IProps) {
                             name={"edit"} size={20} color={"white"}
                             style={{ marginRight: 5 }}
                         />}
-                        buttonStyle={{
-                            backgroundColor: colors.secondary
-                        }}
+                        buttonStyle={{ backgroundColor: colors.secondary }}
+                        onPress={() => setShowEdit(true)}
                     />
                 </View>
 
@@ -147,6 +150,12 @@ function Playlist(props: IProps) {
                         />
                     </View>
             }
+
+            <EditPlaylist
+                playlist={playlist}
+                visible={showEdit}
+                hide={() => setShowEdit(false)}
+            />
         </View>
     ) : undefined;
 }
