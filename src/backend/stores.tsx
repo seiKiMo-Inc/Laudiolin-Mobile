@@ -44,7 +44,6 @@ export const useDebug = create<DebugState>((set) => ({
 
 export interface SettingsState {
     search: {
-        accuracy: boolean,
         engine: SearchEngine
     };
     ui: {
@@ -63,7 +62,6 @@ export interface SettingsState {
 export const useSettings = create<SettingsState>()(persist(
     (set, get): SettingsState => ({
         search: {
-            accuracy: true,
             engine: "All"
         },
         ui: {

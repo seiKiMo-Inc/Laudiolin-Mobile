@@ -2,6 +2,7 @@ import { logger } from "react-native-logs";
 
 import Backend from "@backend/backend";
 import { SearchResult, SearchEngine, TrackInfo, blank_SearchResult } from "@backend/types";
+import { useSettings } from "@backend/stores";
 
 const log = logger.createLogger();
 
@@ -9,11 +10,9 @@ const log = logger.createLogger();
  * Performs a track search on the backend.
  *
  * @param query The song to search for.
- * @param engine The engine to use for the search.
  */
-export async function search(
-    query: string, engine: SearchEngine = "YouTube"
-): Promise<SearchResult> {
+export async function search(query: string): Promise<SearchResult> {
+    const engine = useSettings.getState().search.engine;
     const response = await fetch(
         `${Backend.getBaseUrl()}/search/${query}?engine=${engine}`,
         { cache: "default" }

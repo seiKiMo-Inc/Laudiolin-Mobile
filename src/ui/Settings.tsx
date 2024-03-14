@@ -176,13 +176,6 @@ function Settings() {
                              setting={"search.engine"}
                              options={["All", "YouTube", "Spotify"]}
                     />
-
-                    <Setting title={"Use Search Accuracy"} type={"options"}
-                             setting={"search.accuracy"}
-                             options={["Yes", "No"]}
-                             parser={value => value == "Yes"}
-                             reverseParser={value => value ? "Yes" : "No"}
-                     />
                 </Section>
 
                 <Section title={"User Interface"}>
