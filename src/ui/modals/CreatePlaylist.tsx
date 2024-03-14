@@ -149,7 +149,7 @@ const style = StyleSheet.create({
         textAlign: "center"
     },
     CreatePlaylist_Toggle: {
-        width: "90%",
+        width: "100%",
         alignItems: "center",
         flexDirection: "row",
         justifyContent: "space-between"
