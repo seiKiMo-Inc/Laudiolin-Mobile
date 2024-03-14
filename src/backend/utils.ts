@@ -90,3 +90,17 @@ export function resolveIcon(icon: string): string {
     log.warn("Unknown icon URL:", icon);
     return icon; // Fallback to whatever is provided if all else fails.
 }
+
+/**
+ * Copies any non-undefined properties from the source to the destination.
+ *
+ * @param source The source object to copy from.
+ * @param dest The destination object to copy to.
+ */
+export function copy(source: any, dest: any): any {
+    for (let key in source) {
+        if (source[key] !== undefined)
+            dest[key] = source[key];
+    }
+    return dest;
+}
