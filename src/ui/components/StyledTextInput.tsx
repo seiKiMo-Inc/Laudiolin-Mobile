@@ -11,6 +11,7 @@ interface IProps {
     autoCorrect?: boolean;
     defaultColor?: ColorValue;
     maxLength?: number;
+    lines?: number;
 
     textStyle?: StyleProp<TextStyle> | any;
     inputStyle?: StyleProp<ViewStyle> | any;
@@ -26,6 +27,8 @@ function StyledTextInput(props: IProps) {
     return (
         <Input
             value={props.value}
+            numberOfLines={props.lines}
+            multiline={(props.lines ?? 1) > 1}
             placeholder={props.default}
             placeholderTextColor={props.defaultColor}
             rightIcon={props.icon}
