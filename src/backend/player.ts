@@ -94,8 +94,8 @@ async function queue(props: {
     shuffle?: boolean;
     start?: boolean;
 }): Promise<void> {
-    let tracks = props.tracks;
-    if (tracks == null || tracks.length == 0) return;
+    let tracks = [...props.tracks];
+    if (tracks.length == 0) return;
 
     if (props.clear) {
         await TrackPlayer.reset();
