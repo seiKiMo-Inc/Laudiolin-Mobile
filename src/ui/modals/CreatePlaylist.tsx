@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { logger } from "react-native-logs";
 import { MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
 
 import Toggle from "react-native-toggle-element";
@@ -13,7 +14,11 @@ import StyledModal from "@components/StyledModal";
 import StyledButton from "@components/StyledButton";
 import StyledTextInput from "@components/StyledTextInput";
 
+import Playlist from "@backend/playlist";
+
 import { colors, value } from "@style/Laudiolin";
+
+const log = logger.createLogger();
 
 interface IProps {
     visible: boolean;
@@ -50,6 +55,13 @@ function CreatePlaylist(props: IProps) {
                     text={"Import"}
                     style={style.CreatePlaylist_Button}
                     buttonStyle={{ backgroundColor: colors.accent }}
+                    onPress={async () => {
+                        if (await Playlist.createPlaylist(importUrl)) {
+                            props.hide();
+                        } else {
+                            log.warn("Unable to import playlist.");
+                        }
+                    }}
                 />
 
                 <OrDivider />
@@ -119,6 +131,18 @@ function CreatePlaylist(props: IProps) {
                     text={"Create"}
                     style={style.CreatePlaylist_Button}
                     buttonStyle={{ backgroundColor: colors.accent }}
+                    onPress={async () => {
+                        if (await Playlist.createPlaylist({
+                            name, isPrivate,
+                            description: "My wonderful playlist!",
+                            icon: "https://i.pinimg.com/564x/e2/26/98/e22698a130ad38d08d3b3d650c2cb4b3.",
+                            tracks: []
+                        })) {
+                            props.hide();
+                        } else {
+                            log.warn("Unable to create playlist.");
+                        }
+                    }}
                 />
 
                 <OrDivider />

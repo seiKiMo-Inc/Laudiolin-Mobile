@@ -3,10 +3,26 @@ import { logger } from "react-native-logs";
 import User from "@backend/user";
 import Backend from "@backend/backend";
 import { usePlaylists, useUser } from "@backend/stores";
-import { PlaylistInfo } from "@backend/types";
-import { copy } from "@backend/utils";
+import { OwnedPlaylist, PlaylistInfo, TrackInfo } from "@backend/types";
 
 const log = logger.createLogger();
+
+/**
+ * Changes the internal state of the playlist store.
+ *
+ * @param playlist The playlist to modify.
+ */
+function modifyPlaylist(playlist: OwnedPlaylist): void {
+    let playlists = Object.values(usePlaylists.getState());
+    const index = playlists.findIndex(p => p.id == playlist.id);
+    if (index != -1) {
+        playlists[index] = playlist;
+        usePlaylists.setState(playlists);
+    } else {
+        playlists.push(playlist);
+        usePlaylists.setState(playlists);
+    }
+}
 
 /**
  * Fetches a playlist using its ID.
@@ -14,7 +30,7 @@ const log = logger.createLogger();
  *
  * @param id The ID of the playlist to fetch.
  */
-async function fetchPlaylist(id: string): Promise<PlaylistInfo | null> {
+async function fetchPlaylist(id: string): Promise<OwnedPlaylist | null> {
     const response = await fetch(`${Backend.getBaseUrl()}/playlist/${id}`, {
         cache: "no-cache", headers: { authorization: await User.getToken() }
     });
@@ -25,7 +41,7 @@ async function fetchPlaylist(id: string): Promise<PlaylistInfo | null> {
     }
 
     try {
-        return (await response.json()) as PlaylistInfo;
+        return (await response.json()) as OwnedPlaylist;
     } catch (error) {
         log.error("Failed to fetch playlist", error);
         return null;
@@ -38,7 +54,7 @@ async function fetchPlaylist(id: string): Promise<PlaylistInfo | null> {
  *
  * @param id The ID of the playlist to find.
  */
-async function findPlaylist(id: string): Promise<PlaylistInfo | null> {
+async function findPlaylist(id: string): Promise<OwnedPlaylist | null> {
     const playlists = Object.values(usePlaylists.getState());
 
     let playlist = playlists.find(p => p.id == id) ?? null;
@@ -91,18 +107,9 @@ async function editPlaylist(playlist: {
             return false;
         }
 
-        // Set the playlist internally.
-        let playlists = usePlaylists.getState();
-        playlists = playlists.map(p => {
-            if (p.id != playlist.id) return p;
-
-            // Internal rename/update.
-            p = copy(playlist, p);
-            p.isPrivate = playlist.isPrivate ?? true;
-
-            return p;
-        });
-        usePlaylists.setState(playlists);
+        // Update the playlist.
+        const updated = await response.json() as OwnedPlaylist;
+        modifyPlaylist(updated);
 
         return true;
     }
@@ -121,6 +128,10 @@ async function editPlaylist(playlist: {
             log.error("Failed to edit playlist description", response.status);
             return false;
         }
+
+        // Update the playlist.
+        const updated = await response.json() as OwnedPlaylist;
+        modifyPlaylist(updated);
     }
     if (playlist.icon) {
         const response = await _editPlaylist(playlist.id, { icon: playlist.icon }, "icon");
@@ -128,6 +139,10 @@ async function editPlaylist(playlist: {
             log.error("Failed to edit playlist icon", response.status);
             return false;
         }
+
+        // Update the playlist.
+        const updated = await response.json() as OwnedPlaylist;
+        modifyPlaylist(updated);
     }
     if (playlist.isPrivate !== undefined) {
         const response = await _editPlaylist(playlist.id, { privacy: playlist.isPrivate }, "privacy");
@@ -135,6 +150,10 @@ async function editPlaylist(playlist: {
             log.error("Failed to edit playlist privacy", response.status);
             return false;
         }
+
+        // Update the playlist.
+        const updated = await response.json() as OwnedPlaylist;
+        modifyPlaylist(updated);
     }
     if (playlist.tracks) {
         const response = await _editPlaylist(playlist.id, { tracks: playlist.tracks }, "tracks");
@@ -142,7 +161,120 @@ async function editPlaylist(playlist: {
             log.error("Failed to edit playlist tracks", response.status);
             return false;
         }
+
+        // Update the playlist.
+        const updated = await response.json() as OwnedPlaylist;
+        modifyPlaylist(updated);
     }
+
+    return true;
+}
+
+/**
+ * Adds a track to the end of a playlist.
+ *
+ * @param playlist The playlist to add the track to.
+ * @param track The track to add to the playlist.
+ */
+async function addTrackToPlaylist(
+    playlist: OwnedPlaylist | string, track: TrackInfo
+): Promise<boolean> {
+    const playlistId = typeof playlist == "string" ? playlist : playlist.id;
+    const response = await _editPlaylist(playlistId, track, "add");
+
+    if (response.status != 200) {
+        log.error("Failed to add track to playlist", response.status);
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Removes a track from a playlist.
+ *
+ * @param playlist The playlist to remove the track from.
+ * @param track The track to remove from the playlist.
+ */
+async function removeTrackFromPlaylist(
+    playlist: OwnedPlaylist | string, track: TrackInfo | number
+): Promise<boolean> {
+    if (typeof track != "number" && typeof playlist == "string") {
+        throw new Error("Must specify the track index when removing from a playlist ID");
+    }
+
+    const playlistId = typeof playlist == "string" ? playlist : playlist.id;
+    const trackIndex = typeof track == "number" ? track : (playlist as PlaylistInfo).tracks.indexOf(track);
+
+    if (trackIndex == -1) {
+        throw new Error("Track not found in playlist");
+    }
+
+    const response = await _editPlaylist(playlistId, { index: trackIndex }, "remove");
+
+    if (response.status != 200) {
+        log.error("Failed to remove track from playlist", response.status);
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Deletes a playlist from the server.
+ *
+ * @param playlist The playlist to delete.
+ */
+async function deletePlaylist(playlist: OwnedPlaylist | string): Promise<boolean> {
+    const playlistId = typeof playlist == "string" ? playlist : playlist.id;
+    const response = await fetch(`${Backend.getBaseUrl()}/playlist/${playlistId}`, {
+        method: "DELETE", headers: { authorization: await User.getToken() }
+    });
+
+    if (response.status != 200) {
+        log.error("Failed to delete playlist", response.status);
+        return false;
+    }
+
+    // Remove the playlist from the store.
+    let playlists = Object.values(usePlaylists.getState());
+    playlists = playlists.filter(p => p.id != playlistId);
+    usePlaylists.setState(playlists);
+
+    return true;
+}
+
+/**
+ * Creates or imports a playlist on the server.
+ *
+ * @param playlist The playlist to create or import.
+ */
+async function createPlaylist(playlist: PlaylistInfo | string): Promise<boolean> {
+    let response: Response;
+    if (typeof playlist == "string") {
+        response = await fetch(`${Backend.getBaseUrl()}/playlist/import`, {
+            method: "PATCH", headers: {
+                "Content-Type": "application/json", authorization: await User.getToken()
+            },
+            body: JSON.stringify({ url: playlist })
+        });
+    } else {
+        response = await fetch(`${Backend.getBaseUrl()}/playlist/create`, {
+            method: "POST", headers: {
+                "Content-Type": "application/json", authorization: await User.getToken()
+            },
+            body: JSON.stringify(playlist)
+        });
+    }
+
+    if (response.status != 201) {
+        log.error("Failed to create playlist", response.status);
+        return false;
+    }
+
+    // Add the playlist to the store.
+    const created = await response.json() as OwnedPlaylist;
+    modifyPlaylist(created);
 
     return true;
 }
@@ -152,7 +284,7 @@ async function editPlaylist(playlist: {
  *
  * @param playlist The playlist object or the ID of the owner.
  */
-async function getAuthor(playlist: PlaylistInfo | string) {
+async function getAuthor(playlist: OwnedPlaylist | string) {
     const owner = typeof playlist == "string" ? playlist : playlist.owner;
     if (!owner) return "Unknown";
 
@@ -171,5 +303,9 @@ export default {
     fetchPlaylist,
     findPlaylist,
     editPlaylist,
+    addTrackToPlaylist,
+    removeTrackFromPlaylist,
+    deletePlaylist,
+    createPlaylist,
     getAuthor
 };
