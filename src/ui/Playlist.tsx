@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
-import AdIcon from "react-native-vector-icons/AntDesign";
 import FaIcon from "react-native-vector-icons/FontAwesome";
 import Fa6Icon from "react-native-vector-icons/FontAwesome6";
 import EnIcon from "react-native-vector-icons/Entypo";
 
 import FastImage from "react-native-fast-image";
+import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 
 import Track from "@widgets/Track";
@@ -16,7 +16,7 @@ import StyledText, { Size } from "@components/StyledText";
 
 import Player from "@backend/player";
 import Playlists from "@backend/playlist";
-import { PlaylistInfo } from "@backend/types";
+import { PlaylistInfo, TrackInfo } from "@backend/types";
 
 import { colors, value } from "@style/Laudiolin";
 
@@ -35,7 +35,9 @@ function Playlist(props: IProps) {
     const { playlist: data, playlistId } = route.params as RouteParams;
 
     const [playlist, setPlaylist] = useState<PlaylistInfo | null | undefined>(data);
-    const [author, setAuthor] = useState<string>("Unknown");
+
+    const [tracks, setTracks] = useState<TrackInfo[]>(data.tracks);
+    const [author, setAuthor] = useState("Unknown");
 
     useEffect(() => {
         if (playlistId && !playlist) {
@@ -47,8 +49,20 @@ function Playlist(props: IProps) {
         if (playlist) {
             Playlists.getAuthor(playlist.owner)
                 .then(author => setAuthor(author ?? "Unknown"));
+
+            setTracks(playlist.tracks);
         }
     }, [playlist]);
+
+    const renderItem = ({ item, drag, isActive }: RenderItemParams<TrackInfo>) => (
+        <ScaleDecorator>
+            <Track
+                style={{ marginBottom: 10 }}
+                disabled={isActive} onHold={drag}
+                data={item} playlist={playlist!}
+            />
+        </ScaleDecorator>
+    );
 
     return playlist ? (
         <View style={style.Playlist}>
@@ -115,11 +129,15 @@ function Playlist(props: IProps) {
 
             {
                 playlist.tracks.length > 0 ?
-                    <FlatList
-                        data={playlist.tracks}
-                        contentContainerStyle={{ gap: 10 }}
-                        renderItem={({ item }) =>
-                            <Track key={item.id} data={item} playlist={playlist} />}
+                    <DraggableFlatList
+                        data={tracks}
+                        renderItem={renderItem}
+                        keyExtractor={item => item.id}
+                        style={{ marginBottom: 230 }}
+                        onDragEnd={async ({ data }) => {
+                            setTracks(data); // Update locally so there is no delay.
+                            setPlaylist({ ...playlist, tracks: data }); // Update the playlist.
+                        }}
                     />
                     :
                     <View>
