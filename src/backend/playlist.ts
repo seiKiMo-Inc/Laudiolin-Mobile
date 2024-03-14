@@ -116,14 +116,14 @@ async function editPlaylist(playlist: {
 
     // Go through each property and edit the playlist.
     if (playlist.name) {
-        const response = await _editPlaylist(playlist.id, { name: playlist.name }, "name");
+        const response = await _editPlaylist(playlist.id, { name: playlist.name }, "rename");
         if (response.status != 200) {
             log.error("Failed to edit playlist name", response.status);
             return false;
         }
     }
     if (playlist.description) {
-        const response = await _editPlaylist(playlist.id, { description: playlist.description }, "desc");
+        const response = await _editPlaylist(playlist.id, { description: playlist.description }, "describe");
         if (response.status != 200) {
             log.error("Failed to edit playlist description", response.status);
             return false;
@@ -239,7 +239,7 @@ async function deletePlaylist(playlist: OwnedPlaylist | string): Promise<boolean
     // Remove the playlist from the store.
     let playlists = Object.values(usePlaylists.getState());
     playlists = playlists.filter(p => p.id != playlistId);
-    usePlaylists.setState(playlists);
+    usePlaylists.setState(playlists, true);
 
     return true;
 }
@@ -248,8 +248,9 @@ async function deletePlaylist(playlist: OwnedPlaylist | string): Promise<boolean
  * Creates or imports a playlist on the server.
  *
  * @param playlist The playlist to create or import.
+ * @return A tuple containing a boolean indicating success and the playlist ID.
  */
-async function createPlaylist(playlist: PlaylistInfo | string): Promise<boolean> {
+async function createPlaylist(playlist: PlaylistInfo | string): Promise<[boolean, string]> {
     let response: Response;
     if (typeof playlist == "string") {
         response = await fetch(`${Backend.getBaseUrl()}/playlist/import`, {
@@ -269,14 +270,14 @@ async function createPlaylist(playlist: PlaylistInfo | string): Promise<boolean>
 
     if (response.status != 201) {
         log.error("Failed to create playlist", response.status);
-        return false;
+        return [false, ""];
     }
 
     // Add the playlist to the store.
     const created = await response.json() as OwnedPlaylist;
     modifyPlaylist(created);
 
-    return true;
+    return [true, created.id];
 }
 
 /**
