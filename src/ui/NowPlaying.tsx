@@ -77,23 +77,25 @@ function NowPlaying() {
                 resizeMode={"contain"}
             />
 
-            <View style={style.NowPlaying_Info}>
-                <StyledText text={track?.title ?? "Not Playing"}
-                            size={Size.Header} bold
-                            lines={value.height > 700 ? 3 : 2}
-                />
+            <View style={{ flexDirection: "column" }}>
+                <View style={style.NowPlaying_Info}>
+                    <StyledText text={track?.title ?? "Not Playing"}
+                                size={Size.Header} bold
+                                lines={value.height > 700 ? 3 : 2}
+                    />
 
-                <StyledText text={track?.artist ?? "---"}
-                            style={{ color: colors.gray }}
-                            size={Size.Text} lines={1}
+                    <StyledText text={track?.artist ?? "---"}
+                                style={{ color: colors.gray }}
+                                size={Size.Text} lines={1}
+                    />
+                </View>
+
+                <ProgressBar
+                    progress={progress.position}
+                    duration={progress.duration}
+                    style={{ paddingLeft: 10, paddingRight: 10, marginBottom: 15 }}
                 />
             </View>
-
-            <ProgressBar
-                progress={progress.position}
-                duration={progress.duration}
-                style={{ paddingLeft: 10, paddingRight: 10 }}
-            />
 
             <View style={style.NowPlaying_Controls}>
                 <TouchableOpacity onPress={() => Player.shuffle()}>
@@ -122,8 +124,6 @@ function NowPlaying() {
                     <RepeatIcon loop={repeatMode} />
                 </TouchableOpacity>
             </View>
-
-            <View style={{ flex: 1 }} />
         </View>
     );
 }
@@ -167,10 +167,11 @@ const style = StyleSheet.create({
         marginBottom: 15,
     },
     NowPlaying_Controls: {
+        position: "relative",
+        bottom: 10,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        paddingBottom: 50,
         paddingTop: 30,
         paddingLeft: 25,
         paddingRight: 25
