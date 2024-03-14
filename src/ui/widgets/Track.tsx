@@ -17,6 +17,9 @@ interface IProps {
     playlist?: PlaylistInfo;
 
     style?: any;
+
+    disabled?: boolean;
+    onHold?: () => void;
 }
 
 function Track(props: IProps) {
@@ -24,13 +27,16 @@ function Track(props: IProps) {
 
     return (
         <TouchableOpacity
+            disabled={props.disabled}
             activeOpacity={0.7}
             style={{
                 ...style.Track,
                 ...props.style
             }}
             onPress={() => Player.play(data, { playlist })}
-            onLongPress={() => console.log("Open Context Menu")}
+            onLongPress={() => props.onHold ?
+                props.onHold() :
+                console.log("Open Context Menu")}
         >
             <View style={style.Track_Container}>
                 <FastImage

@@ -2,12 +2,20 @@ import { useState } from "react";
 import { TextInput, View } from "react-native";
 
 import { NavigationProp } from "@react-navigation/native";
+import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
 
+import Track from "@widgets/Track";
 import StyledButton from "@components/StyledButton";
 
 import { search } from "@backend/search";
-import { blank_SearchResult, SearchResult } from "@backend/types";
-import Track from "@widgets/Track";
+import { TrackInfo } from "@backend/types";
+import { first } from "@backend/utils";
+
+const renderItem = ({ item, drag, isActive }: RenderItemParams<TrackInfo>) => (
+    <ScaleDecorator>
+        <Track style={{ marginBottom: 15 }} disabled={isActive} data={item} onHold={drag} />
+    </ScaleDecorator>
+);
 
 interface IProps {
     navigation: NavigationProp<any>;
@@ -16,13 +24,23 @@ interface IProps {
 function TrackPlayground({ navigation }: IProps) {
     const [query, setQuery] = useState("hikaru nara");
 
-    const [results, setResults] = useState<SearchResult>(blank_SearchResult);
+    const [data, setData] = useState<TrackInfo[]>([]);
 
     return (
         <View style={{ gap: 35, padding: 15 }}>
             <StyledButton
                 text={"Go Back"}
                 onPress={() => navigation.goBack()}
+            />
+
+            <StyledButton
+                text={"Do Search"}
+                onPress={async() => {
+                    const results = await search(query);
+                    if (!results.top) return;
+
+                    setData(first([results.top, ...results.results], 10));
+                }}
             />
 
             <View style={{ gap: 15 }}>
@@ -36,16 +54,16 @@ function TrackPlayground({ navigation }: IProps) {
                     {query}
                 </TextInput>
 
-                {
-                    results.top != null &&
-                    <Track data={results.top} style={{ alignSelf: "center" }} />
-                }
+                { data.length != 0 && (
+                    <DraggableFlatList
+                        data={data}
+                        onDragEnd={({ data }) => setData(data)}
+                        renderItem={renderItem}
+                        keyExtractor={(item) => item.id}
+                        contentContainerStyle={{ flexDirection: "column" }}
+                    />
+                ) }
             </View>
-
-            <StyledButton
-                text={"Do Search"}
-                onPress={async() => setResults(await search(query))}
-            />
         </View>
     );
 }
