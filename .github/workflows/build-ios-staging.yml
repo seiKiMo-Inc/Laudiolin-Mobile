@@ -37,4 +37,4 @@ jobs:
                   path: ${{ github.workspace }}/app-release.ipa
 
             - name: Submit to TestFlight
-              uses: eas submit -p ios --path=${{ github.workspace }}/app-release.ipa
+              run: eas submit -p ios --path=${{ github.workspace }}/app-release.ipa
