@@ -1,0 +1,40 @@
+name: iOS Staging Build
+
+on:
+    push:
+        branches:
+            - dev
+            - v2
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: macos-latest
+        steps:
+            - name: Setup repo
+              uses: actions/checkout@v4
+
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+
+            - name: Setup Expo
+              uses: expo/expo-github-action@v8
+              with:
+                  expo-version: latest
+                  eas-version: latest
+                  token: ${{ secrets.EXPO_TOKEN }}
+
+            - name: Install dependencies
+              run: bun clean && bun install
+
+            - name: Build iOS app
+              run: eas build --profile preview --platform ios --local --non-interactive --output ${{ github.workspace }}/app-release.ipa
+
+            - name: Upload IPA artifact
+              uses: actions/upload-artifact@v2
+              with:
+                  name: app-release
+                  path: ${{ github.workspace }}/app-release.ipa
+
+            - name: Submit to TestFlight
+              uses: eas submit -p ios --path=${{ github.workspace }}/app-release.ipa
