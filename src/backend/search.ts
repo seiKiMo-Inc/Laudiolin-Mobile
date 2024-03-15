@@ -1,8 +1,9 @@
+import { Track } from "react-native-track-player";
 import { logger } from "react-native-logs";
 
 import Backend from "@backend/backend";
-import { SearchResult, SearchEngine, TrackInfo, blank_SearchResult } from "@backend/types";
 import { useSettings } from "@backend/stores";
+import { SearchResult, TrackInfo, blank_SearchResult } from "@backend/types";
 
 const log = logger.createLogger();
 
@@ -57,9 +58,9 @@ export function tracks({ results, top }: SearchResult): TrackInfo[] {
  *
  * @param track The track to parse.
  */
-export function artist(track: TrackInfo | string | undefined): string {
+export function artist(track: TrackInfo | Track | string | undefined): string {
     if (!track) return "Unknown";
 
-    let artist = typeof track == "string" ? track : track.artist;
+    let artist = typeof track == "string" ? track : track.artist ?? "";
     return artist.length == 0 ? "Unknown" : artist;
 }
