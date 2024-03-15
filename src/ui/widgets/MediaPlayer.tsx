@@ -8,6 +8,7 @@ import TrackPlayer, { State, useActiveTrack, usePlaybackState } from "react-nati
 
 import StyledText, { Size } from "@components/StyledText";
 
+import Player from "@backend/player";
 import { artist } from "@backend/search";
 import { useGlobal } from "@backend/stores";
 
@@ -47,7 +48,7 @@ function MediaPlayer() {
                             <MdIcon name={state == State.Playing ? "pause" : "play-arrow"} size={32} color={"white"} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => TrackPlayer.skipToNext()}>
+                        <TouchableOpacity onPress={() => Player.skipToNext()}>
                             <McIcon name={"skip-next"} size={32} color={"white"} />
                         </TouchableOpacity>
                     </View>

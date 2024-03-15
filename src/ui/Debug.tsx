@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
-import TrackPlayer, { Track, useActiveTrack, usePlaybackState } from "react-native-track-player";
+import TrackPlayer, { RepeatMode, useActiveTrack, usePlaybackState } from "react-native-track-player";
 
 import StyledText from "@components/StyledText";
 import StyledButton from "@components/StyledButton";
 
 import { useDebug } from "@backend/stores";
+import Player, { currentlyPlaying, useQueue } from "@backend/player";
 
 import { colors, value } from "@style/Laudiolin";
 
@@ -24,14 +25,12 @@ function Debug() {
 
     const [queueInfo, showQueueInfo] = useState(false);
     const [trackInfo, showTrackInfo] = useState(false);
+    const [newQueueInfo, setNewQueueInfo] = useState(false);
 
-    const [queue, setQueue] = useState<Track[]>([]);
+    const [repeatMode, setRepeatMode] = useState(RepeatMode.Off);
+    const [songIndex, setSongIndex] = useState<number | undefined>(0);
 
-    useEffect(() => {
-        if (queueInfo) {
-            TrackPlayer.getQueue().then(setQueue);
-        }
-    }, [playerState]);
+    const queue = useQueue();
 
     return (
         <View style={{ padding: value.padding, gap: 15 }}>
@@ -55,18 +54,50 @@ function Debug() {
             <StyledButton
                 text={"Show Queue Info"}
                 buttonStyle={color(queueInfo)}
-                onPress={() => {
-                    showQueueInfo(!queueInfo);
-                    TrackPlayer.getQueue().then(setQueue);
-                }}
+                onPress={() => showQueueInfo(!queueInfo)}
             />
 
             { queueInfo && (
                 <View style={{ gap: 10 }}>
-                    <StyledText text={`Songs in queue: ${queue.length}`} bold />
                     <StyledButton
                         text={"Clear Queue"}
                         onPress={() => TrackPlayer.removeUpcomingTracks()}
+                    />
+                    <StyledButton
+                        text={`Current Song: ${songIndex}`}
+                        onPress={() => TrackPlayer.getActiveTrackIndex().then(setSongIndex)}
+                    />
+                    <StyledButton
+                        text={`Current Repeat: ${repeatMode}`}
+                        onPress={() => {
+                            Player.nextRepeatMode().then(setRepeatMode);
+                        }}
+                    />
+                </View>
+            ) }
+
+            <StyledButton
+                text={"Show New Queue Info"}
+                buttonStyle={color(newQueueInfo)}
+                onPress={() => setNewQueueInfo(!newQueueInfo)}
+            />
+
+            { newQueueInfo && (
+                <View style={{ gap: 10 }}>
+                    <StyledText text={`Songs in queue: ${queue.size()}`} bold />
+                    <StyledText text={`Next Song: ${queue.peek()?.title ?? "No song in queue"}`} />
+                    <StyledText text={`Currently playing song: ${currentlyPlaying?.title ?? "None"}`} />
+
+                    <StyledButton
+                        text={`Current Repeat: ${repeatMode}`}
+                        onPress={() => {
+                            Player.nextRepeatMode().then(setRepeatMode);
+                        }}
+                    />
+
+                    <StyledButton
+                        text={"Remove Element"}
+                        onPress={() => queue.dequeue()}
                     />
                 </View>
             ) }

@@ -109,10 +109,7 @@ function Playlist(props: IProps) {
                             style={{ marginRight: 5 }}
                         />}
                         buttonStyle={{ backgroundColor: colors.contrast }}
-                        onPress={() => Player.queue({
-                            tracks: playlist?.tracks,
-                            clear: true, start: true,
-                        })}
+                        onPress={() => Player.play(playlist?.tracks, { clear: true })}
                     />
 
                     <StyledButton
@@ -123,10 +120,8 @@ function Playlist(props: IProps) {
                             style={{ marginRight: 5 }}
                         />}
                         buttonStyle={{ backgroundColor: colors.accent }}
-                        onPress={() => Player.queue({
-                            playlist,
-                            tracks: playlist?.tracks,
-                            clear: true, start: true, shuffle: true
+                        onPress={() => Player.play(playlist?.tracks, {
+                            playlist, clear: true, shuffle: true
                         })}
                     />
                 </View>

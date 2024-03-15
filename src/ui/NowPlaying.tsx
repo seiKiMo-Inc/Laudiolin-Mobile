@@ -16,6 +16,8 @@ import TrackPlayer, {
     usePlaybackState,
     useProgress,
 } from "react-native-track-player";
+import { NavigationContainerRef } from "@react-navigation/core";
+import { GestureDetector, Gesture, Directions } from "react-native-gesture-handler";
 
 import ProgressBar from "@widgets/ProgressBar";
 import StyledText, { Size } from "@components/StyledText";
@@ -36,7 +38,7 @@ function RepeatIcon({ loop }: { loop: RepeatMode }) {
     }
 }
 
-function NowPlaying() {
+function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> }) {
     const global = useGlobal();
 
     const track = useActiveTrack();
@@ -49,82 +51,98 @@ function NowPlaying() {
         TrackPlayer.getRepeatMode().then(setRepeatMode);
     });
 
+    const goBack = () => global.setShowTrackPage(false);
+    const openQueue = () => {
+        navigation.navigate("Named List", {
+            title: "Queue", fetcher: "queue", render: "tracks"
+        });
+        global.setShowTrackPage(false);
+    };
+    const backGesture = Gesture.Fling()
+        .direction(Directions.DOWN)
+        .onEnd(goBack);
+    const queueGesture = Gesture.Fling()
+        .direction(Directions.UP)
+        .onEnd(openQueue);
+
     return (
-        <View style={style.NowPlaying}>
-            <View style={style.NowPlaying_Header}>
-                <TouchableOpacity onPress={() => global.setShowTrackPage(false)}>
-                    <AdIcon name={"left"} size={28} color={"white"} />
-                </TouchableOpacity>
+        <GestureDetector gesture={Gesture.Exclusive(queueGesture, backGesture)}>
+            <View style={style.NowPlaying}>
+                <View style={style.NowPlaying_Header}>
+                    <TouchableOpacity onPress={() => global.setShowTrackPage(false)}>
+                        <AdIcon name={"left"} size={28} color={"white"} />
+                    </TouchableOpacity>
 
-                { global.fromPlaylist && (
-                    <View style={style.NowPlaying_Source}>
-                        <StyledText uppercase text={"Playing from Playlist"}
-                                    style={{ color: colors.gray }}
+                    { global.fromPlaylist && (
+                        <View style={style.NowPlaying_Source}>
+                            <StyledText uppercase text={"Playing from Playlist"}
+                                        style={{ color: colors.gray }}
+                            />
+                            <StyledText bold text={global.fromPlaylist} />
+                        </View>
+                    ) }
+
+                    <TouchableOpacity onPress={() => null}>
+                        <EnIcon name={"dots-three-vertical"} size={24} color={"white"} />
+                        {/* TODO: Move favorite track into context menu. */}
+                    </TouchableOpacity>
+                </View>
+
+                <FastImage
+                    style={style.NowPlaying_Cover}
+                    source={{ uri: track?.artwork }}
+                    resizeMode={"contain"}
+                />
+
+                <View style={{ flexDirection: "column" }}>
+                    <View style={style.NowPlaying_Info}>
+                        <StyledText text={track?.title ?? "Not Playing"}
+                                    size={Size.Header} bold
+                                    lines={value.height > 700 ? 3 : 2}
                         />
-                        <StyledText bold text={global.fromPlaylist} />
+
+                        <StyledText text={track?.artist ?? "---"}
+                                    style={{ color: colors.gray }}
+                                    size={Size.Text} lines={1}
+                        />
                     </View>
-                ) }
 
-                <TouchableOpacity onPress={() => null}>
-                    <EnIcon name={"dots-three-vertical"} size={24} color={"white"} />
-                    {/* TODO: Move favorite track into context menu. */}
-                </TouchableOpacity>
-            </View>
-
-            <FastImage
-                style={style.NowPlaying_Cover}
-                source={{ uri: track?.artwork }}
-                resizeMode={"contain"}
-            />
-
-            <View style={{ flexDirection: "column" }}>
-                <View style={style.NowPlaying_Info}>
-                    <StyledText text={track?.title ?? "Not Playing"}
-                                size={Size.Header} bold
-                                lines={value.height > 700 ? 3 : 2}
-                    />
-
-                    <StyledText text={track?.artist ?? "---"}
-                                style={{ color: colors.gray }}
-                                size={Size.Text} lines={1}
+                    <ProgressBar
+                        progress={progress.position}
+                        duration={progress.duration}
+                        style={{ paddingLeft: 10, paddingRight: 10, marginBottom: 15 }}
                     />
                 </View>
 
-                <ProgressBar
-                    progress={progress.position}
-                    duration={progress.duration}
-                    style={{ paddingLeft: 10, paddingRight: 10, marginBottom: 15 }}
-                />
+                <View style={style.NowPlaying_Controls}>
+                    <TouchableOpacity onPress={() => Player.shuffle()}>
+                        <FaIcon name={"shuffle"} color={"white"} size={28} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => Player.skipToPrevious()}>
+                        <IoIcon name={"play-skip-back"} color={"white"} size={28} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={async () => {
+                        if (state == State.Paused) {
+                            await TrackPlayer.play();
+                        } else if (state == State.Playing) {
+                            await TrackPlayer.pause();
+                        }
+                    }}>
+                        <MdIcon name={state == State.Playing ? "pause" : "play-arrow"} color={"white"} size={32} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => Player.skipToNext()}>
+                        <IoIcon name={"play-skip-forward"} color={"white"} size={28} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => Player.nextRepeatMode().then(setRepeatMode)}>
+                        <RepeatIcon loop={repeatMode} />
+                    </TouchableOpacity>
+                </View>
             </View>
-
-            <View style={style.NowPlaying_Controls}>
-                <TouchableOpacity onPress={() => Player.shuffle()}>
-                    <FaIcon name={"shuffle"} color={"white"} size={28} />
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => TrackPlayer.skipToPrevious()}>
-                    <IoIcon name={"play-skip-back"} color={"white"} size={28} />
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={async () => {
-                    if (state == State.Paused) {
-                        await TrackPlayer.play();
-                    } else if (state == State.Playing) {
-                        await TrackPlayer.pause();
-                    }
-                }}>
-                    <MdIcon name={state == State.Playing ? "pause" : "play-arrow"} color={"white"} size={32} />
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => TrackPlayer.skipToNext()}>
-                    <IoIcon name={"play-skip-forward"} color={"white"} size={28} />
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => Player.nextRepeatMode().then(setRepeatMode)}>
-                    <RepeatIcon loop={repeatMode} />
-                </TouchableOpacity>
-            </View>
-        </View>
+        </GestureDetector>
     );
 }
 
@@ -171,7 +189,8 @@ const style = StyleSheet.create({
         bottom: 10,
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
+        gap: 30,
+        alignSelf: "center",
         paddingTop: 30,
         paddingLeft: 25,
         paddingRight: 25

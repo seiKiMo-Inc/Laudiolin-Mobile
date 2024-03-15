@@ -45,8 +45,8 @@ function Track(props: IProps) {
                 />
 
                 <View style={style.Track_Info}>
-                    <StyledText style={style.Track_Title} text={data.title}
-                                ticker={data.title.length > 25} />
+                    <StyledText style={style.Track_Title} text={data.title ?? ""}
+                                ticker={(data.title ?? "").length > 25} />
                     <StyledText text={artist(data)} size={Size.Footnote} />
                 </View>
             </View>
