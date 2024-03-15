@@ -1,9 +1,11 @@
 import { logger } from "react-native-logs";
 import TrackPlayer, { AddTrack, Event, RepeatMode, State } from "react-native-track-player";
 
+import Queue from "@backend/Queue";
+
 import Backend from "@backend/backend";
-import { useDebug, useGlobal } from "@backend/stores";
 import { resolveIcon } from "@backend/utils";
+import { useDebug, useGlobal } from "@backend/stores";
 import { PlaylistInfo, TrackInfo } from "@backend/types";
 
 const log = logger.createLogger();
@@ -20,8 +22,8 @@ export const PlaybackService = async () => {
     TrackPlayer.addEventListener(Event.RemotePlay, () => TrackPlayer.play());
     TrackPlayer.addEventListener(Event.RemotePause, () => TrackPlayer.pause());
     TrackPlayer.addEventListener(Event.RemoteStop, () => TrackPlayer.stop());
-    TrackPlayer.addEventListener(Event.RemoteNext, () => TrackPlayer.skipToNext());
-    TrackPlayer.addEventListener(Event.RemotePrevious, () => TrackPlayer.skipToPrevious());
+    TrackPlayer.addEventListener(Event.RemoteNext, () => skipToNext());
+    TrackPlayer.addEventListener(Event.RemotePrevious, () => skipToPrevious());
     TrackPlayer.addEventListener(Event.RemoteSeek, ({ position }) => TrackPlayer.seekTo(position));
 
     TrackPlayer.addEventListener(Event.PlaybackState, (data) => {
@@ -39,14 +41,33 @@ export const PlaybackService = async () => {
             if (state.loadTries > 3) {
                 log.error("Failed to load track after 3 tries.");
                 useGlobal.setState({ loadTries: 0 });
-                TrackPlayer.skipToNext();
+                skipToNext();
             } else {
                 state.incrementTries();
                 TrackPlayer.retry();
             }
         }
     });
+    TrackPlayer.addEventListener(Event.PlaybackState, async (data) => {
+        if (data == undefined || data.state == undefined) return;
+        const state = data.state;
+
+        if (state != State.Ended) return;
+
+        // Add the next song to the player.
+        const queue = useQueue.getState();
+        if (queue.isEmpty()) {
+            await TrackPlayer.stop();
+        } else {
+            await play(queue.dequeue());
+        }
+    });
 };
+
+export let currentlyPlaying: TrackInfo | undefined;
+
+const backQueue = Queue<TrackInfo>();
+export const useQueue = Queue<TrackInfo>();
 
 /**
  * Transforms a track info into a track player track.
@@ -64,65 +85,97 @@ function transform(track: TrackInfo): AddTrack {
     };
 }
 
+type PlayProps = {
+    playlist?: PlaylistInfo; // Track source playlist.
+    reset?: boolean; // Should the player be reset?
+    clear?: boolean; // Should the existing queue be cleared?
+    shuffle?: boolean; // Should the queue be shuffled?
+};
+
 /**
- * Plays a track from the given info.
+ * Plays the track.
  *
- * @param track The track to play.
+ * @param _track The track to play.
  * @param props Additional parameters.
  */
-async function play(track: TrackInfo, props: {
-    playlist?: PlaylistInfo;
-}): Promise<void> {
-    await TrackPlayer.reset();
-    await TrackPlayer.add(transform(track));
-    await TrackPlayer.play();
+async function play(
+    _track?: TrackInfo | TrackInfo[], props?: PlayProps
+): Promise<void> {
+    let track = Array.isArray(_track) ? [..._track] : _track;
 
-    if (props.playlist) {
+    if (props?.playlist) {
         useGlobal.setState({ fromPlaylist: props.playlist.name });
     }
-}
 
-/**
- * Adds a list of tracks to the queue.
- *
- * @param props The tracks to add to the queue.
- */
-async function queue(props: {
-    tracks: TrackInfo[];
-    playlist?: PlaylistInfo;
-    clear?: boolean;
-    shuffle?: boolean;
-    start?: boolean;
-}): Promise<void> {
-    let tracks = [...props.tracks];
-    if (tracks.length == 0) return;
+    props?.reset && await TrackPlayer.reset();
 
-    if (props.clear) {
-        await TrackPlayer.reset();
+    if (!track) {
+        // Check if a track is queued.
+        const queue = useQueue.getState();
+        if (!queue.isEmpty()) {
+            // Add the next track to the player.
+            const next = queue.dequeue();
+            if (!next) return;
+
+            // Add the current track to the back queue.
+            currentlyPlaying && backQueue.getState()
+                .enqueue(currentlyPlaying);
+
+            return await play(next);
+        }
+
+        // Use the internal method to resume playback.
+        return await TrackPlayer.play();
     }
 
-    if (props.shuffle) {
-        tracks = tracks.sort(() => Math.random() - 0.5)
+    // Check if the queue should be cleared.
+    if (props?.clear) {
+        useQueue.getState().clear();
+    }
+    // Check if the list should be shuffled.
+    const isArray = Array.isArray(track);
+    if (props?.shuffle && isArray) {
+        track = (track as TrackInfo[])
+            .sort(() => Math.random() - 0.5);
     }
 
-    await TrackPlayer.add(tracks.map(transform));
-    if (props.start) {
+    // Check if there is a song playing.
+    const { state } = await TrackPlayer.getPlaybackState();
+    if (state == State.None) {
+        // Handle player loop state.
+        const repeat = await TrackPlayer.getRepeatMode();
+        if (repeat == RepeatMode.Track) {
+            // Repeat the song.
+            return await TrackPlayer.seekTo(0);
+        } else if (repeat == RepeatMode.Queue) {
+            // Add the track to the queue.
+            currentlyPlaying && useQueue.getState().enqueue(currentlyPlaying);
+        }
+
+        // Add the track to the player.
+        let toPlay: TrackInfo;
+        if (isArray) {
+            const tracks = track as TrackInfo[];
+            toPlay = tracks[0];
+            useQueue.getState().enqueue(tracks.slice(1));
+        } else {
+            toPlay = track as TrackInfo;
+        }
+
+        await TrackPlayer.add(transform(toPlay));
         await TrackPlayer.play();
-    }
-
-    if (props.playlist) {
-        useGlobal.setState({ fromPlaylist: props.playlist.name });
+        currentlyPlaying = toPlay;
+    } else {
+        // Add the track to the queue.
+        useQueue.getState().enqueue(track);
     }
 }
 
 /**
  * Shuffles the track queue.
  */
-async function shuffle(): Promise<void> {
-    let queue = await TrackPlayer.getQueue();
-    queue = queue.sort(() => Math.random() - 0.5);
-
-    await TrackPlayer.setQueue(queue);
+function shuffle(): void {
+    useQueue.getState().shuffle();
 }
 
 const nextRepeat = {
@@ -143,9 +196,30 @@ async function nextRepeatMode(): Promise<RepeatMode> {
     return next;
 }
 
+/**
+ * Skips to the next track in the queue.
+ */
+async function skipToNext(): Promise<void> {
+    await play(undefined, { reset: true });
+}
+
+/**
+ * Skips to the previous track in the queue.
+ */
+async function skipToPrevious(): Promise<void> {
+    const track = backQueue.getState().dequeue();
+    if (!track) return;
+
+    // Add the current track to the queue.
+    currentlyPlaying && useQueue.getState().enqueue(currentlyPlaying);
+
+    await play(track, { reset: true });
+}
+
 export default {
     play,
-    queue,
     shuffle,
-    nextRepeatMode
+    nextRepeatMode,
+    skipToNext,
+    skipToPrevious
 };
