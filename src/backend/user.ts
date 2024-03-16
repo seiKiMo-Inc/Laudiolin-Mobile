@@ -136,7 +136,12 @@ function loadRecents(tracks: RemoteInfo[] | null = null): void {
             return;
         }
 
-        useRecents.setState(user.recentlyPlayed);
+        const recents = user.recentlyPlayed.map(track => {
+            track.type = "remote";
+            return track;
+        });
+
+        useRecents.setState(recents);
         log.info(`Loaded ${user.recentlyPlayed.length} recent tracks!`);
     }
 }
@@ -177,9 +182,16 @@ async function loadPlaylists(): Promise<void> {
     }
 
     // LEGACY: Remove duplicate playlists.
-    playlists = playlists.filter((playlist, index, self) =>
-        index == self.findIndex(p => p.id == playlist.id)
-    );
+    playlists = playlists
+        .filter((playlist, index, self) => index == self.findIndex(p => p.id == playlist.id))
+        .map(playlist => {
+            playlist.tracks = playlist.tracks
+                .map(track => {
+                    track.type = "remote";
+                    return track;
+                });
+            return playlist;
+        });
 
     usePlaylists.setState(playlists);
     log.info(`Loaded ${playlists.length} playlists!`);
@@ -200,7 +212,12 @@ function loadFavorites(): void {
         return;
     }
 
-    useFavorites.setState(user.likedSongs);
+    const favorites = user.likedSongs.map(track => {
+        track.type = "remote";
+        return track;
+    });
+
+    useFavorites.setState(favorites);
     log.info(`Loaded ${user.likedSongs.length} favorite tracks!`);
 }
 
@@ -231,5 +248,5 @@ export default {
     getToken,
     getUserById,
     loadRecents,
-    loadPlaylists,
+    loadPlaylists
 };

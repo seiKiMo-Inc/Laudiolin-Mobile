@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-menu";
 
@@ -18,17 +18,20 @@ interface OptionProp {
 interface IProps {
     children?: ReactNode | ReactNode[]; // Children is the trigger object.
 
+    style?: StyleProp<ViewStyle> | any;
+    optionsStyle?: StyleProp<ViewStyle> | any;
+
     opened?: boolean;
     close?: () => void;
 
-    options: OptionProp[];
+    options: (OptionProp | undefined)[];
     closeOnPress?: boolean;
 }
 
 function StyledMenu(props: IProps) {
     return (
         <Menu
-            style={style.StyledMenu}
+            style={{ ...style.StyledMenu, ...props.style }}
             opened={props.opened}
             onBackdropPress={props.close}
         >
@@ -39,10 +42,10 @@ function StyledMenu(props: IProps) {
             </MenuTrigger>
 
             <MenuOptions customStyles={{
-                optionsContainer: style.StyledMenu_Container
+                optionsContainer: { ...style.StyledMenu_Container, ...props.optionsStyle }
             }}>
                 {
-                    props.options.map((option, index) => (
+                    props.options.map((option, index) => option && (
                         <MenuOption
                             key={index} onSelect={() => {
                                 option.onPress?.();

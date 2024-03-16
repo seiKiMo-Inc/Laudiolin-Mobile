@@ -37,8 +37,8 @@ export type OwnedPlaylist = PlaylistData & {
 };
 
 export interface SearchResult {
-    top: TrackInfo | null;
-    results: TrackInfo[];
+    top: RemoteInfo | null;
+    results: RemoteInfo[];
 }
 
 export const blank_SearchResult: SearchResult = {

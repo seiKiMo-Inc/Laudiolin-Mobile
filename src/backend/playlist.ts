@@ -179,6 +179,13 @@ async function editPlaylist(playlist: {
 async function addTrackToPlaylist(
     playlist: OwnedPlaylist | string, track: TrackInfo
 ): Promise<boolean> {
+    // Check if the playlist contains the track already.
+    if (typeof playlist != "string" &&
+        (playlist as PlaylistInfo).tracks.includes(track)) {
+        log.warn("Track already exists in playlist");
+        return false;
+    }
+
     const playlistId = typeof playlist == "string" ? playlist : playlist.id;
     const response = await _editPlaylist(playlistId, track, "add");
 

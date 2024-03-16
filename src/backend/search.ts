@@ -3,7 +3,7 @@ import { logger } from "react-native-logs";
 
 import Backend from "@backend/backend";
 import { useSettings } from "@backend/stores";
-import { SearchResult, TrackInfo, blank_SearchResult } from "@backend/types";
+import { SearchResult, TrackInfo, blank_SearchResult, RemoteInfo } from "@backend/types";
 
 const log = logger.createLogger();
 
@@ -38,14 +38,17 @@ export async function search(query: string): Promise<SearchResult> {
  *
  * @param result The search result to parse.
  */
-export function tracks({ results, top }: SearchResult): TrackInfo[] {
+export function tracks({ results, top }: SearchResult): RemoteInfo[] {
     if (!top || results.length == 0) return [];
 
-    const tracks: { [key: string]: TrackInfo } = {};
+    const tracks: { [key: string]: RemoteInfo } = {};
+
+    top.type = "remote";
     tracks[top.id] = top;
 
     for (const track of results) {
         if (!tracks[track.id]) {
+            track.type = "remote";
             tracks[track.id] = track;
         }
     }
