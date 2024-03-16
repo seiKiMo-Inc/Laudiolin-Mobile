@@ -25,6 +25,7 @@ import { value } from "@style/Laudiolin";
 interface IProps {
     data: TrackInfo;
     playlist?: OwnedPlaylist;
+    local?: boolean;
 
     style?: any;
 
@@ -112,7 +113,12 @@ function Track(props: IProps) {
                         text: `${isFavorite ? "Remove from" : "Add to"} Favorites`,
                         icon: <McIcon name={"heart"} size={24} color={"white"} />,
                         onPress: () => User.favoriteTrack(data, !isFavorite)
-                    } : undefined
+                    } : undefined,
+                    {
+                        text: `${props.local ? "Delete" : "Download"} Track`,
+                        icon: <McIcon name={props.local ? "delete" : "download"} size={24} color={"white"} />,
+                        onPress: () => props.local ? null : null
+                    }
                 ]}
                 optionsStyle={{ width: 230 }}
             />
