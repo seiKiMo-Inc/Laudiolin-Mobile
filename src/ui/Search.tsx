@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, useState } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 
 import FaIcon from "react-native-vector-icons/FontAwesome";
 
@@ -9,12 +9,14 @@ import StyledTextInput from "@components/StyledTextInput";
 import { search, tracks } from "@backend/search";
 import { SearchResult } from "@backend/types";
 
-import style from "@style/Search";
+import { useColor } from "@backend/stores";
+import { value } from "@style/Laudiolin";
 
 let searchTimeout: NodeJS.Timeout | null = null;
 
 function Search() {
     const listRef = useRef<FlatList>(null);
+    const colors = useColor();
 
     const [query, setQuery] = useState("");
     const [searchRes, setSearchRes] = useState<SearchResult | null>(null);
@@ -36,9 +38,12 @@ function Search() {
         <View style={style.Search}>
             <StyledTextInput
                 default={"Search"}
-                defaultColor={"white"}
-                icon={<FaIcon size={24} name={"search"} color={"white"} />}
-                inputStyle={style.Search_Input}
+                defaultColor={colors.text}
+                icon={<FaIcon size={24} name={"search"} color={colors.text} />}
+                inputStyle={{
+                    ...style.Search_Input,
+                    borderColor: colors.text
+                }}
                 onChange={setQuery}
                 onFinish={() => setQuery(query)}
             />
@@ -56,3 +61,22 @@ function Search() {
 }
 
 export default memo(Search);
+
+const style = StyleSheet.create({
+    Search: {
+        flexDirection: "column",
+        padding: value.padding,
+        gap: 15
+    },
+    Search_Input: {
+        borderBottomWidth: 2,
+        borderWidth: 2,
+
+        borderRadius: 10,
+        paddingLeft: 10,
+        paddingRight: 10
+    },
+    Search_Results: {
+        gap: 15
+    }
+});

@@ -6,7 +6,7 @@ import Toggle from "react-native-toggle-element";
 
 import StyledText from "@components/StyledText";
 
-import { colors } from "@style/Laudiolin";
+import { useColor } from "@backend/stores";
 
 
 interface IProps {
@@ -19,6 +19,8 @@ interface IProps {
 }
 
 function StyledToggle(props: IProps) {
+    const colors = useColor();
+
     const Switch = <Toggle
         animationDuration={200}
         value={props.value}
@@ -30,8 +32,8 @@ function StyledToggle(props: IProps) {
         }}
         thumbButton={{
             width: 20, height: 20,
-            activeBackgroundColor: "white",
-            inActiveBackgroundColor: "white"
+            activeBackgroundColor: colors.text,
+            inActiveBackgroundColor: colors.text
         }}
     />;
 

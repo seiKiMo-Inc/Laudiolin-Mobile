@@ -2,6 +2,8 @@ import { ColorValue, StyleProp, TextStyle, ViewStyle } from "react-native";
 
 import { IconNode, Input } from "@rneui/base";
 
+import { useColor } from "@backend/stores";
+
 interface IProps {
     default?: string;
     value?: string;
@@ -24,6 +26,8 @@ interface IProps {
 }
 
 function StyledTextInput(props: IProps) {
+    const colors = useColor();
+
     return (
         <Input
             value={props.value}
@@ -34,7 +38,7 @@ function StyledTextInput(props: IProps) {
             rightIcon={props.icon}
             autoFocus={props.autoFocus}
             autoCorrect={props.autoCorrect}
-            inputStyle={{ color: "white", ...props.textStyle }}
+            inputStyle={{ color: colors.text, ...props.textStyle }}
             inputContainerStyle={props.inputStyle}
             containerStyle={props.containerStyle}
             errorMessage={props.errorMessage}

@@ -4,7 +4,10 @@ import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { Overlay } from "@rneui/base";
 
 import StyledText, { Size } from "@components/StyledText";
-import { colors, value } from "@style/Laudiolin";
+
+import { useColor } from "@backend/stores";
+
+import { value } from "@style/Laudiolin";
 
 interface IProps {
     visible: boolean;
@@ -19,6 +22,8 @@ interface IProps {
 }
 
 function StyledModal(props: IProps) {
+    const colors = useColor();
+
     return (
         <Overlay
             isVisible={props.visible}
@@ -26,7 +31,11 @@ function StyledModal(props: IProps) {
             onBackdropPress={props.onPressOutside}
             overlayStyle={{ backgroundColor: "transparent" }}
         >
-            <View style={{ ...style.StyledModal, ...props.style }}>
+            <View style={{
+                ...style.StyledModal,
+                backgroundColor: colors.secondary,
+                ...props.style
+            }}>
                 { props.title && <StyledText text={props.title} bold size={Size.Subheader} /> }
                 { props.children }
             </View>
@@ -39,7 +48,6 @@ export default StyledModal;
 const style = StyleSheet.create({
     StyledModal: {
         borderRadius: 25,
-        backgroundColor: colors.secondary,
         overflow: "hidden",
         justifyContent: "center",
         alignItems: "center",

@@ -7,17 +7,19 @@ import TrackPlayer, { RepeatMode, useActiveTrack, usePlaybackState } from "react
 import StyledText from "@components/StyledText";
 import StyledButton from "@components/StyledButton";
 
-import { useDebug } from "@backend/stores";
+import { Colors, useColor, useDebug } from "@backend/stores";
 import Player, { currentlyPlaying, useQueue } from "@backend/player";
 
-import { colors, value } from "@style/Laudiolin";
+import { value } from "@style/Laudiolin";
 
-function color(enabled: boolean): StyleProp<ViewStyle> {
+function color(enabled: boolean, colors: Colors): StyleProp<ViewStyle> {
     return { backgroundColor: enabled ? "green" : colors.accent };
 }
 
 function Debug() {
     const debug = useDebug();
+    const colors = useColor();
+
     const navigation = useNavigation();
 
     const playingTrack = useActiveTrack();
@@ -41,7 +43,7 @@ function Debug() {
 
             <StyledButton
                 text={"Log Playback State"}
-                buttonStyle={color(debug.playbackState)}
+                buttonStyle={color(debug.playbackState, colors)}
                 onPress={() => debug.update({ playbackState: !debug.playbackState })}
             />
 
@@ -53,7 +55,7 @@ function Debug() {
 
             <StyledButton
                 text={"Show Queue Info"}
-                buttonStyle={color(queueInfo)}
+                buttonStyle={color(queueInfo, colors)}
                 onPress={() => showQueueInfo(!queueInfo)}
             />
 
@@ -78,7 +80,7 @@ function Debug() {
 
             <StyledButton
                 text={"Show New Queue Info"}
-                buttonStyle={color(newQueueInfo)}
+                buttonStyle={color(newQueueInfo, colors)}
                 onPress={() => setNewQueueInfo(!newQueueInfo)}
             />
 
@@ -104,7 +106,7 @@ function Debug() {
 
             <StyledButton
                 text={"Show Track Info"}
-                buttonStyle={color(trackInfo)}
+                buttonStyle={color(trackInfo, colors)}
                 onPress={() => showTrackInfo(!trackInfo)}
             />
 

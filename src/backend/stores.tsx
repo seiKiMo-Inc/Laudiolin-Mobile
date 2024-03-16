@@ -47,7 +47,7 @@ export interface SettingsState {
         engine: SearchEngine
     };
     ui: {
-        color_theme: "Light" | "Dark";
+        color_theme: "Light" | "Dark" | "System";
     };
     system: {
         broadcast_listening: "Nobody" | "Friends" | "Everyone";
@@ -65,7 +65,7 @@ export const useSettings = create<SettingsState>()(persist(
             engine: "All"
         },
         ui: {
-            color_theme: "Dark"
+            color_theme: "System"
         },
         system: {
             broadcast_listening: "Nobody",
@@ -96,8 +96,43 @@ export const useSettings = create<SettingsState>()(persist(
         }
     }),
     {
-        version: 1,
+        version: 2,
         name: "settings",
+        storage: createJSONStorage(() => AsyncStorage),
+        migrate: (lastState, lastVersion) => {
+            if (lastVersion == 1) {
+                return lastState;
+            }
+        }
+    }
+));
+
+export type Colors = {
+    primary: string;
+    secondary: string;
+    text: string;
+    accent: string;
+    contrast: string;
+    red: string;
+    gray: string;
+}
+type ColorState = Colors & {
+    change(colors: Colors): void;
+};
+export const useColor = create<ColorState>()(persist(
+    (set): ColorState => ({
+        primary: "#0c0f17",
+        secondary: "#1b273a",
+        text: "#ffffff",
+        accent: "#4e7abe",
+        contrast: "#6d90ca",
+        red: "#d21d4f",
+        gray: "#888787",
+        change: (colors) => set(colors)
+    }),
+    {
+        version: 1,
+        name: "palette",
         storage: createJSONStorage(() => AsyncStorage)
     }
 ));

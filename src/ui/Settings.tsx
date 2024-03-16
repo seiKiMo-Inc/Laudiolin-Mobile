@@ -9,10 +9,10 @@ import StyledText, { Size } from "@components/StyledText";
 import StyledTextInput from "@components/StyledTextInput";
 
 import User from "@backend/user";
-import { useGlobal, useSettings, useUser } from "@backend/stores";
+import { useColor, useGlobal, useSettings, useUser } from "@backend/stores";
 import { toIconUrl, validateAddress, validateSocket } from "@backend/utils";
 
-import { colors, value } from "@style/Laudiolin";
+import { DarkTheme, LightTheme, value } from "@style/Laudiolin";
 
 interface SettingProps {
     title: string;
@@ -25,11 +25,14 @@ interface SettingProps {
     reverseParser?: (value: any) => string;
 
     validate?: (value: string) => string | null;
+    onChange?: (value: any) => void;
 }
 
 function Setting(props: SettingProps) {
     const settings = useSettings();
-    const { setting } = props
+    const colors = useColor();
+
+    const { setting } = props;
 
     const [showOverlay, setShowOverlay] = useState(false);
     const [newValue, setNewValue] = useState(settings.get(setting));
@@ -59,6 +62,7 @@ function Setting(props: SettingProps) {
                             value = props.parser(value);
                         }
                         settings.update(setting, value);
+                        props.onChange?.(value);
                     } else {
                         setShowOverlay(true);
                     }
@@ -79,7 +83,10 @@ function Setting(props: SettingProps) {
                 <StyledTextInput
                     value={newValue}
                     autoCorrect={false}
-                    textStyle={style.Settings_Input_Text}
+                    textStyle={{
+                        ...style.Settings_Input_Text,
+                        color: colors.gray
+                    }}
                     inputStyle={style.Settings_Input}
                     errorMessage={error}
                     onChange={text => {
@@ -127,6 +134,7 @@ function Section(props: SectionProps) {
 function Settings() {
     const user = useUser();
     const global = useGlobal();
+    const colors = useColor();
 
     const discordEnabled = user?.connections?.discord ?? undefined;
 
@@ -181,7 +189,9 @@ function Settings() {
                 <Section title={"User Interface"}>
                     <Setting title={"Color Palette"} type={"options"}
                              setting={"ui.color_theme"}
-                             options={["Light", "Dark"]}
+                             options={["Light", "Dark", "System"]}
+                             onChange={value => colors.change(
+                                 value == "Dark" ? DarkTheme : LightTheme)}
                     />
                 </Section>
 
@@ -248,7 +258,6 @@ const style = StyleSheet.create({
     },
     Settings_Input_Text: {
         minHeight: 0,
-        color: colors.gray,
         fontSize: Size.Footnote,
         textAlign: "center"
     },

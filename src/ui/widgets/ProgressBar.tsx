@@ -1,10 +1,12 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
-import { color, Slider } from "@rneui/base";
+import TrackPlayer from "react-native-track-player";
+
+import { Slider } from "@rneui/base";
 
 import StyledText, { Size } from "@components/StyledText";
-import TrackPlayer from "react-native-track-player";
-import { colors } from "@style/Laudiolin";
+
+import { useColor } from "@backend/stores";
 
 /**
  * Formats a time in seconds into HH:mm:ss
@@ -35,6 +37,8 @@ interface IProps {
 }
 
 function ProgressBar(props: IProps) {
+    const colors = useColor();
+
     return (
         <View style={{
             ...style.ProgressBar,
@@ -46,18 +50,21 @@ function ProgressBar(props: IProps) {
                 onValueChange={value => TrackPlayer.seekTo(value)}
                 onSlidingStart={() => TrackPlayer.pause()}
                 onSlidingComplete={() => TrackPlayer.play()}
-                thumbStyle={style.ProgressBar_Thumb}
+                thumbStyle={{
+                    width: 12, height: 12,
+                    backgroundColor: colors.text
+                }}
                 trackStyle={{ height: 2 }}
                 style={{ height: 12 }}
-                minimumTrackTintColor={"white"}
+                minimumTrackTintColor={colors.text}
                 maximumTrackTintColor={colors.secondary}
             />
 
             <View style={style.ProgressBar_Time}>
                 <StyledText text={formatTime(props.progress)}
-                            size={Size.Footnote} style={style.ProgressBar_Text} />
+                            size={Size.Footnote} style={{ color: colors.gray }} />
                 <StyledText text={formatTime(props.duration)}
-                            size={Size.Footnote} style={style.ProgressBar_Text} />
+                            size={Size.Footnote} style={{ color: colors.gray }} />
             </View>
         </View>
     );
@@ -69,15 +76,8 @@ const style = StyleSheet.create({
     ProgressBar: {
         flexDirection: "column"
     },
-    ProgressBar_Text: {
-        color: colors.gray
-    },
     ProgressBar_Time: {
         flexDirection: "row",
         justifyContent: "space-between"
-    },
-    ProgressBar_Thumb: {
-        backgroundColor: "white",
-        width: 12, height: 12
     }
 });

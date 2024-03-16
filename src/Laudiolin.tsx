@@ -1,13 +1,11 @@
-import { useRef } from "react";
-import { SafeAreaView, StatusBar, View } from "react-native";
+import { useEffect, useRef } from "react";
+import { Appearance, SafeAreaView, StatusBar, useColorScheme, View } from "react-native";
 
 import { MenuProvider } from "react-native-popup-menu";
 import { NavigationContainer } from "@react-navigation/native";
 import { NavigationContainerRef } from "@react-navigation/core";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
-import { HomeIcon, SearchIcon, SettingsIcon } from "@ui/Icons";
 
 import Home from "@app/Home";
 import Login from "@ui/Login";
@@ -16,9 +14,12 @@ import Settings from "@ui/Settings";
 import NowPlaying from "@ui/NowPlaying";
 import MediaPlayer from "@widgets/MediaPlayer";
 
-import { useGlobal } from "@backend/stores";
+import { useColor, useGlobal, useSettings } from "@backend/stores";
 
-import style from "@style/Laudiolin";
+import { DarkTheme, LightTheme } from "@style/Laudiolin";
+import EnIcon from "react-native-vector-icons/Entypo";
+import FaIcon from "react-native-vector-icons/FontAwesome";
+import IoIcon from "react-native-vector-icons/Ionicons";
 
 interface IProps {
     onLoad?: () => void;
@@ -28,14 +29,27 @@ const Tab = createBottomTabNavigator();
 
 function Laudiolin(props: IProps) {
     const global = useGlobal();
+    const settings = useSettings();
+    const colors = useColor();
 
     const navigator = useRef<NavigationContainerRef<any>>(null);
+    const scheme = useColorScheme();
+
+    const theme = settings.ui.color_theme == "System" ? scheme : settings.ui.color_theme;
+    const barTheme = theme?.toLowerCase() == "dark" ? "light-content" : "dark-content";
+
+    useEffect(() => {
+        colors.change(theme?.toLowerCase() == "dark" ? DarkTheme : LightTheme);
+    }, [scheme]);
 
     return (
         <>
-            <StatusBar barStyle={"light-content"} />
+            <StatusBar barStyle={barTheme} />
 
-            <SafeAreaView style={style.App} onLayout={props.onLoad}>
+            <SafeAreaView
+                style={{ height: "100%", backgroundColor: colors.primary }}
+                onLayout={props.onLoad}
+            >
                 <MenuProvider>
                     <GestureHandlerRootView>
                         {
@@ -46,7 +60,8 @@ function Laudiolin(props: IProps) {
                         }
 
                         <View style={{
-                            ...style.App,
+                            height: "100%",
+                            backgroundColor: colors.primary,
                             display: global.showingAny() ? "none" : "flex"
                         }}>
                             <NavigationContainer ref={navigator}>
@@ -60,15 +75,18 @@ function Laudiolin(props: IProps) {
                                     screenOptions={{
                                         headerShown: false,
                                         tabBarShowLabel: false,
-                                        tabBarStyle: style.App_TabBar,
+                                        tabBarStyle: { backgroundColor: colors.primary },
                                     }}
-                                    sceneContainerStyle={style.App_Scene}
+                                    sceneContainerStyle={{ backgroundColor: colors.primary }}
                                 >
-                                    <Tab.Screen options={{ tabBarIcon: ({ focused }) => HomeIcon(focused) }}
+                                    <Tab.Screen options={{ tabBarIcon: ({ focused }) =>
+                                            <EnIcon size={24} name={"home"} color={focused ? colors.accent : colors.text} /> }}
                                                 name={"Home"} component={Home} />
-                                    <Tab.Screen options={{ tabBarIcon: ({ focused }) => SearchIcon(focused) }}
+                                    <Tab.Screen options={{ tabBarIcon: ({ focused }) =>
+                                            <FaIcon size={24} name={"search"} color={focused ? colors.accent : colors.text} /> }}
                                                 name={"Search"} component={Search} />
-                                    <Tab.Screen options={{ tabBarIcon: ({ focused }) => SettingsIcon(focused) }}
+                                    <Tab.Screen options={{ tabBarIcon: ({ focused }) =>
+                                            <IoIcon size={24} name={"settings-sharp"} color={focused ? colors.accent : colors.text} /> }}
                                                 name={"Settings"} component={Settings} />
                                 </Tab.Navigator>
                             </NavigationContainer>

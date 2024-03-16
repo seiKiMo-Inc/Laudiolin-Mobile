@@ -2,7 +2,7 @@ import { StyleProp, StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 import SelectDropdown from "react-native-select-dropdown";
 
-import { colors } from "@style/Laudiolin";
+import { useColor } from "@backend/stores";
 
 interface IProps {
     default: string;
@@ -18,6 +18,8 @@ interface IProps {
 }
 
 function StyledDropdown(props: IProps) {
+    const colors = useColor();
+
     return (
         <SelectDropdown
             data={props.options}
@@ -25,21 +27,28 @@ function StyledDropdown(props: IProps) {
             onSelect={props.onSelect}
             rowTextForSelection={item => item}
             buttonTextAfterSelection={(_, index) => props.options[index]}
-            dropdownStyle={style.StyledDropdown}
+            dropdownStyle={{
+                borderRadius: 10,
+                backgroundColor: colors.primary
+            }}
             buttonTextStyle={{
-                ...style.StyledDropdown_Text,
+                fontFamily: "Poppins400_Regular",
+                color: colors.text,
                 ...props.textStyle,
             }}
             buttonStyle={{
-                ...style.StyledDropdown_Button,
+                borderRadius: 15,
+                backgroundColor: colors.accent,
                 ...props.buttonStyle
             }}
             rowStyle={{
-                ...style.StyledDropdown_Row,
+                backgroundColor: colors.secondary,
+                borderBottomColor: "transparent",
                 ...props.menuStyle
             }}
             rowTextStyle={{
-                ...style.StyledDropdown_Text,
+                fontFamily: "Poppins400_Regular",
+                color: colors.text,
                 ...props.rowTextStyle
             }}
         />
@@ -47,22 +56,3 @@ function StyledDropdown(props: IProps) {
 }
 
 export default StyledDropdown;
-
-const style = StyleSheet.create({
-    StyledDropdown: {
-        borderRadius: 10,
-        backgroundColor: colors.primary
-    },
-    StyledDropdown_Text: {
-        fontFamily: "Poppins400_Regular",
-        color: "white"
-    },
-    StyledDropdown_Button: {
-        borderRadius: 15,
-        backgroundColor: colors.accent
-    },
-    StyledDropdown_Row: {
-        backgroundColor: colors.secondary,
-        borderBottomColor: "transparent"
-    }
-});

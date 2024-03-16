@@ -6,14 +6,15 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 import StyledModal from "@components/StyledModal";
 import StyledButton from "@components/StyledButton";
+import StyledToggle from "@components/StyledToggle";
 import StyledTextInput from "@components/StyledTextInput";
 
 import Playlist from "@backend/playlist";
 import { OwnedPlaylist } from "@backend/types";
-
-import { colors, value } from "@style/Laudiolin";
 import { pickIcon } from "@backend/utils";
-import StyledToggle from "@components/StyledToggle";
+import { useColor } from "@backend/stores";
+
+import { value } from "@style/Laudiolin";
 
 const log = logger.createLogger();
 
@@ -25,6 +26,8 @@ interface IProps {
 
 function EditPlaylist({ playlist, visible, hide }: IProps) {
     const navigation: NavigationProp<any> = useNavigation();
+
+    const colors = useColor();
 
     const [newName, setNewName] = useState(playlist.name);
     const [newDescription, setNewDescription] = useState(playlist.description);
@@ -53,8 +56,15 @@ function EditPlaylist({ playlist, visible, hide }: IProps) {
                         value={newName}
                         default={playlist.name}
                         defaultColor={colors.gray}
-                        textStyle={style.EditPlaylist_Text}
-                        containerStyle={style.EditPlaylist_Input}
+                        textStyle={{
+                            color: colors.text,
+                            textAlign: "center"
+                        }}
+                        containerStyle={{
+                            ...style.EditPlaylist_Input,
+                            borderColor: colors.text
+                        }}
+                        inputStyle={{ borderBottomColor: "transparent" }}
                         onChange={setNewName}
                         onFinish={async () => Playlist.editPlaylist({
                             id: playlist.id, name: newName
@@ -67,7 +77,7 @@ function EditPlaylist({ playlist, visible, hide }: IProps) {
                         default={playlist.description}
                         defaultColor={colors.gray}
                         containerStyle={style.EditPlaylist_Input}
-                        inputStyle={{ height: 100 }}
+                        inputStyle={{ height: 100, borderBottomColor: "transparent" }}
                         onChange={setNewDescription}
                         onFinish={async () => Playlist.editPlaylist({
                             id: playlist.id, description: newDescription
@@ -102,6 +112,7 @@ function EditPlaylist({ playlist, visible, hide }: IProps) {
             <StyledButton
                 text={"Delete Playlist"}
                 style={style.EditPlaylist_Button}
+                titleStyle={{ color: "white" }}
                 buttonStyle={{ backgroundColor: colors.red }}
                 onHold={async () => {
                     if (await Playlist.deletePlaylist(playlist)) {
@@ -132,15 +143,10 @@ const style = StyleSheet.create({
         width: "100%",
         gap: 10
     },
-    EditPlaylist_Text: {
-        color: "white",
-        textAlign: "center"
-    },
     EditPlaylist_Input: {
         borderBottomWidth: 2,
         borderWidth: 2,
         borderRadius: 10,
-        borderColor: "white",
         paddingLeft: 10,
         paddingRight: 10
     }

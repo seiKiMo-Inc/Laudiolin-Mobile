@@ -31,8 +31,8 @@ function MediaPlayer() {
                     onPress={() => global.setShowTrackPage(true)}
                 >
                     <View style={style.MediaPlayer_Info}>
-                        <StyledText text={track.title ?? "---"} size={Size.Text} />
-                        <StyledText text={artist(track.artist)} size={Size.Footnote} />
+                        <StyledText style={style.MediaPlayer_Text} text={track.title ?? "---"} size={Size.Text} />
+                        <StyledText style={style.MediaPlayer_Text} text={artist(track.artist)} size={Size.Footnote} />
                     </View>
 
                     <View style={style.MediaPlayer_Controls}>
@@ -84,6 +84,9 @@ const style = StyleSheet.create({
     MediaPlayer_Info: {
         width: "75%",
         padding: 10
+    },
+    MediaPlayer_Text: {
+        color: "white"
     },
     MediaPlayer_Controls: {
         flexDirection: "row",

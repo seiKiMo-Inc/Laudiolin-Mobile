@@ -5,21 +5,18 @@ import { StyleSheet, View } from "react-native";
 
 import { logger } from "react-native-logs";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
-
-import Toggle from "react-native-toggle-element";
 
 import OrDivider from "@components/OrDivider";
-import StyledText from "@components/StyledText";
 import StyledModal from "@components/StyledModal";
+import StyledToggle from "@components/StyledToggle";
 import StyledButton from "@components/StyledButton";
 import StyledTextInput from "@components/StyledTextInput";
 
 import Playlist from "@backend/playlist";
-
-import { colors, value } from "@style/Laudiolin";
 import { pickIcon } from "@backend/utils";
-import StyledToggle from "@components/StyledToggle";
+
+import { value } from "@style/Laudiolin";
+import { useColor } from "@backend/stores";
 
 const log = logger.createLogger();
 
@@ -30,6 +27,8 @@ interface IProps {
 
 function CreatePlaylist(props: IProps) {
     const navigation: NavigationProp<any> = useNavigation();
+
+    const colors = useColor();
 
     const [name, setName] = useState("");
     const [isPrivate, setPrivate] = useState(true);
@@ -52,7 +51,10 @@ function CreatePlaylist(props: IProps) {
                     defaultColor={colors.gray}
                     textStyle={style.CreatePlaylist_Text}
                     inputStyle={{ borderBottomColor: "transparent" }}
-                    containerStyle={style.CreatePlaylist_Input}
+                    containerStyle={{
+                        ...style.CreatePlaylist_Input,
+                        backgroundColor: colors.primary
+                    }}
                     onChange={setImportUrl}
                 />
 
@@ -159,7 +161,6 @@ const style = StyleSheet.create({
         width: value.width * 0.8
     },
     CreatePlaylist_Input: {
-        backgroundColor: colors.primary,
         borderRadius: 10
     },
     CreatePlaylist_Text: {

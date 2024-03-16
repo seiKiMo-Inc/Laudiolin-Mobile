@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, View, Dimensions, FlatList } from "react-native";
+import { ScrollView, View, Dimensions, FlatList, StyleSheet } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { NavigationProp } from "@react-navigation/native";
@@ -15,8 +15,7 @@ import Backend from "@backend/backend";
 import { first, welcomeText } from "@backend/utils";
 import { useDownloads, useFavorites, usePlaylists, useRecents, useUser } from "@backend/stores";
 import { OwnedPlaylist, TrackInfo, User } from "@backend/types";
-
-import style from "@style/Summary";
+import { value } from "@style/Laudiolin";
 
 type PlaylistIcon = OwnedPlaylist | {
     type: "button";
@@ -92,7 +91,7 @@ function Header({ navigation, children, data }: IHeaderProps) {
                 ) : undefined
             }
         </View>
-    )
+    );
 }
 
 interface IProps {
@@ -136,7 +135,10 @@ function Summary({ navigation }: IProps) {
                 }}
             />
 
-            <StyledText text={welcomeText()} size={Size.Subheader} />
+            <StyledText
+                text={welcomeText()} size={Size.Subheader}
+                style={{ color: "white" }}
+            />
 
             <View style={style.Summary_Block}>
                 <Header
@@ -240,3 +242,29 @@ function Summary({ navigation }: IProps) {
 }
 
 export default Summary;
+
+const style = StyleSheet.create({
+    Summary: {
+        flexGrow: 0,
+        flexShrink: 0,
+        width: "100%",
+        gap: 35,
+        padding: value.padding,
+        paddingTop: 25,
+        overflow: "scroll"
+    },
+    Summary_Header: {
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    Summary_Block: {
+        gap: 15
+    },
+    Summary_Playlist: {
+        gap: 15
+    },
+    Summary_TrackList: {
+        gap: 15
+    }
+});

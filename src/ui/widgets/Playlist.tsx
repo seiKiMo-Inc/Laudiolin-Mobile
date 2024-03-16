@@ -1,12 +1,10 @@
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
 
 import FastImage from "react-native-fast-image";
 
 import StyledText, { Size } from "@components/StyledText";
 
 import { toIconUrl } from "@backend/utils";
-
-import style from "@style/Playlist";
 
 interface IProps {
     playlist: { icon: string; name: string; };
@@ -29,7 +27,10 @@ function Playlist({ playlist, onPress }: IProps) {
                     lines={3}
                     size={Size.Text}
                     text={playlist.name}
-                    style={style.Playlist_Text}
+                    style={{
+                        ...style.Playlist_Text,
+                        color: "white"
+                    }}
                 />
             </FastImage>
         </TouchableOpacity>
@@ -37,3 +38,19 @@ function Playlist({ playlist, onPress }: IProps) {
 }
 
 export default Playlist;
+
+const style = StyleSheet.create({
+    Playlist: {
+        width: 136, height: 136,
+        borderRadius: 20,
+        overflow: "hidden",
+    },
+    Playlist_Image: {
+        width: "100%", height: "100%",
+    },
+    Playlist_Text: {
+        position: "absolute",
+        bottom: 0,
+        padding: 10
+    }
+});

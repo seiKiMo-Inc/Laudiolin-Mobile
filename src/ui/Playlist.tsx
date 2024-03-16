@@ -19,10 +19,11 @@ import StyledText, { Size } from "@components/StyledText";
 
 import Player from "@backend/player";
 import Playlists from "@backend/playlist";
+import { useColor } from "@backend/stores";
 import { toIconUrl } from "@backend/utils";
 import { OwnedPlaylist, TrackInfo } from "@backend/types";
 
-import { colors, value } from "@style/Laudiolin";
+import { value } from "@style/Laudiolin";
 
 interface RouteParams {
     playlist: OwnedPlaylist;
@@ -37,6 +38,8 @@ interface IProps {
 function Playlist(props: IProps) {
     const { route, navigation } = props;
     const { playlist: data, playlistId } = route.params as RouteParams;
+
+    const colors = useColor();
 
     const [playlist, setPlaylist] = useState<OwnedPlaylist | null | undefined>(data);
 
@@ -78,7 +81,7 @@ function Playlist(props: IProps) {
                 <BackButton navigation={navigation} />
 
                 <TouchableOpacity onPress={() => setShowMenu(true)}>
-                    <EnIcon name={"dots-three-vertical"} size={24} color={"white"} />
+                    <EnIcon name={"dots-three-vertical"} size={24} color={colors.text} />
                 </TouchableOpacity>
             </View>
 
@@ -110,7 +113,7 @@ function Playlist(props: IProps) {
                             text={"Edit"}
                             style={style.Playlist_Button}
                             icon={<FaIcon
-                                name={"edit"} size={20} color={"white"}
+                                name={"edit"} size={20} color={colors.text}
                                 style={{ marginRight: 5 }}
                             />}
                             buttonStyle={{ backgroundColor: colors.secondary }}
@@ -124,7 +127,7 @@ function Playlist(props: IProps) {
                         text={"Play"}
                         style={style.Playlist_Button}
                         icon={<EnIcon
-                            name={"controller-play"} size={20} color={"white"}
+                            name={"controller-play"} size={20} color={colors.text}
                             style={{ marginRight: 5 }}
                         />}
                         buttonStyle={{ backgroundColor: colors.contrast }}
@@ -137,7 +140,7 @@ function Playlist(props: IProps) {
                         text={"Shuffle"}
                         style={style.Playlist_Button}
                         icon={<Fa6Icon
-                            name={"shuffle"} size={20} color={"white"}
+                            name={"shuffle"} size={20} color={colors.text}
                             style={{ marginRight: 5 }}
                         />}
                         buttonStyle={{ backgroundColor: colors.accent }}
@@ -156,6 +159,7 @@ function Playlist(props: IProps) {
                         renderItem={renderItem}
                         keyExtractor={item => item.id}
                         style={{ marginBottom: 230 }}
+                        showsVerticalScrollIndicator={false}
                         onDragEnd={async ({ data }) => {
                             const oldTracks = [...playlist.tracks];
 
@@ -189,12 +193,12 @@ function Playlist(props: IProps) {
                 options={[
                     playlist.tracks.length > 0 ? {
                         text: "Add Songs to Queue",
-                        icon: <FaIcon name={"plus"} size={20} color={"white"} />,
+                        icon: <FaIcon name={"plus"} size={20} color={colors.text} />,
                         onPress: () => Player.play(playlist.tracks, { playlist })
                     } : undefined,
                     {
                         text: `${showDesc ? "Hide" : "Show"} Description`,
-                        icon: <EnIcon name={"info"} size={20} color={"white"} />,
+                        icon: <EnIcon name={"info"} size={20} color={colors.text} />,
                         onPress: () => setShowDescription(!showDesc)
                     }
                 ]}

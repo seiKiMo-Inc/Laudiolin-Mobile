@@ -4,10 +4,8 @@ import { StyleSheet } from "react-native";
 import StyledButton from "@components/StyledButton";
 import StyledDropdown from "@components/StyledDropdown";
 
-import { usePlaylists } from "@backend/stores";
+import { useColor, usePlaylists } from "@backend/stores";
 import { OwnedPlaylist } from "@backend/types";
-
-import { colors } from "@style/Laudiolin";
 
 interface IProps {
     prompt?: string;
@@ -17,6 +15,8 @@ interface IProps {
 }
 
 function SelectAPlaylist(props: IProps) {
+    const colors = useColor();
+
     let playlists = usePlaylists();
     playlists = Object.values(playlists);
 
@@ -35,9 +35,12 @@ function SelectAPlaylist(props: IProps) {
             <StyledButton
                 disabled={!playlist}
                 text={props.action ?? "Select"}
-                style={style.SelectAPlaylist_Button}
-                disabledStyle={style.SelectAPlaylist_Button_Disabled}
-                buttonStyle={style.SelectAPlaylist_Container}
+                style={{
+                    ...style.SelectAPlaylist_Button,
+                    borderColor: colors.accent
+                }}
+                disabledStyle={{ backgroundColor: colors.gray }}
+                buttonStyle={{ backgroundColor: colors.primary }}
             />
         </>
     );
@@ -48,13 +51,6 @@ export default SelectAPlaylist;
 const style = StyleSheet.create({
     SelectAPlaylist_Button: {
         borderRadius: 10,
-        borderWidth: 1,
-        borderColor: colors.accent
-    },
-    SelectAPlaylist_Button_Disabled: {
-        backgroundColor: colors.gray
-    },
-    SelectAPlaylist_Container: {
-        backgroundColor: colors.primary
+        borderWidth: 1
     }
 });

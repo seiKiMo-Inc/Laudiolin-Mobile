@@ -5,7 +5,7 @@ import { Menu, MenuOption, MenuOptions, MenuTrigger } from "react-native-popup-m
 
 import StyledText from "@components/StyledText";
 
-import { colors } from "@style/Laudiolin";
+import { useColor } from "@backend/stores";
 
 interface OptionProp {
     text: string;
@@ -29,6 +29,8 @@ interface IProps {
 }
 
 function StyledMenu(props: IProps) {
+    const colors = useColor();
+
     return (
         <Menu
             style={{ ...style.StyledMenu, ...props.style }}
@@ -42,7 +44,12 @@ function StyledMenu(props: IProps) {
             </MenuTrigger>
 
             <MenuOptions customStyles={{
-                optionsContainer: { ...style.StyledMenu_Container, ...props.optionsStyle }
+                optionsContainer: {
+                    ...style.StyledMenu_Container,
+                    borderColor: colors.contrast,
+                    backgroundColor: colors.secondary,
+                    ...props.optionsStyle
+                }
             }}>
                 {
                     props.options.map((option, index) => option && (
@@ -77,8 +84,6 @@ const style = StyleSheet.create({
         height: "100%"
     },
     StyledMenu_Container: {
-        backgroundColor: colors.secondary,
-        borderColor: colors.contrast,
         borderRadius: 10,
         borderWidth: 1,
         padding: 2

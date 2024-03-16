@@ -6,18 +6,19 @@ import { NavigationProp } from "@react-navigation/native";
 import StyledText, { Size } from "@components/StyledText";
 import StyledButton from "@components/StyledButton";
 
-import style from "@style/Laudiolin";
+import { useColor } from "@backend/stores";
 
 interface IProps {
     navigation: NavigationProp<any>;
 }
 
 function TextPlayground({ navigation }: IProps) {
+    const colors = useColor();
     const [text, setText] = useState("Hello World!");
 
     return (
         <View style={{
-            ...style.App,
+            height: "100%",
             padding: 10,
             gap: 15
         }}>
@@ -28,7 +29,7 @@ function TextPlayground({ navigation }: IProps) {
 
             <TextInput
                 style={{
-                    color: "white", borderColor: "white", borderWidth: 1, width: "80%",
+                    color: colors.text, borderColor: colors.text, borderWidth: 1, width: "80%",
                     margin: 10, alignSelf: "center", textAlign: "center"
                 }}
                 onChange={e => setText(e.nativeEvent.text)}

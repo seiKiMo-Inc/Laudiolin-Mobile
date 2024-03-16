@@ -11,6 +11,8 @@ import { search } from "@backend/search";
 import { TrackInfo } from "@backend/types";
 import { first } from "@backend/utils";
 
+import { useColor } from "@backend/stores";
+
 const renderItem = ({ item, drag, isActive }: RenderItemParams<TrackInfo>) => (
     <ScaleDecorator>
         <Track style={{ marginBottom: 15 }} disabled={isActive} data={item} onHold={drag} />
@@ -22,6 +24,7 @@ interface IProps {
 }
 
 function TrackPlayground({ navigation }: IProps) {
+    const colors = useColor();
     const [query, setQuery] = useState("hikaru nara");
 
     const [data, setData] = useState<TrackInfo[]>([]);
@@ -46,7 +49,7 @@ function TrackPlayground({ navigation }: IProps) {
             <View style={{ gap: 15 }}>
                 <TextInput
                     style={{
-                        color: "white", borderColor: "white", borderWidth: 1, width: "80%",
+                        color: colors.text, borderColor: colors.text, borderWidth: 1, width: "80%",
                         alignSelf: "center", textAlign: "center"
                     }}
                     onChange={e => setQuery(e.nativeEvent.text)}

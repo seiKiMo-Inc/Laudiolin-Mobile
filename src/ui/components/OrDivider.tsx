@@ -2,12 +2,16 @@ import { StyleSheet, View } from "react-native";
 
 import StyledText, { Size } from "@components/StyledText";
 
+import { useColor } from "@backend/stores";
+
 function OrDivider() {
+    const colors = useColor();
+
     return (
         <View style={style.Divider}>
-            <View style={{ borderBottomWidth: 1, borderColor: "white", width: "45%" }} />
+            <View style={{ borderBottomWidth: 1, borderColor: colors.text, width: "45%" }} />
             <StyledText text={"OR"} size={Size.Footnote} />
-            <View style={{ borderBottomWidth: 1, borderColor: "white", width: "45%" }} />
+            <View style={{ borderBottomWidth: 1, borderColor: colors.text, width: "45%" }} />
         </View>
     );
 }

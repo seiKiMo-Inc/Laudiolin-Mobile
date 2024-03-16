@@ -1,9 +1,8 @@
-import { StyleProp, StyleSheet, Text, TextStyle } from "react-native";
+import { StyleProp, Text, TextStyle } from "react-native";
+
 import TextTicker from "react-native-text-ticker";
 
-const base = {
-    color: "#ffffff"
-} as StyleSheet.NamedStyles<any>;
+import { useColor } from "@backend/stores";
 
 export enum Size {
     Text = 16,
@@ -29,8 +28,10 @@ interface IProps {
 }
 
 function StyledText(props: IProps) {
+    const colors = useColor();
+
     const style = {
-        ...base,
+        color: colors.text,
         fontFamily: `Poppins_${props.bold ? "700Bold" : "400Regular"}`,
         textDecorationLine: props.underlined ? "underline" : "none",
         textTransform: props.uppercase ? "uppercase" : "none",

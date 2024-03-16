@@ -17,7 +17,7 @@ import Player from "@backend/player";
 import Playlist from "@backend/playlist";
 import { artist } from "@backend/search";
 import { resolveIcon } from "@backend/utils";
-import { useFavorites } from "@backend/stores";
+import { useColor, useFavorites } from "@backend/stores";
 import { OwnedPlaylist, TrackInfo } from "@backend/types";
 
 import { value } from "@style/Laudiolin";
@@ -35,6 +35,8 @@ interface IProps {
 
 function Track(props: IProps) {
     const { data, playlist } = props;
+
+    const colors = useColor();
 
     let favorites = useFavorites();
     favorites = Object.values(favorites);
@@ -73,7 +75,7 @@ function Track(props: IProps) {
                 style={style.Track_ContextMenu}
                 onPress={() => setOpened(!opened)}
             >
-                <EnIcon name={"dots-three-vertical"} size={16} color={"white"} />
+                <EnIcon name={"dots-three-vertical"} size={16} color={colors.text} />
             </TouchableOpacity>
 
             <StyledModal
@@ -94,7 +96,7 @@ function Track(props: IProps) {
                 options={[
                     playlist?.id != "favorites" ? {
                         text: `${playlist ? "Remove from" : "Add to"} Playlist`,
-                        icon: <McIcon name={"playlist-plus"} size={24} color={"white"} />,
+                        icon: <McIcon name={"playlist-plus"} size={24} color={colors.text} />,
                         onPress: () => {
                             if (playlist) {
                                 Playlist.removeTrackFromPlaylist(playlist, data)
@@ -106,17 +108,17 @@ function Track(props: IProps) {
                     } : undefined,
                     {
                         text: "Open Track Source",
-                        icon: <McIcon name={"web"} size={24} color={"white"} />,
+                        icon: <McIcon name={"web"} size={24} color={colors.text} />,
                         onPress: () => WebBrowser.openBrowserAsync(data.url)
                     },
                     data.type == "remote" ? {
                         text: `${isFavorite ? "Remove from" : "Add to"} Favorites`,
-                        icon: <McIcon name={"heart"} size={24} color={"white"} />,
+                        icon: <McIcon name={"heart"} size={24} color={colors.text} />,
                         onPress: () => User.favoriteTrack(data, !isFavorite)
                     } : undefined,
                     {
                         text: `${props.local ? "Delete" : "Download"} Track`,
-                        icon: <McIcon name={props.local ? "delete" : "download"} size={24} color={"white"} />,
+                        icon: <McIcon name={props.local ? "delete" : "download"} size={24} color={colors.text} />,
                         onPress: () => props.local ? null : null
                     }
                 ]}

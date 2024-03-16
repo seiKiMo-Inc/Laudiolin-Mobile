@@ -12,8 +12,7 @@ import StyledText, { Size } from "@components/StyledText";
 
 import { toIconUrl } from "@backend/utils";
 import { OwnedPlaylist } from "@backend/types";
-
-import { colors } from "@style/Laudiolin";
+import { useColor } from "@backend/stores";
 
 interface IProps {
     playlist: OwnedPlaylist;
@@ -21,6 +20,8 @@ interface IProps {
 
 function PlaylistStripe(props: IProps) {
     const navigation: NavigationProp<any> = useNavigation();
+    const colors = useColor();
+
     const [color, setColor] = useState<string>(colors.contrast);
 
     useEffect(() => {
@@ -67,7 +68,7 @@ function PlaylistStripe(props: IProps) {
                     onPress={() => null}
                     style={{ alignSelf: "center" }}
                 >
-                    <EnIcon name={"dots-three-vertical"} size={24} color={"white"} />
+                    <EnIcon name={"dots-three-vertical"} size={24} color={colors.text} />
                 </TouchableOpacity>
             </LinearGradient>
         </TouchableOpacity>

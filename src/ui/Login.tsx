@@ -10,9 +10,9 @@ import StyledText, { Size } from "@components/StyledText";
 
 import User from "@backend/user";
 import Backend from "@backend/backend";
-import { useGlobal } from "@backend/stores";
+import { useColor, useGlobal } from "@backend/stores";
 
-import { colors, value } from "@style/Laudiolin";
+import { value } from "@style/Laudiolin";
 
 const log = logger.createLogger();
 const prompt = "Logging in with seiKiMo lets you create playlists, create a list of favorite songs, connect with friends, and more!";
@@ -49,6 +49,7 @@ async function waitForLogin(onLogin: () => void) {
 
 function Login() {
     const global = useGlobal();
+    const colors = useColor();
 
     return (
         <View style={style.Login}>

@@ -8,6 +8,7 @@ import IoIcon from "react-native-vector-icons/Ionicons";
 import MdIcon from "react-native-vector-icons/MaterialIcons";
 import McIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
+import * as WebBrowser from "expo-web-browser";
 import FastImage from "react-native-fast-image";
 import TrackPlayer, {
     RepeatMode,
@@ -20,24 +21,23 @@ import { NavigationContainerRef } from "@react-navigation/core";
 import { GestureDetector, Gesture, Directions } from "react-native-gesture-handler";
 
 import ProgressBar from "@widgets/ProgressBar";
+import SelectAPlaylist from "@modals/SelectAPlaylist";
 
 import StyledMenu from "@components/StyledMenu";
+import StyledModal from "@components/StyledModal";
 import StyledText, { Size } from "@components/StyledText";
 
-import Player, { currentlyPlaying } from "@backend/player";
-import { useFavorites, useGlobal } from "@backend/stores";
-
-import { colors, value } from "@style/Laudiolin";
-import Playlist from "@backend/playlist";
-import SelectAPlaylist from "@modals/SelectAPlaylist";
-import * as WebBrowser from "expo-web-browser";
 import User from "@backend/user";
-import StyledModal from "@components/StyledModal";
+import Playlist from "@backend/playlist";
+import Player, { currentlyPlaying } from "@backend/player";
+import { Colors, useColor, useFavorites, useGlobal } from "@backend/stores";
 
-function RepeatIcon({ loop }: { loop: RepeatMode }) {
+import { value } from "@style/Laudiolin";
+
+function RepeatIcon({ loop, colors }: { loop: RepeatMode, colors: Colors }) {
     switch (loop) {
         case RepeatMode.Off:
-            return <McIcon name={"repeat"} color={"white"} size={28} />;
+            return <McIcon name={"repeat"} color={colors.text} size={28} />;
         case RepeatMode.Track:
             return <McIcon name={"repeat-once"} color={colors.accent} size={28} />;
         case RepeatMode.Queue:
@@ -47,6 +47,7 @@ function RepeatIcon({ loop }: { loop: RepeatMode }) {
 
 function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> }) {
     const global = useGlobal();
+    const colors = useColor();
 
     let favorites = useFavorites();
     favorites = Object.values(favorites);
@@ -82,10 +83,13 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
 
     return (
         <GestureDetector gesture={Gesture.Exclusive(queueGesture, backGesture)}>
-            <View style={style.NowPlaying}>
+            <View style={{
+                ...style.NowPlaying,
+                backgroundColor: colors.primary
+            }}>
                 <View style={style.NowPlaying_Header}>
                     <TouchableOpacity onPress={() => global.setShowTrackPage(false)}>
-                        <AdIcon name={"left"} size={28} color={"white"} />
+                        <AdIcon name={"left"} size={28} color={colors.text} />
                     </TouchableOpacity>
 
                     { global.fromPlaylist && (
@@ -98,7 +102,7 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
                     ) }
 
                     <TouchableOpacity onPress={() => setShowMenu(true)}>
-                        <EnIcon name={"dots-three-vertical"} size={24} color={"white"} />
+                        <EnIcon name={"dots-three-vertical"} size={24} color={colors.text} />
                     </TouchableOpacity>
                 </View>
 
@@ -130,11 +134,11 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
 
                 <View style={style.NowPlaying_Controls}>
                     <TouchableOpacity onPress={() => Player.shuffle()}>
-                        <FaIcon name={"shuffle"} color={"white"} size={28} />
+                        <FaIcon name={"shuffle"} color={colors.text} size={28} />
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => Player.skipToPrevious()}>
-                        <IoIcon name={"play-skip-back"} color={"white"} size={28} />
+                        <IoIcon name={"play-skip-back"} color={colors.text} size={28} />
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={async () => {
@@ -144,15 +148,15 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
                             await TrackPlayer.pause();
                         }
                     }}>
-                        <MdIcon name={state == State.Playing ? "pause" : "play-arrow"} color={"white"} size={32} />
+                        <MdIcon name={state == State.Playing ? "pause" : "play-arrow"} color={colors.text} size={32} />
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => Player.skipToNext()}>
-                        <IoIcon name={"play-skip-forward"} color={"white"} size={28} />
+                        <IoIcon name={"play-skip-forward"} color={colors.text} size={28} />
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => Player.nextRepeatMode().then(setRepeatMode)}>
-                        <RepeatIcon loop={repeatMode} />
+                        <RepeatIcon loop={repeatMode} colors={colors} />
                     </TouchableOpacity>
                 </View>
 
@@ -177,17 +181,17 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
                     options={[
                         currentlyPlaying && {
                             text: "Add to Playlist",
-                            icon: <McIcon name={"playlist-plus"} size={24} color={"white"} />,
+                            icon: <McIcon name={"playlist-plus"} size={24} color={colors.text} />,
                             onPress: () => setShowMenu(false),
                         },
                         track && {
                             text: "Open Track Source",
-                            icon: <McIcon name={"web"} size={24} color={"white"} />,
+                            icon: <McIcon name={"web"} size={24} color={colors.text} />,
                             onPress: () => WebBrowser.openBrowserAsync(track.url)
                         },
                         currentlyPlaying ? {
                             text: `${isFavorite ? "Remove from" : "Add to"} Favorites`,
-                            icon: <McIcon name={"heart"} size={24} color={"white"} />,
+                            icon: <McIcon name={"heart"} size={24} color={colors.text} />,
                             onPress: () => {
                                 if (currentlyPlaying?.type == "remote") {
                                     User.favoriteTrack(currentlyPlaying, !isFavorite)
@@ -209,7 +213,6 @@ const style = StyleSheet.create({
     NowPlaying: {
         width: "100%",
         height: "100%",
-        backgroundColor: colors.primary,
         padding: value.padding,
         flexDirection: "column",
         justifyContent: "space-between",

@@ -8,16 +8,21 @@ import Playlist from "@ui/Playlist";
 import TextPlayground from "@ui/TextPlayground";
 import TrackPlayground from "@ui/TrackPlayground";
 
-import style from "@style/Home";
+import { useColor } from "@backend/stores";
 
 const Stack = createStackNavigator();
 
 function Home() {
+    const colors = useColor();
+
     return (
         <Stack.Navigator
             screenOptions={{
                 headerShown: false,
-                cardStyle: style.Home
+                cardStyle: {
+                    height: "100%",
+                    backgroundColor: colors.primary
+                }
             }}
             initialRouteName={"Summary"}
         >
