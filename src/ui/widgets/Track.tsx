@@ -12,6 +12,7 @@ import StyledText, { Size } from "@components/StyledText";
 
 import SelectAPlaylist from "@modals/SelectAPlaylist";
 
+import User from "@backend/user";
 import Player from "@backend/player";
 import Playlist from "@backend/playlist";
 import { artist } from "@backend/search";
@@ -90,7 +91,7 @@ function Track(props: IProps) {
                 opened={opened}
                 close={() => setOpened(false)}
                 options={[
-                    {
+                    playlist?.id != "favorites" ? {
                         text: `${playlist ? "Remove from" : "Add to"} Playlist`,
                         icon: <McIcon name={"playlist-plus"} size={24} color={"white"} />,
                         onPress: () => {
@@ -101,7 +102,7 @@ function Track(props: IProps) {
                                 setShowAdd(true);
                             }
                         }
-                    },
+                    } : undefined,
                     {
                         text: "Open Track Source",
                         icon: <McIcon name={"web"} size={24} color={"white"} />,
@@ -110,10 +111,10 @@ function Track(props: IProps) {
                     data.type == "remote" ? {
                         text: `${isFavorite ? "Remove from" : "Add to"} Favorites`,
                         icon: <McIcon name={"heart"} size={24} color={"white"} />,
-                        onPress: () => console.log("Add to Favorites")
+                        onPress: () => User.favoriteTrack(data, !isFavorite)
                     } : undefined
                 ]}
-                optionsStyle={{ width: 225 }}
+                optionsStyle={{ width: 230 }}
             />
         </TouchableOpacity>
     );

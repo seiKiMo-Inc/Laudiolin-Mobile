@@ -222,6 +222,35 @@ function loadFavorites(): void {
 }
 
 /**
+ * Adds or removes a track from a user's favorites.
+ *
+ * @param track The track to favorite.
+ * @param add Should the track be added to the user's favorites?
+ */
+async function favoriteTrack(
+    track: RemoteInfo, add: boolean = true
+): Promise<boolean> {
+    const response = await fetch(`${Backend.getBaseUrl()}/user/favorite`, {
+        method: "POST",
+        headers: {
+            Operation: add ? "add" : "remove",
+            authorization: await getToken(),
+            "content-type": "application/json"
+        },
+        body: JSON.stringify(track),
+    });
+
+    if (response.status != 200) {
+        log.error("Failed to favorite track", track.id, response.status);
+        return false;
+    }
+
+    useFavorites.setState(await response.json());
+
+    return true;
+}
+
+/**
  * Fetches a user by their ID.
  *
  * @param userId The ID of the user to fetch.
@@ -248,5 +277,6 @@ export default {
     getToken,
     getUserById,
     loadRecents,
-    loadPlaylists
+    loadPlaylists,
+    favoriteTrack
 };
