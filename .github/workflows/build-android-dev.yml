@@ -1,7 +1,14 @@
 name: Android Development Build
 
 on:
-    workflow_dispatch:
+    push:
+        branches:
+            - dev
+            - v2
+        paths:
+            - package.json
+            - app.json
+    workflow_dispatch: ~
 
 jobs:
     build:

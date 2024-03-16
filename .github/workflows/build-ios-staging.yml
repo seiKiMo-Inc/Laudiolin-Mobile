@@ -5,7 +5,13 @@ on:
         branches:
             - dev
             - v2
-    workflow_dispatch:
+        paths:
+            - package.json
+            - app.json
+            - "**.js"
+            - "src/**"
+            - "assets/**"
+    workflow_dispatch: ~
 
 jobs:
     build:
