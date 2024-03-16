@@ -109,7 +109,9 @@ function Playlist(props: IProps) {
                             style={{ marginRight: 5 }}
                         />}
                         buttonStyle={{ backgroundColor: colors.contrast }}
-                        onPress={() => Player.play(playlist?.tracks, { clear: true })}
+                        onPress={() => Player.play(playlist?.tracks, {
+                            playlist, clear: true, reset: true
+                        })}
                     />
 
                     <StyledButton
@@ -121,7 +123,7 @@ function Playlist(props: IProps) {
                         />}
                         buttonStyle={{ backgroundColor: colors.accent }}
                         onPress={() => Player.play(playlist?.tracks, {
-                            playlist, clear: true, shuffle: true
+                            playlist, clear: true, shuffle: true, reset: true
                         })}
                     />
                 </View>
