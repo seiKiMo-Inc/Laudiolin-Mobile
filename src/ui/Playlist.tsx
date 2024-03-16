@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import FaIcon from "react-native-vector-icons/FontAwesome";
 import Fa6Icon from "react-native-vector-icons/FontAwesome6";
@@ -10,9 +10,10 @@ import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-nativ
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 
 import EditPlaylist from "@modals/EditPlaylist";
-
 import Track from "@widgets/Track";
 import BackButton from "@widgets/BackButton";
+
+import StyledMenu from "@components/StyledMenu";
 import StyledButton from "@components/StyledButton";
 import StyledText, { Size } from "@components/StyledText";
 
@@ -42,6 +43,8 @@ function Playlist(props: IProps) {
     const [author, setAuthor] = useState("Unknown");
 
     const [showEdit, setShowEdit] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
+    const [showDesc, setShowDescription] = useState(false);
 
     useEffect(() => {
         if (playlistId && !playlist) {
@@ -70,19 +73,34 @@ function Playlist(props: IProps) {
 
     return playlist ? (
         <View style={style.Playlist}>
-            <BackButton navigation={navigation} />
+            <View style={style.Playlist_Header}>
+                <BackButton navigation={navigation} />
 
-            <View style={style.Playlist_Info}>
+                <TouchableOpacity onPress={() => setShowMenu(true)}>
+                    <EnIcon name={"dots-three-vertical"} size={24} color={"white"} />
+                </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity
+                activeOpacity={0.7}
+                style={style.Playlist_Info}
+                onPress={() => setShowDescription(!showDesc)}
+                onLongPress={() => setShowMenu(true)}
+            >
                 <FastImage
                     source={{ uri: playlist.icon }}
                     style={style.Playlist_Cover}
                 />
 
                 <View style={{ width: "50%", flexDirection: "column" }}>
-                    <StyledText text={playlist.name} bold lines={2} size={Size.Subheader} />
-                    <StyledText text={author} lines={1} size={Size.Text} />
+                    { showDesc ? (
+                        <StyledText text={playlist.description} lines={4} />
+                    ) : <>
+                        <StyledText text={playlist.name} bold lines={2} size={Size.Subheader} />
+                        <StyledText text={author} lines={1} size={Size.Text} />
+                    </> }
                 </View>
-            </View>
+            </TouchableOpacity>
 
             <View style={style.Playlist_Actions}>
                 <View style={style.Playlist_ActionBar}>
@@ -162,6 +180,25 @@ function Playlist(props: IProps) {
                 visible={showEdit}
                 hide={() => setShowEdit(false)}
             />
+
+            <StyledMenu
+                closeOnPress
+                opened={showMenu}
+                close={() => setShowMenu(false)}
+                options={[
+                    playlist.tracks.length > 0 ? {
+                        text: "Add Songs to Queue",
+                        icon: <FaIcon name={"plus"} size={20} color={"white"} />,
+                        onPress: () => Player.play(playlist.tracks, { playlist })
+                    } : undefined,
+                    {
+                        text: `${showDesc ? "Hide" : "Show"} Description`,
+                        icon: <EnIcon name={"info"} size={20} color={"white"} />,
+                        onPress: () => setShowDescription(!showDesc)
+                    }
+                ]}
+                optionsStyle={{ width: 210 }}
+            />
         </View>
     ) : undefined;
 }
@@ -174,6 +211,11 @@ const style = StyleSheet.create({
         height: "100%",
         padding: value.padding,
         gap: 15
+    },
+    Playlist_Header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
     },
     Playlist_Cover: {
         width: 120, height: 128,
