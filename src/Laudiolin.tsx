@@ -36,18 +36,19 @@ function Laudiolin(props: IProps) {
             <StatusBar barStyle={"light-content"} />
 
             <SafeAreaView style={style.App} onLayout={props.onLoad}>
-                <GestureHandlerRootView>
-                    {
-                        global.showTrackPage && <NowPlaying navigation={navigator.current!} />
-                    }
-                    {
-                        global.showLoginPage && <Login />
-                    }
-                    <View style={{
-                        ...style.App,
-                        display: global.showingAny() ? "none" : "flex"
-                    }}>
-                        <MenuProvider>
+                <MenuProvider>
+                    <GestureHandlerRootView>
+                        {
+                            global.showTrackPage && <NowPlaying navigation={navigator.current!} />
+                        }
+                        {
+                            global.showLoginPage && <Login />
+                        }
+
+                        <View style={{
+                            ...style.App,
+                            display: global.showingAny() ? "none" : "flex"
+                        }}>
                             <NavigationContainer ref={navigator}>
                                 <Tab.Navigator
                                     tabBar={props => (
@@ -71,9 +72,9 @@ function Laudiolin(props: IProps) {
                                                 name={"Settings"} component={Settings} />
                                 </Tab.Navigator>
                             </NavigationContainer>
-                        </MenuProvider>
-                    </View>
-                </GestureHandlerRootView>
+                        </View>
+                    </GestureHandlerRootView>
+                </MenuProvider>
             </SafeAreaView>
         </>
     );

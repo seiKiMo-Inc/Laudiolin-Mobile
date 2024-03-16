@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import AdIcon from "react-native-vector-icons/AntDesign";
@@ -20,12 +20,19 @@ import { NavigationContainerRef } from "@react-navigation/core";
 import { GestureDetector, Gesture, Directions } from "react-native-gesture-handler";
 
 import ProgressBar from "@widgets/ProgressBar";
+
+import StyledMenu from "@components/StyledMenu";
 import StyledText, { Size } from "@components/StyledText";
 
-import Player from "@backend/player";
-import { useGlobal } from "@backend/stores";
+import Player, { currentlyPlaying } from "@backend/player";
+import { useFavorites, useGlobal } from "@backend/stores";
 
 import { colors, value } from "@style/Laudiolin";
+import Playlist from "@backend/playlist";
+import SelectAPlaylist from "@modals/SelectAPlaylist";
+import * as WebBrowser from "expo-web-browser";
+import User from "@backend/user";
+import StyledModal from "@components/StyledModal";
 
 function RepeatIcon({ loop }: { loop: RepeatMode }) {
     switch (loop) {
@@ -41,11 +48,19 @@ function RepeatIcon({ loop }: { loop: RepeatMode }) {
 function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> }) {
     const global = useGlobal();
 
+    let favorites = useFavorites();
+    favorites = Object.values(favorites);
+
     const track = useActiveTrack();
     const { state } = usePlaybackState();
     const progress = useProgress(500);
 
+    const isFavorite = favorites.find(t => t.id == track?.id);
+
     const [repeatMode, setRepeatMode] = useState(RepeatMode.Off);
+
+    const [showSelect, setShowSelect] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
 
     useEffect(() => {
         TrackPlayer.getRepeatMode().then(setRepeatMode);
@@ -82,9 +97,8 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
                         </View>
                     ) }
 
-                    <TouchableOpacity onPress={() => null}>
+                    <TouchableOpacity onPress={() => setShowMenu(true)}>
                         <EnIcon name={"dots-three-vertical"} size={24} color={"white"} />
-                        {/* TODO: Move favorite track into context menu. */}
                     </TouchableOpacity>
                 </View>
 
@@ -141,6 +155,49 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
                         <RepeatIcon loop={repeatMode} />
                     </TouchableOpacity>
                 </View>
+
+                <StyledModal
+                    visible={showSelect}
+                    onPressOutside={() => setShowSelect(false)}
+                >
+                    <SelectAPlaylist
+                        onSelect={playlist => {
+                            if (currentlyPlaying && currentlyPlaying?.title == track?.title) {
+                                Playlist.addTrackToPlaylist(playlist, currentlyPlaying)
+                                    .catch(() => null);
+                            }
+                        }}
+                    />
+                </StyledModal>
+
+                <StyledMenu
+                    closeOnPress
+                    opened={showMenu}
+                    close={() => setShowMenu(false)}
+                    options={[
+                        currentlyPlaying && {
+                            text: "Add to Playlist",
+                            icon: <McIcon name={"playlist-plus"} size={24} color={"white"} />,
+                            onPress: () => setShowMenu(false),
+                        },
+                        track && {
+                            text: "Open Track Source",
+                            icon: <McIcon name={"web"} size={24} color={"white"} />,
+                            onPress: () => WebBrowser.openBrowserAsync(track.url)
+                        },
+                        currentlyPlaying ? {
+                            text: `${isFavorite ? "Remove from" : "Add to"} Favorites`,
+                            icon: <McIcon name={"heart"} size={24} color={"white"} />,
+                            onPress: () => {
+                                if (currentlyPlaying?.type == "remote") {
+                                    User.favoriteTrack(currentlyPlaying, !isFavorite)
+                                        .catch(() => null);
+                                }
+                            }
+                        } : undefined,
+                    ]}
+                    style={{ top: 10, right: 10 }}
+                />
             </View>
         </GestureDetector>
     );
