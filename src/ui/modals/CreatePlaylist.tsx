@@ -126,14 +126,17 @@ function CreatePlaylist(props: IProps) {
                     onPress={async () => {
                         if (name == "") return;
 
-                        const [success, playlistId] = await Playlist.createPlaylist({
+                        const [success, playlistId, playlist] = await Playlist.createPlaylist({
                             name, isPrivate,
                             description: "My wonderful playlist!",
                             icon: `${Backend.getBaseUrl()}/Playlist.png`,
                             tracks: []
                         });
-                        if (success) {
+                        if (success && playlist) {
                             props.hide();
+
+                            await Playlist.setPlaylistIcon(playlist, cover ?? "")
+
                             navigation.navigate("Playlist", { playlistId });
                         } else {
                             log.warn("Unable to create playlist.");

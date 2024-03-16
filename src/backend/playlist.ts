@@ -257,7 +257,7 @@ async function deletePlaylist(playlist: OwnedPlaylist | string): Promise<boolean
  * @param playlist The playlist to create or import.
  * @return A tuple containing a boolean indicating success and the playlist ID.
  */
-async function createPlaylist(playlist: PlaylistInfo | string): Promise<[boolean, string]> {
+async function createPlaylist(playlist: PlaylistInfo | string): Promise<[boolean, string, OwnedPlaylist | undefined]> {
     let response: Response;
     if (typeof playlist == "string") {
         response = await fetch(`${Backend.getBaseUrl()}/playlist/import`, {
@@ -277,14 +277,14 @@ async function createPlaylist(playlist: PlaylistInfo | string): Promise<[boolean
 
     if (response.status != 201) {
         log.error("Failed to create playlist", response.status);
-        return [false, ""];
+        return [false, "", undefined];
     }
 
     // Add the playlist to the store.
     const created = await response.json() as OwnedPlaylist;
     modifyPlaylist(created);
 
-    return [true, created.id];
+    return [true, created.id, created];
 }
 
 /**
@@ -314,6 +314,8 @@ async function getAuthor(playlist: OwnedPlaylist | string) {
  * @param icon The icon to set, encoded in Base64.
  */
 async function setPlaylistIcon(playlist: OwnedPlaylist, icon: string): Promise<boolean> {
+    if (icon == null || icon.length == 0) return false;
+
     const response = await fetch(`${Backend.getBaseUrl()}/playlist/${playlist.id}/icon`, {
         method: "POST", headers: {
             "Content-Type": "text/plain", authorization: await User.getToken()
