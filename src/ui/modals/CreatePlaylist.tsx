@@ -12,11 +12,12 @@ import StyledToggle from "@components/StyledToggle";
 import StyledButton from "@components/StyledButton";
 import StyledTextInput from "@components/StyledTextInput";
 
+import Backend from "@backend/backend";
 import Playlist from "@backend/playlist";
 import { pickIcon } from "@backend/utils";
+import { useColor } from "@backend/stores";
 
 import { value } from "@style/Laudiolin";
-import { useColor } from "@backend/stores";
 
 const log = logger.createLogger();
 
@@ -128,7 +129,7 @@ function CreatePlaylist(props: IProps) {
                         const [success, playlistId] = await Playlist.createPlaylist({
                             name, isPrivate,
                             description: "My wonderful playlist!",
-                            icon: "https://i.pinimg.com/564x/e2/26/98/e22698a130ad38d08d3b3d650c2cb4b3.jpg",
+                            icon: `${Backend.getBaseUrl()}/Playlist.png`,
                             tracks: []
                         });
                         if (success) {
