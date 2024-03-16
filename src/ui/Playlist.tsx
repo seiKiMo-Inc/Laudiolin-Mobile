@@ -19,6 +19,7 @@ import StyledText, { Size } from "@components/StyledText";
 
 import Player from "@backend/player";
 import Playlists from "@backend/playlist";
+import { toIconUrl } from "@backend/utils";
 import { OwnedPlaylist, TrackInfo } from "@backend/types";
 
 import { colors, value } from "@style/Laudiolin";
@@ -88,7 +89,7 @@ function Playlist(props: IProps) {
                 onLongPress={() => setShowMenu(true)}
             >
                 <FastImage
-                    source={{ uri: playlist.icon }}
+                    source={{ uri: toIconUrl(playlist.icon) }}
                     style={style.Playlist_Cover}
                 />
 

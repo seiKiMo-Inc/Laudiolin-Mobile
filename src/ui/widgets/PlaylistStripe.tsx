@@ -10,6 +10,7 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 import StyledText, { Size } from "@components/StyledText";
 
+import { toIconUrl } from "@backend/utils";
 import { OwnedPlaylist } from "@backend/types";
 
 import { colors } from "@style/Laudiolin";
@@ -49,7 +50,7 @@ function PlaylistStripe(props: IProps) {
             >
                 <View style={{ flexDirection: "row", gap: 10 }}>
                     <FastImage
-                        source={{ uri: props.playlist.icon }}
+                        source={{ uri: toIconUrl(props.playlist.icon) }}
                         style={style.PlaylistStripe_Image}
                     />
 

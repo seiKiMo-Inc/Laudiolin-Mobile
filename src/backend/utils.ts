@@ -5,6 +5,8 @@ import Backend from "@backend/backend";
 
 const log = logger.createLogger();
 
+const base64Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
 /**
  * Determines which welcoming text to show the user.
  */
@@ -89,7 +91,57 @@ export function resolveIcon(icon: string): string {
     }
 
     log.warn("Unknown icon URL:", icon);
-    return icon; // Fallback to whatever is provided if all else fails.
+    return toIconUrl(icon) ?? icon; // Fallback to whatever is provided if all else fails.
+}
+
+/**
+ * Base64 encode function using the URL-safe alphabet.
+ * Sourced from https://github.com/eranbo/react-native-base64.
+ *
+ * @param input The input string to encode.
+ */
+export function base64Encode(input: string): string {
+    const output = [];
+    let chr1, chr2, chr3;
+    let enc1, enc2, enc3, enc4;
+    let i = 0;
+
+    do {
+        chr1 = input.charCodeAt(i++);
+        chr2 = input.charCodeAt(i++);
+        chr3 = input.charCodeAt(i++);
+
+        enc1 = chr1 >> 2;
+        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+        enc4 = chr3 & 63;
+
+        if (isNaN(chr2)) {
+            enc3 = enc4 = 64;
+        } else if (isNaN(chr3)) {
+            enc4 = 64;
+        }
+
+        output.push(
+            base64Alphabet.charAt(enc1) +
+            base64Alphabet.charAt(enc2) +
+            base64Alphabet.charAt(enc3) +
+            base64Alphabet.charAt(enc4))
+        chr1 = chr2 = chr3 = "";
+        enc1 = enc2 = enc3 = enc4 = "";
+    } while (i < input.length);
+
+    return output.join("");
+}
+
+/**
+ * Converts the direct URL to an icon into a proxy URL.
+ *
+ * @param icon The direct URL to the icon.
+ */
+export function toIconUrl(icon: string | undefined): string | undefined {
+    if (icon == undefined || icon == "") return undefined;
+    return `${Backend.getBaseUrl()}/proxy/icon?url=${base64Encode(icon)}`;
 }
 
 /**

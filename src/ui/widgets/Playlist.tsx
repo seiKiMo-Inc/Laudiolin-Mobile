@@ -4,6 +4,8 @@ import FastImage from "react-native-fast-image";
 
 import StyledText, { Size } from "@components/StyledText";
 
+import { toIconUrl } from "@backend/utils";
+
 import style from "@style/Playlist";
 
 interface IProps {
@@ -19,7 +21,7 @@ function Playlist({ playlist, onPress }: IProps) {
             onPress={onPress}
         >
             <FastImage
-                source={{ uri: playlist.icon }}
+                source={{ uri: toIconUrl(playlist.icon) }}
                 style={style.Playlist_Image}
             >
                 <StyledText

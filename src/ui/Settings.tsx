@@ -10,7 +10,7 @@ import StyledTextInput from "@components/StyledTextInput";
 
 import User from "@backend/user";
 import { useGlobal, useSettings, useUser } from "@backend/stores";
-import { validateAddress, validateSocket } from "@backend/utils";
+import { toIconUrl, validateAddress, validateSocket } from "@backend/utils";
 
 import { colors, value } from "@style/Laudiolin";
 
@@ -102,7 +102,7 @@ function Setting(props: SettingProps) {
                 />
             </StyledModal>
         </>
-    )
+    );
 }
 
 type Element = ReactElement | undefined;
@@ -140,7 +140,7 @@ function Settings() {
                         <>
                             <View style={style.Settings_Details}>
                                 <FastImage
-                                    source={{ uri: user.avatar }}
+                                    source={{ uri: toIconUrl(user.avatar) }}
                                     style={style.Settings_Icon}
                                 />
 
