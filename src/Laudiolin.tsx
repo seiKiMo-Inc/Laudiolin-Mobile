@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { SafeAreaView, StatusBar, View } from "react-native";
 
+import { MenuProvider } from "react-native-popup-menu";
 import { NavigationContainer } from "@react-navigation/native";
 import { NavigationContainerRef } from "@react-navigation/core";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -42,34 +43,35 @@ function Laudiolin(props: IProps) {
                     {
                         global.showLoginPage && <Login />
                     }
-
                     <View style={{
                         ...style.App,
                         display: global.showingAny() ? "none" : "flex"
                     }}>
-                        <NavigationContainer ref={navigator}>
-                            <Tab.Navigator
-                                tabBar={props => (
-                                    <>
-                                        <MediaPlayer />
-                                        <BottomTabBar {...props} />
-                                    </>
-                                )}
-                                screenOptions={{
-                                    headerShown: false,
-                                    tabBarShowLabel: false,
-                                    tabBarStyle: style.App_TabBar,
-                                }}
-                                sceneContainerStyle={style.App_Scene}
-                            >
-                                <Tab.Screen options={{ tabBarIcon: ({ focused }) => HomeIcon(focused) }}
-                                            name={"Home"} component={Home} />
-                                <Tab.Screen options={{ tabBarIcon: ({ focused }) => SearchIcon(focused) }}
-                                            name={"Search"} component={Search} />
-                                <Tab.Screen options={{ tabBarIcon: ({ focused }) => SettingsIcon(focused) }}
-                                            name={"Settings"} component={Settings} />
-                            </Tab.Navigator>
-                        </NavigationContainer>
+                        <MenuProvider>
+                            <NavigationContainer ref={navigator}>
+                                <Tab.Navigator
+                                    tabBar={props => (
+                                        <>
+                                            <MediaPlayer />
+                                            <BottomTabBar {...props} />
+                                        </>
+                                    )}
+                                    screenOptions={{
+                                        headerShown: false,
+                                        tabBarShowLabel: false,
+                                        tabBarStyle: style.App_TabBar,
+                                    }}
+                                    sceneContainerStyle={style.App_Scene}
+                                >
+                                    <Tab.Screen options={{ tabBarIcon: ({ focused }) => HomeIcon(focused) }}
+                                                name={"Home"} component={Home} />
+                                    <Tab.Screen options={{ tabBarIcon: ({ focused }) => SearchIcon(focused) }}
+                                                name={"Search"} component={Search} />
+                                    <Tab.Screen options={{ tabBarIcon: ({ focused }) => SettingsIcon(focused) }}
+                                                name={"Settings"} component={Settings} />
+                                </Tab.Navigator>
+                            </NavigationContainer>
+                        </MenuProvider>
                     </View>
                 </GestureHandlerRootView>
             </SafeAreaView>
