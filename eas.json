@@ -19,6 +19,12 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "asc@ayaka.one",
+        "ascAppId": "6478914934",
+        "appleTeamId": "LX2U7VU2K4"
+      }
+    }
   }
 }

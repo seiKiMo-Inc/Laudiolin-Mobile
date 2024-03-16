@@ -37,3 +37,6 @@ yarn-error.*
 # IDEs
 .vscode/
 .idea/
+
+# Output
+build/
