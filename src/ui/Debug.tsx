@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 
+import * as Updates from "expo-updates";
+import { logger } from "react-native-logs";
 import { useNavigation } from "@react-navigation/native";
 import TrackPlayer, { RepeatMode, useActiveTrack, usePlaybackState } from "react-native-track-player";
 
@@ -11,6 +13,8 @@ import { Colors, useColor, useDebug } from "@backend/stores";
 import Player, { currentlyPlaying, useQueue } from "@backend/player";
 
 import { value } from "@style/Laudiolin";
+
+const log = logger.createLogger();
 
 function color(enabled: boolean, colors: Colors): StyleProp<ViewStyle> {
     return { backgroundColor: enabled ? "green" : colors.accent };
@@ -39,6 +43,21 @@ function Debug() {
             <StyledButton
                 text={"Go Back"}
                 onPress={() => navigation.goBack()}
+            />
+
+            <StyledButton
+                text={"Check for Updates"}
+                onPress={async () => {
+                    try {
+                        const update = await Updates.checkForUpdateAsync();
+                        if (update.isAvailable) {
+                            await Updates.fetchUpdateAsync();
+                            await Updates.reloadAsync();
+                        }
+                    } catch (error) {
+                        log.error("Error checking for updates", error);
+                    }
+                }}
             />
 
             <StyledButton
