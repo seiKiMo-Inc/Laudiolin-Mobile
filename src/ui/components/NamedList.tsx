@@ -14,9 +14,9 @@ import { useQueue } from "@backend/player";
 
 import { value } from "@style/Laudiolin";
 
-const renderers: { [key: string]: (data: any) => ReactElement } = {
-    tracks: (track: TrackInfo) => <Track data={track} />,
-    playlists: (playlist: any) => <PlaylistStripe playlist={playlist} />
+const renderers: { [key: string]: (data: any, index: number) => ReactElement } = {
+    tracks: (track: TrackInfo, index: number) => <Track key={index} data={track} />,
+    playlists: (playlist: any, index: number) => <PlaylistStripe key={index} playlist={playlist} />
 };
 
 const fetchers: { [key: string]: () => any } = {
@@ -44,10 +44,10 @@ function NamedList<T>(props: IProps) {
         fetcher, renderLimit
     } = route.params as RouteParams<T>;
 
-    const renderer = renderers[render] as (item: T) => ReactElement;
+    const renderer = renderers[render] as (item: T, index: number) => ReactElement;
 
     let items = fetcher ? fetchers[fetcher]() : providedItems;
-    if ("values" in items) {
+    if (Array.isArray("items") && "values" in items) {
         items = items.values();
     }
 
@@ -62,7 +62,7 @@ function NamedList<T>(props: IProps) {
                 data={items}
                 initialNumToRender={renderLimit}
                 contentContainerStyle={style.NamedList_List}
-                renderItem={({ item }) => renderer(item)}
+                renderItem={({ item, index }) => renderer(item, index)}
             />
         </View>
     );
