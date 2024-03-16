@@ -57,6 +57,7 @@ export type BasicUser = {
 };
 
 export type User = BasicUser & {
+    isDeveloper?: boolean;
     playlists?: string[];
     likedSongs?: RemoteInfo[];
     recentlyPlayed?: RemoteInfo[];

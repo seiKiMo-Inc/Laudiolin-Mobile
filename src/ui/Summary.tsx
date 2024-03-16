@@ -54,7 +54,10 @@ function formPlaylists(
     items.push(
         ...playlists,
         {
-            type: "button", id: "add", icon: "", name: "Add a Playlist",
+            id: "add",
+            type: "button",
+            icon: `${Backend.getBaseUrl()}/Playlist.png`,
+            name: "Add a Playlist",
             onPress: showPlaylistModal
         }
     );
@@ -218,7 +221,7 @@ function Summary({ navigation }: IProps) {
             ) }
 
             {
-                __DEV__ && <>
+                (__DEV__ || user?.isDeveloper) && <>
                     <StyledButton
                         text={"Text Playground"}
                         onPress={() => navigation.navigate("Text Playground")}
