@@ -4,6 +4,8 @@ import { StyleSheet, View } from "react-native";
 import { logger } from "react-native-logs";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 
+import { alert } from "@widgets/Alert";
+
 import StyledModal from "@components/StyledModal";
 import StyledButton from "@components/StyledButton";
 import StyledToggle from "@components/StyledToggle";
@@ -32,7 +34,6 @@ function EditPlaylist({ playlist, visible, hide }: IProps) {
     const [newName, setNewName] = useState(playlist.name);
     const [newDescription, setNewDescription] = useState(playlist.description);
     const [isPrivate, setPrivate] = useState(playlist.isPrivate);
-    const [newCover, setCover] = useState(playlist.icon);
 
     const [showFields, setShowFields] = useState(false);
 
@@ -76,7 +77,10 @@ function EditPlaylist({ playlist, visible, hide }: IProps) {
                         value={newDescription}
                         default={playlist.description}
                         defaultColor={colors.gray}
-                        containerStyle={style.EditPlaylist_Input}
+                        containerStyle={{
+                            ...style.EditPlaylist_Input,
+                            borderColor: colors.text
+                        }}
                         inputStyle={{ height: 100, borderBottomColor: "transparent" }}
                         onChange={setNewDescription}
                         onFinish={async () => Playlist.editPlaylist({
@@ -93,7 +97,25 @@ function EditPlaylist({ playlist, visible, hide }: IProps) {
                 onPress={async () => {
                     const result = await pickIcon();
                     if (!result.canceled) {
-                        // TODO: Upload the image to the server and set the new cover.
+                        const asset = result.assets[0];
+                        if (!asset) return;
+
+                        if ((asset.fileSize ?? 0) > 5e6) {
+                            alert("File size must be less than 5MB.");
+                            return;
+                        }
+
+                        const base64 = asset.base64;
+                        if (!base64) {
+                            alert("Failed to get Base64 from icon.");
+                            return;
+                        }
+
+                        if (!await Playlist.setPlaylistIcon(playlist, base64)) {
+                            alert("Failed to set playlist icon.");
+                        } else {
+                            alert("Playlist icon updated.");
+                        }
                     }
                 }}
             />

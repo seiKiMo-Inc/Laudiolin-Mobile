@@ -17,10 +17,10 @@ function modifyPlaylist(playlist: OwnedPlaylist): void {
     const index = playlists.findIndex(p => p.id == playlist.id);
     if (index != -1) {
         playlists[index] = playlist;
-        usePlaylists.setState(playlists);
+        usePlaylists.setState(playlists, true);
     } else {
         playlists.push(playlist);
-        usePlaylists.setState(playlists);
+        usePlaylists.setState(playlists, true);
     }
 }
 
@@ -307,6 +307,36 @@ async function getAuthor(playlist: OwnedPlaylist | string) {
     return user?.username ?? "Unknown";
 }
 
+/**
+ * Sets the playlist icon.
+ *
+ * @param playlist The playlist to set the icon for.
+ * @param icon The icon to set, encoded in Base64.
+ */
+async function setPlaylistIcon(playlist: OwnedPlaylist, icon: string): Promise<boolean> {
+    const response = await fetch(`${Backend.getBaseUrl()}/playlist/${playlist.id}/icon`, {
+        method: "POST", headers: {
+            "Content-Type": "text/plain", authorization: await User.getToken()
+        },
+        body: icon
+    });
+
+    if (response.status != 200) {
+        log.error("Failed to set playlist icon",
+            response.status,
+            await response.text());
+        return false;
+    }
+
+    // Edit the playlist icon URL.
+    const { url } = await response.json();
+    playlist.icon = url;
+
+    modifyPlaylist(playlist);
+
+    return true;
+}
+
 export default {
     fetchPlaylist,
     findPlaylist,
@@ -315,5 +345,6 @@ export default {
     removeTrackFromPlaylist,
     deletePlaylist,
     createPlaylist,
-    getAuthor
+    getAuthor,
+    setPlaylistIcon
 };

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Appearance, SafeAreaView, StatusBar, useColorScheme, View } from "react-native";
+import { SafeAreaView, StatusBar, useColorScheme, View } from "react-native";
 
 import { MenuProvider } from "react-native-popup-menu";
 import { NavigationContainer } from "@react-navigation/native";
@@ -7,12 +7,14 @@ import { NavigationContainerRef } from "@react-navigation/core";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+import Alert from "@widgets/Alert";
+import MediaPlayer from "@widgets/MediaPlayer";
+
 import Home from "@app/Home";
 import Login from "@ui/Login";
 import Search from "@ui/Search";
 import Settings from "@ui/Settings";
 import NowPlaying from "@ui/NowPlaying";
-import MediaPlayer from "@widgets/MediaPlayer";
 
 import { useColor, useGlobal, useSettings } from "@backend/stores";
 
@@ -50,6 +52,8 @@ function Laudiolin(props: IProps) {
                 style={{ height: "100%", backgroundColor: colors.primary }}
                 onLayout={props.onLoad}
             >
+                <Alert />
+
                 <MenuProvider>
                     <GestureHandlerRootView>
                         {
