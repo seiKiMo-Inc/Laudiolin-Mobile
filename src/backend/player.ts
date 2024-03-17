@@ -54,14 +54,17 @@ export const PlaybackService = async () => {
         if (data == undefined || data.state == undefined) return;
         const state = data.state;
 
-        if (state != State.Ended) return;
+        if (state == State.Ended || state == State.Stopped) {
+            // Remove the currently playing song.
+            await TrackPlayer.setQueue([]);
 
-        // Add the next song to the player.
-        const queue = useQueue.getState();
-        if (queue.isEmpty()) {
-            await TrackPlayer.stop();
-        } else {
-            await play(queue.dequeue());
+            // Add the next song to the player.
+            const queue = useQueue.getState();
+            if (queue.isEmpty()) {
+                await TrackPlayer.stop();
+            } else {
+                await play(queue.dequeue());
+            }
         }
     });
 };
