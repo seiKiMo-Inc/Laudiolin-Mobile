@@ -39,7 +39,7 @@ function Alert() {
             activeOpacity={0.8}
             onPressOut={() => store.setState("")}
         >
-            <StyledText text={alert} />
+            <StyledText ticker text={alert} />
         </TouchableOpacity>
     );
 }
