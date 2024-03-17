@@ -276,7 +276,11 @@ async function createPlaylist(playlist: PlaylistInfo | string): Promise<[boolean
     }
 
     if (response.status != 201) {
-        log.error("Failed to create playlist", response.status);
+        const reason = (await response.json()).reason;
+        log.error("Failed to create playlist",
+            response.status, reason);
+        alert(`Unable to create playlist: ${reason}`);
+
         return [false, "", undefined];
     }
 

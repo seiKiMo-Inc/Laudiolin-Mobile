@@ -45,6 +45,14 @@ function CreatePlaylist(props: IProps) {
             onPressOutside={props.hide}
             style={style.CreatePlaylist}
             title={"Create Playlist"}
+            onLayout={() => {
+                // Reset to default values.
+                setName("");
+                setPrivate(true);
+                setCover(null);
+                setImport(false);
+                setImportUrl("");
+            }}
         >
             { useImport ? <>
                 <StyledTextInput
@@ -71,7 +79,7 @@ function CreatePlaylist(props: IProps) {
                             props.hide();
                             navigation.navigate("Playlist", { playlistId });
                         } else {
-                            log.warn("Unable to import playlist.");
+                            alert(`Unable to import playlist.`)
                         }
                     }}
                 />
@@ -133,10 +141,9 @@ function CreatePlaylist(props: IProps) {
                             tracks: []
                         });
                         if (success && playlist) {
+                            cover && await Playlist.setPlaylistIcon(playlist, cover)
+
                             props.hide();
-
-                            await Playlist.setPlaylistIcon(playlist, cover ?? "")
-
                             navigation.navigate("Playlist", { playlistId });
                         } else {
                             log.warn("Unable to create playlist.");

@@ -18,6 +18,7 @@ interface IProps {
     style?: StyleProp<ViewStyle> | any;
     overlayStyle?: StyleProp<ViewStyle>;
 
+    onLayout?: () => void;
     onPressOutside?: () => void;
 }
 
@@ -28,6 +29,7 @@ function StyledModal(props: IProps) {
         <Overlay
             isVisible={props.visible}
             style={props.overlayStyle}
+            onLayout={props.onLayout}
             onBackdropPress={props.onPressOutside}
             overlayStyle={{ backgroundColor: "transparent" }}
         >
