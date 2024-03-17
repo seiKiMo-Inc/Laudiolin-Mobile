@@ -40,6 +40,8 @@ export const PlaybackService = async () => {
             const state = useGlobal.getState();
             if (state.loadTries > 3) {
                 log.error("Failed to load track after 3 tries.");
+                TrackPlayer.reset();
+
                 useGlobal.setState({ loadTries: 0 });
                 skipToNext();
             } else {
