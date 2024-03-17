@@ -1,4 +1,4 @@
-import * as Base64 from "base-64";
+import { Base64 } from "js-base64";
 import { logger } from "react-native-logs";
 import * as FileSystem from "expo-file-system";
 
@@ -64,13 +64,19 @@ async function download(info: RemoteInfo): Promise<boolean> {
     const local = Object.assign({}, info as unknown) as DownloadInfo;
     local.type = "download";
 
-    // Encode the title. (this ensures Unicode characters are preserved)
-    local.encoded = true;
-    local.title = Base64.encode(info.title);
+    try {
+        // Encode the title. (this ensures Unicode characters are preserved)
+        local.encoded = true;
+        local.title = Base64.encode(info.title);
+    } catch (error) {
+        alert(`Failed to download a track: ${error}`);
+        log.error("Unable to encode title.", info, error);
+        return false;
+    }
 
     try {
         // Write the track data to the file system.
-        await FileSystem.writeAsStringAsync(`${path}/track.json`, JSON.stringify(info));
+        await FileSystem.writeAsStringAsync(`${path}/track.json`, JSON.stringify(local));
         await FileSystem.downloadAsync(resolveIcon(info.icon), `${path}/cover.jpg`);
         await FileSystem.downloadAsync(`${Backend.getBaseUrl()}/download?id=${info.id}`, `${path}/track.mp3`);
     } catch (error) {
@@ -82,6 +88,7 @@ async function download(info: RemoteInfo): Promise<boolean> {
     // Change references to the local file system.
     local.icon = `${path}/cover.jpg`;
     local.filePath = `${path}/track.mp3`;
+    local.title = info.title;
     // Add the track to the downloaded list.
     useDownloads.getState().add(local);
 
@@ -131,5 +138,7 @@ async function downloadInfo(): Promise<DownloadStats> {
 
 export default {
     setup,
-    download
+    download,
+    remove,
+    downloadInfo,
 };
