@@ -137,8 +137,38 @@ export const useColor = create<ColorState>()(persist(
     }
 ));
 
+interface DownloadState {
+    downloaded: DownloadInfo[];
+
+    add: (info: DownloadInfo) => void;
+    remove: (id: string) => void;
+}
+export const useDownloads = create<DownloadState>()(persist(
+    (set, get): DownloadState => ({
+        downloaded: [],
+
+        add: (info) => {
+            set((state) => ({
+                downloaded: [...state.downloaded, info]
+            }));
+        },
+        remove: (id) => {
+            set((state) => ({
+                downloaded: state.downloaded.filter((info) => info.id !== id)
+            }));
+        }
+    }),
+    {
+        name: "downloads",
+        version: 1,
+        storage: createJSONStorage(() => AsyncStorage),
+        migrate: (oldState, oldVersion) => {
+            return oldState;
+        }
+    }
+));
+
 export const useUser = create<User | null>(() => null);
 export const useRecents = create<RemoteInfo[]>(() => []);
 export const useFavorites = create<RemoteInfo[]>(() => []);
 export const usePlaylists = create<OwnedPlaylist[]>(() => []);
-export const useDownloads = create<DownloadInfo[]>(() => []);

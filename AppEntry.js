@@ -7,6 +7,7 @@ import TrackPlayer, { Capability, IOSCategory, IOSCategoryOptions } from "react-
 import App from "./App";
 
 import User from "@backend/user";
+import Downloads from "@backend/downloads";
 import { PlaybackService } from "@backend/player";
 
 const log = logger.createLogger();
@@ -16,6 +17,8 @@ TrackPlayer.registerPlaybackService(() => PlaybackService);
 
 (async() => {
     User.setup();
+    Downloads.setup()
+        .catch(error => log.error("Encountered error while setting up downloads", error));
 
     await TrackPlayer.setupPlayer({
         iosCategory: IOSCategory.Playback,

@@ -108,8 +108,8 @@ function Summary({ navigation }: IProps) {
     let playlists = usePlaylists();
     playlists = Object.values(playlists);
 
-    let downloads = useDownloads();
-    downloads = Object.values(downloads);
+    const downloadData = useDownloads();
+    const downloads = downloadData.downloaded;
 
     const user = useUser();
     const favorites = useFavorites();

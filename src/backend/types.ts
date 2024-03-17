@@ -18,6 +18,7 @@ export type RemoteInfo = TrackData & {
 export type DownloadInfo = TrackData & {
     type: "download";
     encoded: boolean;
+    filePath: string;
 };
 
 export type PlaylistInfo = OwnedPlaylist | PlaylistData;

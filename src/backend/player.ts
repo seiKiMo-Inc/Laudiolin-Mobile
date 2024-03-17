@@ -75,14 +75,23 @@ export const useQueue = Queue<TrackInfo>();
  * @param track The track to transform.
  */
 function transform(track: TrackInfo): AddTrack {
-    return {
-        ...requestData,
-        id: track.id,
-        url: `${Backend.getBaseUrl()}/download?id=${track.id}`,
-        title: track.title,
-        artist: track.artist,
-        artwork: resolveIcon(track.icon),
-    };
+    return track.type == "remote" ?
+        {
+            ...requestData,
+            id: track.id,
+            url: `${Backend.getBaseUrl()}/download?id=${track.id}`,
+            title: track.title,
+            artist: track.artist,
+            artwork: resolveIcon(track.icon),
+        }
+        :
+        {
+            id: track.id,
+            url: track.filePath,
+            title: track.title,
+            artist: track.artist,
+            artwork: track.icon
+        };
 }
 
 type PlayProps = {
