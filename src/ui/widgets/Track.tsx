@@ -17,15 +17,15 @@ import Player from "@backend/player";
 import Playlist from "@backend/playlist";
 import { artist } from "@backend/search";
 import { resolveIcon } from "@backend/utils";
-import { useColor, useFavorites } from "@backend/stores";
-import { OwnedPlaylist, TrackInfo } from "@backend/types";
+import { useColor, useDownloads, useFavorites } from "@backend/stores";
+import { OwnedPlaylist, RemoteInfo, TrackInfo } from "@backend/types";
 
 import { value } from "@style/Laudiolin";
+import Downloads from "@backend/downloads";
 
 interface IProps {
     data: TrackInfo;
     playlist?: OwnedPlaylist;
-    local?: boolean;
 
     style?: any;
 
@@ -41,7 +41,12 @@ function Track(props: IProps) {
     let favorites = useFavorites();
     favorites = Object.values(favorites);
 
+    const downloadData = useDownloads();
+    const downloads = downloadData.downloaded;
+
     const isFavorite = favorites.find(t => t.id == data.id);
+    const local = data.type == "download" &&
+        downloads.find(t => t.id == data.id);
 
     const [opened, setOpened] = useState(false);
     const [add, setShowAdd] = useState(false);
@@ -117,9 +122,11 @@ function Track(props: IProps) {
                         onPress: () => User.favoriteTrack(data, !isFavorite)
                     } : undefined,
                     {
-                        text: `${props.local ? "Delete" : "Download"} Track`,
-                        icon: <McIcon name={props.local ? "delete" : "download"} size={24} color={colors.text} />,
-                        onPress: () => props.local ? null : null
+                        text: `${local ? "Delete" : "Download"} Track`,
+                        icon: <McIcon name={local ? "delete" : "download"} size={24} color={colors.text} />,
+                        onPress: () => local ?
+                            Downloads.remove(data) :
+                            Downloads.download(data as RemoteInfo)
                     }
                 ]}
                 optionsStyle={{ width: 230 }}

@@ -30,9 +30,11 @@ import StyledText, { Size } from "@components/StyledText";
 import User from "@backend/user";
 import Playlist from "@backend/playlist";
 import Player, { currentlyPlaying } from "@backend/player";
-import { Colors, useColor, useFavorites, useGlobal } from "@backend/stores";
+import { Colors, useColor, useDownloads, useFavorites, useGlobal } from "@backend/stores";
 
 import { value } from "@style/Laudiolin";
+import Downloads from "@backend/downloads";
+import { DownloadInfo, RemoteInfo } from "@backend/types";
 
 function RepeatIcon({ loop, colors }: { loop: RepeatMode, colors: Colors }) {
     switch (loop) {
@@ -52,11 +54,15 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
     let favorites = useFavorites();
     favorites = Object.values(favorites);
 
+    const downloadData = useDownloads();
+    const downloads = downloadData.downloaded;
+
     const track = useActiveTrack();
     const { state } = usePlaybackState();
     const progress = useProgress(500);
 
     const isFavorite = favorites.find(t => t.id == track?.id);
+    const local = downloads.find(t => t.id == track?.id);
 
     const [repeatMode, setRepeatMode] = useState(RepeatMode.Off);
 
@@ -199,6 +205,13 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
                                 }
                             }
                         } : undefined,
+                        currentlyPlaying && {
+                            text: `${local ? "Delete" : "Download"} Track`,
+                            icon: <McIcon name={local ? "delete" : "download"} size={24} color={colors.text} />,
+                            onPress: () => local ?
+                                Downloads.remove(currentlyPlaying as DownloadInfo) :
+                                Downloads.download(currentlyPlaying as RemoteInfo)
+                        }
                     ]}
                     style={{ top: 10, right: 10 }}
                 />
