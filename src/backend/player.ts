@@ -54,7 +54,7 @@ export const PlaybackService = async () => {
         if (data == undefined || data.state == undefined) return;
         const state = data.state;
 
-        if (state == State.Ended || state == State.Stopped) {
+        if (state == State.Ended) {
             // Remove the currently playing song.
             await TrackPlayer.setQueue([]);
 
@@ -87,7 +87,7 @@ function transform(track: TrackInfo): AddTrack {
             url: `${Backend.getBaseUrl()}/download?id=${track.id}`,
             title: track.title,
             artist: track.artist,
-            artwork: resolveIcon(track.icon),
+            artwork: resolveIcon(track.icon)
         }
         :
         {
@@ -115,6 +115,10 @@ type PlayProps = {
 async function play(
     _track?: TrackInfo | TrackInfo[], props?: PlayProps
 ): Promise<void> {
+    if (useDebug.getState().trackInfo) {
+        log.info("Playing track:", _track);
+    }
+
     let track = Array.isArray(_track) ? [..._track] : _track;
 
     if (props?.playlist) {
@@ -176,9 +180,13 @@ async function play(
             toPlay = track as TrackInfo;
         }
 
-        await TrackPlayer.add(transform(toPlay));
-        await TrackPlayer.play();
-        currentlyPlaying = toPlay;
+        try {
+            await TrackPlayer.add(transform(toPlay));
+            await TrackPlayer.play();
+            currentlyPlaying = toPlay;
+        } catch (error) {
+            log.warn("Failed to play track:", error);
+        }
     } else {
         // Add the track to the queue.
         useQueue.getState().enqueue(track);
