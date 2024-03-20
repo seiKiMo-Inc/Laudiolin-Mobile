@@ -123,6 +123,8 @@ async function play(
 
     if (props?.playlist) {
         useGlobal.setState({ fromPlaylist: props.playlist.name });
+    } else {
+        useGlobal.setState({ fromPlaylist: null })
     }
 
     props?.reset && await TrackPlayer.reset();
