@@ -175,6 +175,7 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
                             if (currentlyPlaying && currentlyPlaying?.title == track?.title) {
                                 Playlist.addTrackToPlaylist(playlist, currentlyPlaying)
                                     .catch(() => null);
+                                setShowSelect(false);
                             }
                         }}
                     />
@@ -190,11 +191,11 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
                             icon: <McIcon name={"playlist-plus"} size={24} color={colors.text} />,
                             onPress: () => setShowMenu(false),
                         },
-                        track && {
+                        currentlyPlaying && currentlyPlaying.url.length > 0 ? {
                             text: "Open Track Source",
                             icon: <McIcon name={"web"} size={24} color={colors.text} />,
-                            onPress: () => WebBrowser.openBrowserAsync(track.url)
-                        },
+                            onPress: () => WebBrowser.openBrowserAsync(currentlyPlaying!.url)
+                        } : undefined,
                         currentlyPlaying ? {
                             text: `${isFavorite ? "Remove from" : "Add to"} Favorites`,
                             icon: <McIcon name={"heart"} size={24} color={colors.text} />,

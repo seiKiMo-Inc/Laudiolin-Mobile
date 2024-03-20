@@ -18,7 +18,7 @@ import Playlist from "@backend/playlist";
 import { artist } from "@backend/search";
 import { resolveIcon } from "@backend/utils";
 import { useColor, useDownloads, useFavorites } from "@backend/stores";
-import { OwnedPlaylist, RemoteInfo, TrackInfo } from "@backend/types";
+import { DownloadInfo, OwnedPlaylist, RemoteInfo, TrackInfo } from "@backend/types";
 
 import { value } from "@style/Laudiolin";
 import Downloads from "@backend/downloads";
@@ -41,19 +41,20 @@ function Track(props: IProps) {
     let favorites = useFavorites();
     favorites = Object.values(favorites);
 
-    const downloadData = useDownloads();
-    const downloads = downloadData.downloaded;
+    const { isLocal } = useDownloads();
 
     const isFavorite = favorites.find(t => t.id == data.id);
-    const local = data.type == "download" &&
-        downloads.find(t => t.id == data.id);
+    const local = isLocal(data.id);
 
     const [opened, setOpened] = useState(false);
     const [add, setShowAdd] = useState(false);
 
     return (
         <TouchableOpacity
-            disabled={props.disabled}
+            disabled={
+                props.disabled ||
+                (data.url == "" && data.duration == 0 && !local)
+            }
             activeOpacity={0.7}
             style={{
                 ...style.Track,
@@ -90,7 +91,11 @@ function Track(props: IProps) {
                 title={"Add Track to Playlist"}
             >
                 <SelectAPlaylist
-                    onSelect={playlist => Playlist.addTrackToPlaylist(playlist, data)}
+                    onSelect={playlist => {
+                        Playlist.addTrackToPlaylist(playlist, data)
+                            .catch(() => null);
+                        setShowAdd(false);
+                    }}
                 />
             </StyledModal>
 
@@ -111,11 +116,11 @@ function Track(props: IProps) {
                             }
                         }
                     } : undefined,
-                    {
+                    data.url.length > 0 ? {
                         text: "Open Track Source",
                         icon: <McIcon name={"web"} size={24} color={colors.text} />,
                         onPress: () => WebBrowser.openBrowserAsync(data.url)
-                    },
+                    } : undefined,
                     data.type == "remote" ? {
                         text: `${isFavorite ? "Remove from" : "Add to"} Favorites`,
                         icon: <McIcon name={"heart"} size={24} color={colors.text} />,
@@ -125,7 +130,7 @@ function Track(props: IProps) {
                         text: `${local ? "Delete" : "Download"} Track`,
                         icon: <McIcon name={local ? "delete" : "download"} size={24} color={colors.text} />,
                         onPress: () => local ?
-                            Downloads.remove(data) :
+                            Downloads.remove(data as DownloadInfo) :
                             Downloads.download(data as RemoteInfo)
                     }
                 ]}

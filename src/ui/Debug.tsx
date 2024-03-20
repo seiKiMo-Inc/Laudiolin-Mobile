@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
 
 import * as Updates from "expo-updates";
 import { logger } from "react-native-logs";
 import { useNavigation } from "@react-navigation/native";
 import TrackPlayer, { RepeatMode, useActiveTrack, usePlaybackState } from "react-native-track-player";
+
+import ImportTrack from "@modals/ImportTrack";
 
 import StyledText from "@components/StyledText";
 import StyledButton from "@components/StyledButton";
@@ -33,13 +35,18 @@ function Debug() {
     const [trackInfo, showTrackInfo] = useState(false);
     const [newQueueInfo, setNewQueueInfo] = useState(false);
 
+    const [showImport, setShowImport] = useState(false);
+
     const [repeatMode, setRepeatMode] = useState(RepeatMode.Off);
     const [songIndex, setSongIndex] = useState<number | undefined>(0);
 
     const queue = useQueue();
 
     return (
-        <View style={{ padding: value.padding, gap: 15 }}>
+        <ScrollView
+            style={{ padding: value.padding }}
+            contentContainerStyle={{ gap: 15 }}
+        >
             <StyledButton
                 text={"Go Back"}
                 onPress={() => navigation.goBack()}
@@ -71,6 +78,12 @@ function Debug() {
                     <StyledText text={`Playback state: ${playerState.state}`} bold />
                 </View>
             ) }
+
+            <StyledButton
+                text={"Log Track Info"}
+                buttonStyle={color(debug.trackInfo, colors)}
+                onPress={() => debug.update({ trackInfo: !debug.trackInfo })}
+            />
 
             <StyledButton
                 text={"Show Queue Info"}
@@ -135,7 +148,14 @@ function Debug() {
                     <StyledText text={`Current artist: ${playingTrack?.artist ?? "None"}`} />
                 </View>
             ) }
-        </View>
+
+            <StyledButton
+                text={"Import Local"}
+                onPress={() => setShowImport(true)}
+            />
+
+            <ImportTrack opened={showImport} close={() => setShowImport(false)} />
+        </ScrollView>
     );
 }
 

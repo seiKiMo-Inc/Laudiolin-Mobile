@@ -33,11 +33,13 @@ export const useGlobal = create<GlobalState>((set, get) => ({
 
 export interface DebugState {
     playbackState: boolean;
+    trackInfo: boolean;
 
     update(object: any): void;
 }
 export const useDebug = create<DebugState>((set) => ({
     playbackState: false,
+    trackInfo: false,
 
     update: (object: any) => set(object)
 }));
@@ -142,6 +144,7 @@ interface DownloadState {
 
     add: (info: DownloadInfo) => void;
     remove: (id: string) => void;
+    isLocal: (id: string) => boolean;
 }
 export const useDownloads = create<DownloadState>()(persist(
     (set, get): DownloadState => ({
@@ -156,6 +159,10 @@ export const useDownloads = create<DownloadState>()(persist(
             set((state) => ({
                 downloaded: state.downloaded.filter((info) => info.id !== id)
             }));
+        },
+        isLocal: (id) => {
+            const state = get();
+            return state.downloaded.some((info) => info.id === id);
         }
     }),
     {

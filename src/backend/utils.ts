@@ -1,4 +1,5 @@
 import { logger } from "react-native-logs";
+import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import { ImagePickerResult, launchImageLibraryAsync, MediaTypeOptions } from "expo-image-picker";
 
 import Backend from "@backend/backend";
@@ -170,4 +171,19 @@ export async function pickIcon(): Promise<ImagePickerResult> {
         aspect: [4, 3],
         quality: 1,
     });
+}
+
+/**
+ * Runs SHA-256 on the provided string.
+ *
+ * @param data The string to hash.
+ * @param length The length of the hash to return. -1 returns the full hash.
+ */
+export async function sha256(
+    data: string, length: number = -1
+): Promise<string> {
+    const digest = await digestStringAsync(
+        CryptoDigestAlgorithm.SHA256, data
+    );
+    return length == -1 ? digest : digest.substring(0, length);
 }

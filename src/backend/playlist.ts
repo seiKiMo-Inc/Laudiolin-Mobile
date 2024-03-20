@@ -5,6 +5,8 @@ import Backend from "@backend/backend";
 import { usePlaylists, useUser } from "@backend/stores";
 import { OwnedPlaylist, PlaylistInfo, TrackInfo } from "@backend/types";
 
+import { alert } from "@widgets/Alert";
+
 const log = logger.createLogger();
 
 /**
@@ -179,6 +181,20 @@ async function editPlaylist(playlist: {
 async function addTrackToPlaylist(
     playlist: OwnedPlaylist | string, track: TrackInfo
 ): Promise<boolean> {
+    // Resolve local tracks.
+    if (track.type == "download") {
+        // Fetch the track's data.
+        const response = await fetch(`${Backend.getBaseUrl()}/fetch/${track.id}`);
+        if (response.status != 301) {
+            alert("Unable to fetch track data");
+            log.warn("Failed to fetch track data", response.status);
+            return false;
+        }
+
+        // Update the track.
+        track = (await response.json()) as TrackInfo;
+    }
+
     // Check if the playlist contains the track already.
     if (typeof playlist != "string" &&
         (playlist as PlaylistInfo).tracks.includes(track)) {
@@ -193,6 +209,10 @@ async function addTrackToPlaylist(
         log.error("Failed to add track to playlist", response.status);
         return false;
     }
+
+    // Update the playlist.
+    const updated = await response.json() as OwnedPlaylist;
+    modifyPlaylist(updated);
 
     return true;
 }
@@ -223,6 +243,10 @@ async function removeTrackFromPlaylist(
         log.error("Failed to remove track from playlist", response.status);
         return false;
     }
+
+    // Update the playlist.
+    const updated = await response.json() as OwnedPlaylist;
+    modifyPlaylist(updated);
 
     return true;
 }

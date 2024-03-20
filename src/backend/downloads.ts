@@ -1,6 +1,7 @@
 import { Base64 } from "js-base64";
 import { logger } from "react-native-logs";
 import * as FileSystem from "expo-file-system";
+import { DocumentPickerAsset } from "expo-document-picker";
 
 import Backend from "@backend/backend";
 import { resolveIcon } from "@backend/utils";
@@ -96,6 +97,61 @@ async function download(info: RemoteInfo): Promise<boolean> {
 }
 
 /**
+ * Imports a track from the file system.
+ *
+ * @param file The file to import.
+ * @param metadata The user provided metadata about the track.
+ */
+async function $import(
+    file: DocumentPickerAsset, metadata: DownloadInfo
+): Promise<boolean> {
+    // Create the track directory.
+    const baseDir = `${FileSystem.documentDirectory}downloads`;
+    const path = `${baseDir}/${metadata.id}`;
+
+    const info = await FileSystem.getInfoAsync(path);
+    if (info.exists) {
+        if (__DEV__) {
+            await FileSystem.deleteAsync(path, { idempotent: true });
+        }
+
+        return false;
+    }
+
+    await FileSystem.makeDirectoryAsync(path);
+
+    metadata.type = "download";
+    metadata.filePath = `${path}/track.mp3`;
+
+    try {
+        // Encode the title. (this ensures Unicode characters are preserved)
+        metadata.encoded = true;
+        metadata.title = Base64.encode(metadata.title);
+    } catch (error) {
+        log.error("Unable to import track.", error);
+        return false;
+    }
+
+    // Copy the track to the track directory.
+    await FileSystem.copyAsync({ from: file.uri, to: `${path}/track.mp3` });
+    // Copy the icon to the track directory.
+    await FileSystem.downloadAsync(metadata.icon, `${path}/cover.jpg`);
+    // Write the metadata to the track directory.
+    await FileSystem.writeAsStringAsync(`${path}/track.json`, JSON.stringify(metadata));
+
+    // Change references to the local file system.
+    metadata.icon = `${path}/cover.jpg`;
+    metadata.filePath = `${path}/track.mp3`;
+    metadata.title = Base64.decode(metadata.title);
+    // Add the track to the downloaded list.
+    useDownloads.getState().add(metadata);
+
+    console.log(`metadata written to mem: ${JSON.stringify(metadata)}`)
+
+    return true;
+}
+
+/**
  * Removes a download from the file system.
  *
  * @param info The download to remove.
@@ -141,4 +197,5 @@ export default {
     download,
     remove,
     downloadInfo,
+    import: $import
 };

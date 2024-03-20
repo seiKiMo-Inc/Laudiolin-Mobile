@@ -41,6 +41,7 @@ function SelectAPlaylist(props: IProps) {
                 }}
                 disabledStyle={{ backgroundColor: colors.gray }}
                 buttonStyle={{ backgroundColor: colors.primary }}
+                onPress={() => playlist && props.onSelect(playlist)}
             />
         </>
     );
