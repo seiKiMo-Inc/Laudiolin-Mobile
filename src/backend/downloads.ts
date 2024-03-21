@@ -146,8 +146,6 @@ async function $import(
     // Add the track to the downloaded list.
     useDownloads.getState().add(metadata);
 
-    console.log(`metadata written to mem: ${JSON.stringify(metadata)}`)
-
     return true;
 }
 

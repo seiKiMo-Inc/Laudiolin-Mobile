@@ -6,9 +6,11 @@ import { NavigationProp } from "@react-navigation/native";
 
 import Track from "@widgets/Track";
 import Playlist from "@widgets/Playlist";
+import ImportButton from "@widgets/ImportButton";
 import StyledButton from "@components/StyledButton";
 import StyledText, { Size } from "@components/StyledText";
 
+import ImportTrack from "@modals/ImportTrack";
 import CreatePlaylist from "@modals/CreatePlaylist";
 
 import Backend from "@backend/backend";
@@ -114,6 +116,7 @@ function Summary({ navigation }: IProps) {
     const user = useUser();
     const favorites = useFavorites();
 
+    const [showImport, setShowImport] = useState(false);
     const [makePlaylist, setMakePlaylist] = useState(false);
 
     const playlistItems = formPlaylists(
@@ -178,26 +181,26 @@ function Summary({ navigation }: IProps) {
                 />
             ) }
 
-            { downloads.length > 0 && (
-                <View style={style.Summary_Block}>
-                    <Header
-                        navigation={navigation}
-                        data={{ title: "Downloads", items: downloads,
-                            render: "tracks", more: 3 }}
-                    >
-                        Downloads
-                    </Header>
+            <View style={style.Summary_Block}>
+                <Header
+                    navigation={navigation}
+                    data={{ title: "Downloads", items: downloads,
+                        render: "tracks", more: 3 }}
+                >
+                    Downloads
+                </Header>
 
-                    <View style={style.Summary_TrackList}>
-                        {first(downloads, 3).map((track) => (
-                            <Track
-                                key={track.id}
-                                data={track}
-                            />
-                        ))}
-                    </View>
+                <View style={style.Summary_TrackList}>
+                    <ImportButton onPress={() => setShowImport(true)} />
+
+                    {first(downloads, 3).map((track) => (
+                        <Track
+                            key={track.id}
+                            data={track}
+                        />
+                    ))}
                 </View>
-            ) }
+            </View>
 
             { recents.length > 0 && (
                 <View style={style.Summary_Block}>
@@ -239,6 +242,7 @@ function Summary({ navigation }: IProps) {
                 </>
             }
 
+            <ImportTrack opened={showImport} close={() => setShowImport(false)} />
             <CreatePlaylist visible={makePlaylist} hide={() => setMakePlaylist(false)} />
         </ScrollView>
     );
