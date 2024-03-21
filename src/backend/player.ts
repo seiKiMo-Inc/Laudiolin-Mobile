@@ -137,10 +137,6 @@ async function play(
             const next = queue.dequeue();
             if (!next) return;
 
-            // Add the current track to the back queue.
-            currentlyPlaying && backQueue.getState()
-                .enqueue(currentlyPlaying);
-
             return await play(next);
         }
 
@@ -183,6 +179,10 @@ async function play(
         }
 
         try {
+            // Add the current track to the back queue.
+            currentlyPlaying && backQueue.getState()
+                .enqueue(currentlyPlaying);
+
             await TrackPlayer.add(transform(toPlay));
             await TrackPlayer.play();
             currentlyPlaying = toPlay;
