@@ -78,8 +78,6 @@ function CreatePlaylist(props: IProps) {
                         if (success) {
                             props.hide();
                             navigation.navigate("Playlist", { playlistId });
-                        } else {
-                            alert(`Unable to import playlist.`)
                         }
                     }}
                 />
