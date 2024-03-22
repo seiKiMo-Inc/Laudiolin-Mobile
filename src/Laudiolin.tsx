@@ -1,6 +1,10 @@
 import { useEffect, useRef } from "react";
 import { SafeAreaView, StatusBar, useColorScheme, View } from "react-native";
 
+import EnIcon from "react-native-vector-icons/Entypo";
+import FaIcon from "react-native-vector-icons/FontAwesome";
+import IoIcon from "react-native-vector-icons/Ionicons";
+
 import { MenuProvider } from "react-native-popup-menu";
 import { NavigationContainer } from "@react-navigation/native";
 import { NavigationContainerRef } from "@react-navigation/core";
@@ -16,17 +20,17 @@ import Search from "@ui/Search";
 import Settings from "@ui/Settings";
 import NowPlaying from "@ui/NowPlaying";
 
+import User from "@backend/user";
+import Gateway from "@backend/gateway";
 import { useColor, useGlobal, useSettings } from "@backend/stores";
 
 import { DarkTheme, LightTheme } from "@style/Laudiolin";
-import EnIcon from "react-native-vector-icons/Entypo";
-import FaIcon from "react-native-vector-icons/FontAwesome";
-import IoIcon from "react-native-vector-icons/Ionicons";
 
 interface IProps {
     onLoad?: () => void;
 }
 
+let firstLoad = true;
 const Tab = createBottomTabNavigator();
 
 function Laudiolin(props: IProps) {
@@ -43,6 +47,24 @@ function Laudiolin(props: IProps) {
     useEffect(() => {
         colors.change(theme?.toLowerCase() == "dark" ? DarkTheme : LightTheme);
     }, [scheme]);
+
+    useEffect(() => {
+        // Load user data which might have changed.
+        User.authenticate()
+            .catch(error => alert(`Failed to load user data: ${error}`));
+
+        // Connect to the gateway.
+        Gateway.setup(firstLoad)
+            .catch(error => alert(`Failed to connect to the gateway: ${error}`));
+
+        // Only run this once.
+        if (firstLoad) firstLoad = false;
+
+        return () => {
+            // Disconnect when the app dismounts.
+            Gateway.disconnect();
+        };
+    }, []);
 
     return (
         <>

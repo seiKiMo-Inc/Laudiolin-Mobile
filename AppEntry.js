@@ -34,7 +34,4 @@ TrackPlayer.registerPlaybackService(() => PlaybackService);
         ],
         compactCapabilities: [Capability.Play, Capability.Pause]
     });
-
-    User.authenticate()
-        .catch(error => log.error("Encountered error while logging in", error));
 })();

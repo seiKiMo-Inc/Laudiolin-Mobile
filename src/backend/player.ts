@@ -240,10 +240,47 @@ async function skipToPrevious(): Promise<void> {
     await play(track, { reset: true });
 }
 
+/**
+ * Sync the local player with the server.
+ *
+ * @param track The track to play.
+ * @param progress The track progress.
+ * @param paused If the track is paused.
+ * @param seek The track seek position.
+ */
+async function sync(
+    track: TrackInfo | null,
+    progress: number,
+    paused: boolean,
+    seek: boolean
+): Promise<void> {
+    // Reset the player if the track is null.
+    if (track === null) {
+        await TrackPlayer.reset();
+        return;
+    }
+
+    // Check if the track needs to be played.
+    if (currentlyPlaying?.id != track.id) {
+        await play(track, { reset: true });
+    }
+
+    // Set the progress.
+    seek && await TrackPlayer.seekTo(progress);
+
+    // Set the player's state.
+    if (paused) {
+        await TrackPlayer.pause();
+    } else {
+        await TrackPlayer.play();
+    }
+}
+
 export default {
     play,
     shuffle,
     nextRepeatMode,
     skipToNext,
-    skipToPrevious
+    skipToPrevious,
+    sync
 };

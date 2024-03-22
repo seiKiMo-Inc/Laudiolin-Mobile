@@ -6,6 +6,7 @@ import { Slider } from "@rneui/base";
 
 import StyledText, { Size } from "@components/StyledText";
 
+import Gateway from "@backend/gateway";
 import { useColor } from "@backend/stores";
 
 /**
@@ -47,7 +48,10 @@ function ProgressBar(props: IProps) {
             <Slider
                 value={props.progress} allowTouchTrack
                 minimumValue={0} maximumValue={props.duration} step={1}
-                onValueChange={value => TrackPlayer.seekTo(value)}
+                onValueChange={async value => {
+                    await TrackPlayer.seekTo(value);
+                    await Gateway.update({ isSeek: true });
+                }}
                 onSlidingStart={() => TrackPlayer.pause()}
                 onSlidingComplete={() => TrackPlayer.play()}
                 thumbStyle={{

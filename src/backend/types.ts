@@ -1,3 +1,5 @@
+import { BaseGatewayMessage } from "@backend/gateway";
+
 export type SearchEngine = "YouTube" | "Spotify" | "All";
 
 export type TrackInfo = RemoteInfo | DownloadInfo;
@@ -62,4 +64,19 @@ export type User = BasicUser & {
     playlists?: string[];
     likedSongs?: RemoteInfo[];
     recentlyPlayed?: RemoteInfo[];
+};
+
+/**
+ * If something is undefined, it should be ignored.
+ * If something is null, the default value or a reset should be used.
+ */
+export type Synchronize = BaseGatewayMessage & {
+    doAll: boolean | null | undefined;
+    playingTrack: TrackData | null | undefined;
+    paused: boolean | null | undefined;
+    volume: number | null | undefined;
+    queue: TrackData[] | null | undefined;
+    loopMode: number | null | undefined;
+    position: number | null | undefined;
+    shuffle: boolean | null | undefined;
 };

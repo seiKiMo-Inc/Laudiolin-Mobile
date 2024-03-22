@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
 
 import * as Updates from "expo-updates";
@@ -15,6 +15,7 @@ import { Colors, useColor, useDebug } from "@backend/stores";
 import Player, { currentlyPlaying, useQueue } from "@backend/player";
 
 import { value } from "@style/Laudiolin";
+import Gateway from "@backend/gateway";
 
 const log = logger.createLogger();
 
@@ -34,6 +35,7 @@ function Debug() {
     const [queueInfo, showQueueInfo] = useState(false);
     const [trackInfo, showTrackInfo] = useState(false);
     const [newQueueInfo, setNewQueueInfo] = useState(false);
+    const [showGateway, setShowGateway] = useState(false);
 
     const [showImport, setShowImport] = useState(false);
 
@@ -44,7 +46,10 @@ function Debug() {
 
     return (
         <ScrollView
-            style={{ padding: value.padding }}
+            style={{
+                padding: value.padding,
+                marginBottom: 50
+            }}
             contentContainerStyle={{ gap: 15 }}
         >
             <StyledButton
@@ -154,9 +159,54 @@ function Debug() {
                 onPress={() => setShowImport(true)}
             />
 
+            <StyledButton
+                text={"Show Gateway Info"}
+                buttonStyle={color(showGateway, colors)}
+                onPress={() => setShowGateway(!showGateway)}
+            />
+
+            { showGateway && <GatewayInfo /> }
+
             <ImportTrack opened={showImport} close={() => setShowImport(false)} />
         </ScrollView>
     );
 }
 
 export default Debug;
+
+function GatewayInfo() {
+    const colors = useColor();
+
+    const [messages, setMessages] = useState<string[]>([]);
+
+    useEffect(() => {
+        const socket = Gateway.socket();
+        if (!socket) return undefined;
+
+        const listener = ({ data }: MessageEvent) => {
+            setMessages(prev => [...prev, data]);
+        };
+        socket.addEventListener("message", listener);
+
+        return () => {
+            socket.removeEventListener("message", listener);
+        };
+    }, []);
+
+    return (
+        <View style={{ gap: 10 }}>
+            <StyledText text={`Connected? ${Gateway.connected()}`} bold />
+
+            <ScrollView
+                style={{
+                    padding: 10, backgroundColor: colors.secondary,
+                    borderRadius: 10, height: 100
+                }}
+            >
+                {messages.map((message, index) => (
+                    <StyledText text={message} key={index} />
+                ))}
+            </ScrollView>
+        </View>
+    );
+}
