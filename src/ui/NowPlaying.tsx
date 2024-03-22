@@ -29,7 +29,7 @@ import StyledText, { Size } from "@components/StyledText";
 
 import User from "@backend/user";
 import Playlist from "@backend/playlist";
-import Player, { currentlyPlaying } from "@backend/player";
+import Player, { usePlayer } from "@backend/player";
 import { Colors, useColor, useDownloads, useFavorites, useGlobal } from "@backend/stores";
 
 import { value } from "@style/Laudiolin";
@@ -56,6 +56,8 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
 
     const downloadData = useDownloads();
     const downloads = downloadData.downloaded;
+
+    const { track: currentlyPlaying } = usePlayer();
 
     const track = useActiveTrack();
     const { state } = usePlaybackState();

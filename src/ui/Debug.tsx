@@ -12,7 +12,7 @@ import StyledText from "@components/StyledText";
 import StyledButton from "@components/StyledButton";
 
 import { Colors, useColor, useDebug } from "@backend/stores";
-import Player, { currentlyPlaying, useQueue } from "@backend/player";
+import Player, { usePlayer, useQueue } from "@backend/player";
 
 import { value } from "@style/Laudiolin";
 import Gateway from "@backend/gateway";
@@ -26,6 +26,7 @@ function color(enabled: boolean, colors: Colors): StyleProp<ViewStyle> {
 function Debug() {
     const debug = useDebug();
     const colors = useColor();
+    const player = usePlayer();
 
     const navigation = useNavigation();
 
@@ -125,7 +126,7 @@ function Debug() {
                 <View style={{ gap: 10 }}>
                     <StyledText text={`Songs in queue: ${queue.size()}`} bold />
                     <StyledText text={`Next Song: ${queue.peek()?.title ?? "No song in queue"}`} />
-                    <StyledText text={`Currently playing song: ${currentlyPlaying?.title ?? "None"}`} />
+                    <StyledText text={`Currently playing song: ${player.track?.title ?? "None"}`} />
 
                     <StyledButton
                         text={`Current Repeat: ${repeatMode}`}

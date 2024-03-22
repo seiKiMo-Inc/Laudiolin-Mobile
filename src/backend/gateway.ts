@@ -4,7 +4,7 @@ import TrackPlayer, { Event, State } from "react-native-track-player";
 import { useRecents, useSettings } from "@backend/stores";
 
 import User from "@backend/user";
-import Player, { currentlyPlaying } from "@backend/player";
+import Player, { usePlayer } from "@backend/player";
 import { RemoteInfo, Synchronize, TrackInfo } from "@backend/types";
 
 import { alert } from "@widgets/Alert";
@@ -59,6 +59,8 @@ type UpdateInfo = {
  * @param seek Whether the client is seeking.
  */
 async function update({ isSeek, update }: UpdateInfo): Promise<void> {
+    const { track: currentlyPlaying } = usePlayer.getState();
+
     const track = await TrackPlayer.getActiveTrack();
     if (track?.url.includes("file://")) return;
 
@@ -251,9 +253,9 @@ async function recents({ recents }: RecentsMessage): Promise<void> {
 /**
  * Handles the 'synchronize' message.
  *
- * @param message The message data.
+ * @param _ The message data.
  */
-async function synchronize(message: Synchronize): Promise<void> {
+async function synchronize(_: Synchronize): Promise<void> {
     // This message currently goes unhandled.
     // See description in:
     // https://trello.com/c/3Wmh80rC/5-feature-add-elixir-control-for-discord-connected-users

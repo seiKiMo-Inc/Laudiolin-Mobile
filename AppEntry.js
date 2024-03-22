@@ -1,12 +1,13 @@
 import "react-native-gesture-handler";
 
-import { registerRootComponent } from "expo";
 import { logger } from "react-native-logs";
+import { registerRootComponent } from "expo";
 import TrackPlayer, { Capability, IOSCategory, IOSCategoryOptions } from "react-native-track-player";
 
 import App from "./App";
 
 import User from "@backend/user";
+import Social from "@backend/social";
 import Downloads from "@backend/downloads";
 import { PlaybackService } from "@backend/player";
 
@@ -17,6 +18,7 @@ TrackPlayer.registerPlaybackService(() => PlaybackService);
 
 (async() => {
     User.setup();
+    Social.setup();
     Downloads.setup()
         .catch(error => log.error("Encountered error while setting up downloads", error));
 

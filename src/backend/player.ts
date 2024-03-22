@@ -1,3 +1,5 @@
+import { create, StoreApi, UseBoundStore } from "zustand";
+
 import { logger } from "react-native-logs";
 import TrackPlayer, { AddTrack, Event, RepeatMode, State } from "react-native-track-player";
 
@@ -69,7 +71,33 @@ export const PlaybackService = async () => {
     });
 };
 
-export let currentlyPlaying: TrackInfo | undefined;
+type PlayerType = {
+    track: TrackInfo | undefined;
+    started: number;
+
+    isPaused(): Promise<boolean>;
+    setTrack(track: TrackInfo): void;
+};
+
+/**
+ * Creates a player object.
+ */
+function Player(): UseBoundStore<StoreApi<PlayerType>> {
+    return create<PlayerType>((set) => ({
+        track: undefined,
+        started: Date.now(),
+
+        async isPaused(): Promise<boolean> {
+            const { state } = await TrackPlayer.getPlaybackState();
+            return state == State.Paused;
+        },
+        setTrack(track: TrackInfo) {
+            set({ track, started: Date.now() });
+        }
+    }));
+}
+
+export const usePlayer = Player();
 
 const backQueue = Queue<TrackInfo>();
 export const useQueue = Queue<TrackInfo>();
@@ -115,6 +143,8 @@ type PlayProps = {
 async function play(
     _track?: TrackInfo | TrackInfo[], props?: PlayProps
 ): Promise<void> {
+    const { track: currentlyPlaying, setTrack } = usePlayer.getState();
+
     if (useDebug.getState().trackInfo) {
         log.info("Playing track:", _track);
     }
@@ -185,7 +215,7 @@ async function play(
 
             await TrackPlayer.add(transform(toPlay));
             await TrackPlayer.play();
-            currentlyPlaying = toPlay;
+            setTrack(toPlay);
         } catch (error) {
             log.warn("Failed to play track:", error);
         }
@@ -231,6 +261,8 @@ async function skipToNext(): Promise<void> {
  * Skips to the previous track in the queue.
  */
 async function skipToPrevious(): Promise<void> {
+    const { track: currentlyPlaying } = usePlayer.getState();
+
     const track = backQueue.getState().dequeue();
     if (!track) return;
 
@@ -254,6 +286,8 @@ async function sync(
     paused: boolean,
     seek: boolean
 ): Promise<void> {
+    const { track: currentlyPlaying } = usePlayer.getState();
+
     // Reset the player if the track is null.
     if (track === null) {
         await TrackPlayer.reset();
