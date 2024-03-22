@@ -128,7 +128,7 @@ async function handshake(): Promise<void> {
 
         log.debug("Connected to gateway!");
 
-        gateway.onclose = timeoutListener;
+        gateway.onclose = () => setTimeout(timeoutListener, 5e3);
         gateway.onmessage = onGatewayMessage;
 
         // Send queued messages.
