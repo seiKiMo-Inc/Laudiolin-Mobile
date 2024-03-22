@@ -6,16 +6,17 @@ import { logger } from "react-native-logs";
 import { useNavigation } from "@react-navigation/native";
 import TrackPlayer, { RepeatMode, useActiveTrack, usePlaybackState } from "react-native-track-player";
 
+import { alert } from "@widgets/Alert";
 import ImportTrack from "@modals/ImportTrack";
 
 import StyledText from "@components/StyledText";
 import StyledButton from "@components/StyledButton";
 
+import Gateway from "@backend/gateway";
 import { Colors, useColor, useDebug } from "@backend/stores";
 import Player, { usePlayer, useQueue } from "@backend/player";
 
 import { value } from "@style/Laudiolin";
-import Gateway from "@backend/gateway";
 
 const log = logger.createLogger();
 
@@ -64,8 +65,11 @@ function Debug() {
                     try {
                         const update = await Updates.checkForUpdateAsync();
                         if (update.isAvailable) {
+                            alert("Update found!");
                             await Updates.fetchUpdateAsync();
                             await Updates.reloadAsync();
+                        } else {
+                            alert("No updates available");
                         }
                     } catch (error) {
                         log.error("Error checking for updates", error);
