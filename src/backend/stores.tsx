@@ -34,12 +34,14 @@ export const useGlobal = create<GlobalState>((set, get) => ({
 export interface DebugState {
     playbackState: boolean;
     trackInfo: boolean;
+    gatewayMessages: boolean;
 
     update(object: any): void;
 }
 export const useDebug = create<DebugState>((set) => ({
     playbackState: false,
     trackInfo: false,
+    gatewayMessages: false,
 
     update: (object: any) => set(object)
 }));
@@ -169,7 +171,7 @@ export const useDownloads = create<DownloadState>()(persist(
         name: "downloads",
         version: 1,
         storage: createJSONStorage(() => AsyncStorage),
-        migrate: (oldState, oldVersion) => {
+        migrate: (oldState, _) => {
             return oldState;
         }
     }

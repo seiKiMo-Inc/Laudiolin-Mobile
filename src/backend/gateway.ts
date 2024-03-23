@@ -1,7 +1,7 @@
 import { logger } from "react-native-logs";
 import TrackPlayer, { Event, State } from "react-native-track-player";
 
-import { useRecents, useSettings } from "@backend/stores";
+import { useDebug, useRecents, useSettings } from "@backend/stores";
 
 import User from "@backend/user";
 import Player, { usePlayer } from "@backend/player";
@@ -205,6 +205,10 @@ function onGatewayMessage(event: MessageEvent): void {
     } catch (error) {
         log.error("Failed to parse gateway message:", error);
         return;
+    }
+
+    if (useDebug.getState().gatewayMessages) {
+        log.debug("Received gateway message:", message);
     }
 
     try {
