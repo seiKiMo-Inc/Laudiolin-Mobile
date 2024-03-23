@@ -9,6 +9,7 @@ import { EmitterSubscription } from "react-native";
 
 const log = logger.createLogger();
 
+export let lastToken: string | undefined = undefined;
 let linkRegister: EmitterSubscription | null = null;
 
 /**
@@ -39,6 +40,7 @@ function disableLink() {
  * @param token The token to store.
  */
 async function storeToken(token: string) {
+    lastToken = token;
     await SecureStore.setItemAsync("userToken", token);
 }
 
@@ -46,7 +48,7 @@ async function storeToken(token: string) {
  * Fetches a user's token from the secure store.
  */
 async function getToken(): Promise<string> {
-    return (await SecureStore.getItemAsync("userToken")) ?? "";
+    return lastToken ?? (await SecureStore.getItemAsync("userToken")) ?? "";
 }
 
 /**
