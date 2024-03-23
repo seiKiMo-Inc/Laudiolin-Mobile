@@ -27,7 +27,6 @@ function color(enabled: boolean, colors: Colors): StyleProp<ViewStyle> {
 function Debug() {
     const debug = useDebug();
     const colors = useColor();
-    const player = usePlayer();
 
     const navigation = useNavigation();
 
@@ -36,7 +35,6 @@ function Debug() {
 
     const [queueInfo, showQueueInfo] = useState(false);
     const [trackInfo, showTrackInfo] = useState(false);
-    const [newQueueInfo, setNewQueueInfo] = useState(false);
 
     const [showImport, setShowImport] = useState(false);
 
