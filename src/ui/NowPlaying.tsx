@@ -71,15 +71,15 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
     const [showSelect, setShowSelect] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
 
+    const fromPlaylist = track ? track.playlist : undefined;
+
     useEffect(() => {
         TrackPlayer.getRepeatMode().then(setRepeatMode);
     });
 
     const goBack = () => global.setShowTrackPage(false);
     const openQueue = () => {
-        navigation.navigate("Named List", {
-            title: "Queue", fetcher: "queue", render: "tracks"
-        });
+        navigation.navigate("Queue");
         global.setShowTrackPage(false);
     };
     const backGesture = Gesture.Fling()
@@ -100,12 +100,12 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
                         <AdIcon name={"left"} size={28} color={colors.text} />
                     </TouchableOpacity>
 
-                    { global.fromPlaylist && (
+                    { fromPlaylist && (
                         <View style={style.NowPlaying_Source}>
                             <StyledText uppercase text={"Playing from Playlist"}
                                         style={{ color: colors.gray }}
                             />
-                            <StyledText bold text={global.fromPlaylist} />
+                            <StyledText bold text={fromPlaylist} />
                         </View>
                     ) }
 

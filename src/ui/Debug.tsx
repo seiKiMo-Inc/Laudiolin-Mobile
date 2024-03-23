@@ -14,7 +14,7 @@ import StyledButton from "@components/StyledButton";
 
 import Gateway from "@backend/gateway";
 import { Colors, useColor, useDebug } from "@backend/stores";
-import Player, { usePlayer, useQueue } from "@backend/player";
+import Player, { usePlayer } from "@backend/player";
 
 import { value } from "@style/Laudiolin";
 
@@ -42,8 +42,6 @@ function Debug() {
 
     const [repeatMode, setRepeatMode] = useState(RepeatMode.Off);
     const [songIndex, setSongIndex] = useState<number | undefined>(0);
-
-    const queue = useQueue();
 
     return (
         <ScrollView
@@ -101,43 +99,20 @@ function Debug() {
                 <View style={{ gap: 10 }}>
                     <StyledButton
                         text={"Clear Queue"}
+                        buttonStyle={{ backgroundColor: colors.secondary }}
                         onPress={() => TrackPlayer.removeUpcomingTracks()}
                     />
                     <StyledButton
                         text={`Current Song: ${songIndex}`}
+                        buttonStyle={{ backgroundColor: colors.secondary }}
                         onPress={() => TrackPlayer.getActiveTrackIndex().then(setSongIndex)}
                     />
                     <StyledButton
                         text={`Current Repeat: ${repeatMode}`}
+                        buttonStyle={{ backgroundColor: colors.secondary }}
                         onPress={() => {
                             Player.nextRepeatMode().then(setRepeatMode);
                         }}
-                    />
-                </View>
-            ) }
-
-            <StyledButton
-                text={"Show New Queue Info"}
-                buttonStyle={color(newQueueInfo, colors)}
-                onPress={() => setNewQueueInfo(!newQueueInfo)}
-            />
-
-            { newQueueInfo && (
-                <View style={{ gap: 10 }}>
-                    <StyledText text={`Songs in queue: ${queue.size()}`} bold />
-                    <StyledText text={`Next Song: ${queue.peek()?.title ?? "No song in queue"}`} />
-                    <StyledText text={`Currently playing song: ${player.track?.title ?? "None"}`} />
-
-                    <StyledButton
-                        text={`Current Repeat: ${repeatMode}`}
-                        onPress={() => {
-                            Player.nextRepeatMode().then(setRepeatMode);
-                        }}
-                    />
-
-                    <StyledButton
-                        text={"Remove Element"}
-                        onPress={() => queue.dequeue()}
                     />
                 </View>
             ) }

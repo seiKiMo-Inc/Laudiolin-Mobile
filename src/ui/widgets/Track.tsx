@@ -60,7 +60,7 @@ function Track(props: IProps) {
                 ...style.Track,
                 ...props.style
             }}
-            onPress={() => Player.play(data, { playlist, reset: true })}
+            onPress={() => Player.play(data, { playlist, skip: true })}
             onLongPress={() => props.onHold ?
                 props.onHold() : setOpened(true)}
         >

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View, ViewProps } from "react-native";
 
 import EnIcon from "react-native-vector-icons/Entypo";
 
@@ -10,12 +10,14 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 import StyledText, { Size } from "@components/StyledText";
 
+import { useColor } from "@backend/stores";
 import { toIconUrl } from "@backend/utils";
 import { OwnedPlaylist } from "@backend/types";
-import { useColor } from "@backend/stores";
 
 interface IProps {
     playlist: OwnedPlaylist;
+
+    style?: ViewProps | any;
 }
 
 function PlaylistStripe(props: IProps) {
@@ -41,7 +43,7 @@ function PlaylistStripe(props: IProps) {
     return (
         <TouchableOpacity
             activeOpacity={0.7}
-            style={style.PlaylistStripe}
+            style={{ ...style.PlaylistStripe, ...props.style }}
             onPress={() => navigation.navigate("Playlist", { playlist: props.playlist })}
         >
             <LinearGradient

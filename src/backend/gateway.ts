@@ -59,10 +59,10 @@ type UpdateInfo = {
  * @param seek Whether the client is seeking.
  */
 async function update({ isSeek, update }: UpdateInfo): Promise<void> {
-    const { track: currentlyPlaying } = usePlayer.getState();
-
     const track = await TrackPlayer.getActiveTrack();
     if (track?.url.includes("file://")) return;
+
+    const trackInfo = track?.source as TrackInfo;
 
     const { state } = await TrackPlayer.getPlaybackState();
     const { position } = await TrackPlayer.getProgress();
@@ -76,7 +76,7 @@ async function update({ isSeek, update }: UpdateInfo): Promise<void> {
         send({
             type: "player",
             seek: position,
-            track: currentlyPlaying ?? null,
+            track: trackInfo ?? null,
             paused: state == State.Paused,
             update: update ?? false
         } as PlayerMessage);

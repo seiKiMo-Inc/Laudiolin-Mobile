@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import NamedList from "@components/NamedList";
 
 import Debug from "@ui/Debug";
+import Queue from "@ui/Queue";
 import Summary from "@ui/Summary";
 import Playlist from "@ui/Playlist";
 import TextPlayground from "@ui/TextPlayground";
@@ -28,6 +29,7 @@ function Home() {
         >
             <Stack.Screen name={"Named List"} component={NamedList} />
             <Stack.Screen name={"Debug"} component={Debug} />
+            <Stack.Screen name={"Queue"} component={Queue} />
             <Stack.Screen name={"Summary"} component={Summary} />
             <Stack.Screen name={"Playlist"} component={Playlist} />
             <Stack.Screen name={"Text Playground"} component={TextPlayground} />
