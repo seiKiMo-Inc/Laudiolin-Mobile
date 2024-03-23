@@ -39,7 +39,7 @@ export async function search(query: string): Promise<SearchResult> {
  * @param result The search result to parse.
  */
 export function tracks({ results, top }: SearchResult): RemoteInfo[] {
-    if (!top || results.length == 0) return [];
+    if (!top) return [];
 
     const tracks: { [key: string]: RemoteInfo } = {};
 
