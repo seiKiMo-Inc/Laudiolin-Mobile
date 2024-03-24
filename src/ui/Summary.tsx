@@ -175,12 +175,6 @@ function Summary({ navigation }: IProps) {
                 />
             </View>
 
-            { recents.length == 0 && downloads.length == 0 && (
-                <StyledText text={"No content found, go download tracks or listen to music!"} lines={2}
-                            style={{ textAlign: "center" }} size={Size.Subheader}
-                />
-            ) }
-
             <View style={style.Summary_Block}>
                 <Header
                     navigation={navigation}
