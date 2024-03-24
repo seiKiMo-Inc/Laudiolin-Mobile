@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
 
 import * as Updates from "expo-updates";
 import { logger } from "react-native-logs";
 import { useNavigation } from "@react-navigation/native";
-import TrackPlayer, { RepeatMode, useActiveTrack, usePlaybackState } from "react-native-track-player";
+import TrackPlayer, { RepeatMode, State, useActiveTrack, usePlaybackState } from "react-native-track-player";
 
 import { alert } from "@widgets/Alert";
 import ImportTrack from "@modals/ImportTrack";
@@ -52,6 +52,11 @@ function Debug() {
             />
 
             <StyledButton
+                text={"Reload"}
+                onPress={() => Updates.reloadAsync()}
+            />
+
+            <StyledButton
                 text={"Check for Updates"}
                 onPress={async () => {
                     try {
@@ -78,6 +83,9 @@ function Debug() {
             { debug.playbackState && (
                 <View style={{ gap: 10 }}>
                     <StyledText text={`Playback state: ${playerState.state}`} bold />
+                    { playerState.state == State.Error && (
+                        <StyledText text={`Error: ${playerState.error}`} />
+                    ) }
                 </View>
             ) }
 
