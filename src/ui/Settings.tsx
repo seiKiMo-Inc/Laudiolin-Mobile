@@ -16,7 +16,7 @@ import { DarkTheme, LightTheme, value } from "@style/Laudiolin";
 
 interface SettingProps {
     title: string;
-    type: "options" | "input";
+    type: "options" | "input" | "boolean";
     setting: string;
 
     options?: string[];
@@ -49,22 +49,32 @@ function Setting(props: SettingProps) {
                 activeOpacity={0.5}
                 style={{ flexDirection: "column" }}
                 onPress={() => {
-                    if (props.type == "options" && props.options) {
-                        const options = props.options;
-                        let currentValue = settings.get(setting);
-                        if (props.reverseParser) {
-                            currentValue = props.reverseParser(currentValue);
-                        }
-                        const index = (options.indexOf(currentValue) + 1) % options.length;
+                    switch (props.type) {
+                        case "options":
+                            if (!props.options) return;
 
-                        let value = options[index];
-                        if (props.parser) {
-                            value = props.parser(value);
-                        }
-                        settings.update(setting, value);
-                        props.onChange?.(value);
-                    } else {
-                        setShowOverlay(true);
+                            const options = props.options;
+                            let currentValue = settings.get(setting);
+                            if (props.reverseParser) {
+                                currentValue = props.reverseParser(currentValue);
+                            }
+                            const index = (options.indexOf(currentValue) + 1) % options.length;
+
+                            let value = options[index];
+                            if (props.parser) {
+                                value = props.parser(value);
+                            }
+                            settings.update(setting, value);
+                            props.onChange?.(value);
+                            return;
+                        case "input":
+                            setShowOverlay(true);
+                            return;
+                        case "boolean":
+                            const newValue = !settings.get(setting);
+                            settings.update(setting, newValue);
+                            props.onChange?.(newValue);
+                            return;
                     }
                 }}
             >
@@ -192,6 +202,10 @@ function Settings() {
                              options={["Light", "Dark", "System"]}
                              onChange={value => colors.change(
                                  value == "Dark" ? DarkTheme : LightTheme)}
+                    />
+
+                    <Setting title={"Show Queue Button"} type={"boolean"}
+                             setting={"ui.show_queue"}
                     />
                 </Section>
 

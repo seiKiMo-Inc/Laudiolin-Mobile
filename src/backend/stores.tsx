@@ -52,6 +52,7 @@ export interface SettingsState {
     };
     ui: {
         color_theme: "Light" | "Dark" | "System";
+        show_queue: boolean;
     };
     system: {
         broadcast_listening: "Nobody" | "Friends" | "Everyone";
@@ -69,7 +70,8 @@ export const useSettings = create<SettingsState>()(persist(
             engine: "All"
         },
         ui: {
-            color_theme: "System"
+            color_theme: "System",
+            show_queue: true
         },
         system: {
             broadcast_listening: "Nobody",
@@ -100,13 +102,18 @@ export const useSettings = create<SettingsState>()(persist(
         }
     }),
     {
-        version: 2,
+        version: 3,
         name: "settings",
         storage: createJSONStorage(() => AsyncStorage),
         migrate: (lastState, lastVersion) => {
-            if (lastVersion == 1) {
-                return lastState;
+            const state = {};
+            Object.assign(state, lastState);
+
+            if (lastVersion == 2) {
+                (state as SettingsState).ui.show_queue = false;
             }
+
+            return state;
         }
     }
 ));

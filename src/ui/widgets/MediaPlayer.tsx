@@ -1,19 +1,22 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import MdIcon from "react-native-vector-icons/MaterialIcons";
 import McIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import FastImage from "react-native-fast-image";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import TrackPlayer, { State, useActiveTrack, usePlaybackState } from "react-native-track-player";
 
 import StyledText, { Size } from "@components/StyledText";
 
 import Player from "@backend/player";
 import { artist } from "@backend/search";
-import { useGlobal } from "@backend/stores";
+import { useGlobal, useSettings } from "@backend/stores";
 
 function MediaPlayer() {
     const global = useGlobal();
+    const settings = useSettings();
+    const navigation: NavigationProp<any> = useNavigation();
 
     const track = useActiveTrack();
     const { state } = usePlaybackState();
@@ -30,12 +33,21 @@ function MediaPlayer() {
                     style={style.MediaPlayer_Background}
                     onPress={() => global.setShowTrackPage(true)}
                 >
-                    <View style={style.MediaPlayer_Info}>
+                    <View style={{
+                        ...style.MediaPlayer_Info,
+                        width: `${settings.ui.show_queue ? "65" : "75"}%`
+                    }}>
                         <StyledText style={style.MediaPlayer_Text} text={track.title ?? "---"} size={Size.Text} />
                         <StyledText style={style.MediaPlayer_Text} text={artist(track.artist)} size={Size.Footnote} />
                     </View>
 
                     <View style={style.MediaPlayer_Controls}>
+                        { settings.ui.show_queue && (
+                            <TouchableOpacity onPress={() => navigation.navigate("Queue")}>
+                                <MdIcon name={"queue-music"} size={32} color={"white"} />
+                            </TouchableOpacity>
+                        ) }
+
                         <TouchableOpacity
                             onPress={async () => {
                                 if (state == State.Paused) {
@@ -82,7 +94,6 @@ const style = StyleSheet.create({
         paddingRight: 5,
     },
     MediaPlayer_Info: {
-        width: "75%",
         padding: 10
     },
     MediaPlayer_Text: {
