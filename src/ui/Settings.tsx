@@ -169,7 +169,7 @@ function Settings() {
                             </View>
 
                             <TouchableOpacity onPress={() => User.logOut()}>
-                                <StyledText text={"Log out"} underlined size={Size.Footnote} />
+                                <StyledText text={"Log out"} underlined size={Size.Footnote} style={{ color: colors.red }} />
                             </TouchableOpacity>
                         </>
                         :
