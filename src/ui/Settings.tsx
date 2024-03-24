@@ -210,17 +210,20 @@ function Settings() {
                 </Section>
 
                 <Section title={"System"}>
-                    <Setting title={"Broadcast Current Song"} type={"options"}
-                             setting={"system.broadcast_listening"}
-                             options={["Nobody", "Friends", "Everyone"]}
-                    />
+                    {
+                        user ?
+                            <Setting title={"Broadcast Current Song"} type={"options"}
+                                     setting={"system.broadcast_listening"}
+                                     options={["Nobody", "Friends", "Everyone"]}
+                            /> : undefined
+                    }
 
                     {
                         discordEnabled ?
-                        <Setting title={"Discord Rich Presence Type"} type={"options"}
-                                 setting={"system.presence"}
-                                 options={["Generic", "Simple", "Detailed", "None"]}
-                        /> : undefined
+                            <Setting title={"Discord Rich Presence Type"} type={"options"}
+                                     setting={"system.presence"}
+                                     options={["Generic", "Simple", "Detailed", "None"]}
+                            /> : undefined
                     }
 
                     <Setting title={"Server Address"} type={"input"}
