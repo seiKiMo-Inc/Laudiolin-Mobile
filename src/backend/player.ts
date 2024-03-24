@@ -6,7 +6,7 @@ import TrackPlayer, { AddTrack, Event, RepeatMode, State } from "react-native-tr
 
 import Backend from "@backend/backend";
 import { resolveIcon } from "@backend/utils";
-import { useDebug, useGlobal } from "@backend/stores";
+import { useDebug } from "@backend/stores";
 import { PlaylistInfo, TrackInfo } from "@backend/types";
 
 const log = logger.createLogger();
@@ -147,7 +147,7 @@ async function play(
     }
 
     // Get the existing queue.
-    const queue = await TrackPlayer.getQueue();
+    let queue = await TrackPlayer.getQueue();
 
     // Shuffle the list of tracks if needed.
     let inQueue = false;
@@ -176,8 +176,11 @@ async function play(
         await TrackPlayer.getQueue());
 
     if (!Array.isArray(track) && props?.skip) {
+        queue = await TrackPlayer.getQueue();
+
         const id = track.id;
-        await TrackPlayer.skip(queue.findIndex(t => t.id == id));
+        await TrackPlayer.skip(
+            queue.findIndex(t => t.id == id));
     }
 
     await TrackPlayer.setPlayWhenReady(true);
