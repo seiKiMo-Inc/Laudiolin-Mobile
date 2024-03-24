@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 import * as WebBrowser from "expo-web-browser";
 import FastImage from "react-native-fast-image";
@@ -15,19 +15,24 @@ import SelectAPlaylist from "@modals/SelectAPlaylist";
 import User from "@backend/user";
 import Player from "@backend/player";
 import Playlist from "@backend/playlist";
+import Downloads from "@backend/downloads";
 import { artist } from "@backend/search";
 import { resolveIcon } from "@backend/utils";
 import { useColor, useDownloads, useFavorites } from "@backend/stores";
 import { DownloadInfo, OwnedPlaylist, RemoteInfo, TrackInfo } from "@backend/types";
 
 import { value } from "@style/Laudiolin";
-import Downloads from "@backend/downloads";
 
 interface IProps {
     data: TrackInfo;
     playlist?: OwnedPlaylist;
 
-    style?: any;
+    style?: ViewStyle | any;
+
+    /**
+     * This prop is applied to both elements of the track.
+     */
+    textStyle?: TextStyle | any;
 
     disabled?: boolean;
     onHold?: () => void;
@@ -71,9 +76,22 @@ function Track(props: IProps) {
                 />
 
                 <View style={style.Track_Info}>
-                    <StyledText style={style.Track_Title} text={data.title ?? ""}
-                                ticker={(data.title ?? "").length > 25} />
-                    <StyledText text={artist(data)} size={Size.Footnote} />
+                    <StyledText
+                        style={{
+                            ...style.Track_Title,
+                            ...props.textStyle
+                        }}
+                        text={data.title ?? ""}
+                        ticker={(data.title ?? "").length > 25}
+                    />
+
+                    <StyledText
+                        style={{
+                            ...props.textStyle
+                        }}
+                        text={artist(data)}
+                        size={Size.Footnote}
+                    />
                 </View>
             </View>
 

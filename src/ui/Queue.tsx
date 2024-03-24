@@ -12,6 +12,8 @@ import StyledText, { Size } from "@components/StyledText";
 import useQueue from "@hooks/useQueue";
 import useTrackIndex from "@hooks/useTrackIndex";
 
+import { useColor } from "@backend/stores";
+
 import { value } from "@style/Laudiolin";
 
 interface IProps {
@@ -19,10 +21,13 @@ interface IProps {
 }
 
 function Queue({ navigation }: IProps) {
-    const queue = useQueue();
+    const colors = useColor();
+
+    const _queue = useQueue();
     const trackIndex = useTrackIndex();
 
     const listRef = useRef<FlashList<any>>(null);
+    const [queue, setQueue] = useState(_queue);
 
     const scroll = () => {
         listRef.current?.scrollToIndex({
@@ -36,7 +41,10 @@ function Queue({ navigation }: IProps) {
         if (queue.length > 0) {
             setTimeout(() => scroll(), 150);
         }
-    }, [queue, trackIndex]);
+
+        setQueue(_queue
+            .map((track, index) => ({ ...track, selected: index == trackIndex })));
+    }, [_queue, trackIndex]);
 
     return (
         <View
@@ -53,7 +61,16 @@ function Queue({ navigation }: IProps) {
                 estimatedItemSize={100}
                 keyExtractor={(_, index) => index.toString()}
                 renderItem={({ item, index }) => (
-                    <Track style={{ paddingBottom: 10 }} data={item} key={index} />
+                    <Track
+                        style={{
+                            paddingBottom: 10,
+                            transform: [
+                                { scale: item.selected ? 1 : 0.95 }
+                            ]
+                        }}
+                        textStyle={{ color: item.selected ? colors.accent : colors.text }}
+                        data={item} key={index}
+                    />
                 )}
             />
         </View>
