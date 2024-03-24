@@ -30,6 +30,7 @@ export const PlaybackService = async () => {
     TrackPlayer.addEventListener(Event.PlaybackState, (data) => {
         if (data == undefined || data.state == undefined) {
             TrackPlayer.reset();
+            log.debug("Playback state is undefined.");
             return;
         }
 
