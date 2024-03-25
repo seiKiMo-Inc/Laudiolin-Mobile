@@ -253,6 +253,17 @@ function loadFavorites(): void {
 async function favoriteTrack(
     track: RemoteInfo, add: boolean = true
 ): Promise<boolean> {
+    if (!isLoggedIn()) {
+        const favorites: RemoteInfo[] = Object.values(useFavorites.getState());
+        if (add) {
+            useFavorites.setState([...favorites, track]);
+        } else {
+            useFavorites.setState(favorites.filter(t => t.id != track.id));
+        }
+
+        return true;
+    }
+
     const response = await fetch(`${Backend.getBaseUrl()}/user/favorite`, {
         method: "POST",
         headers: {

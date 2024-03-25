@@ -43,8 +43,9 @@ export function tracks({ results, top }: SearchResult): RemoteInfo[] {
 
     const tracks: { [key: string]: RemoteInfo } = {};
 
-    top.type = "remote";
-    tracks[top.id] = top;
+    const clone: RemoteInfo = { ...top };
+    clone.type = "remote";
+    tracks[clone.id] = clone;
 
     for (const track of results) {
         if (!tracks[track.id]) {

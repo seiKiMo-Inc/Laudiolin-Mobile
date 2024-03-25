@@ -200,6 +200,28 @@ export const useDownloads = create<DownloadState>()(persist(
 ));
 
 export const useUser = create<User | null>(() => null);
-export const useRecents = create<RemoteInfo[]>(() => []);
-export const useFavorites = create<RemoteInfo[]>(() => []);
+
+export const useRecents = create<RemoteInfo[]>()(persist(
+    (): RemoteInfo[] => [],
+    {
+        name: "recents",
+        version: 1,
+        storage: createJSONStorage(() => AsyncStorage),
+        migrate: (oldState, _) => {
+            return oldState;
+        }
+    }
+));
+export const useFavorites = create<RemoteInfo[]>()(persist(
+    (): RemoteInfo[] => [],
+    {
+        name: "recents",
+        version: 1,
+        storage: createJSONStorage(() => AsyncStorage),
+        migrate: (oldState, _) => {
+            return oldState;
+        }
+    }
+));
+
 export const usePlaylists = create<OwnedPlaylist[]>(() => []);

@@ -1,10 +1,12 @@
 import * as FileSystem from "expo-file-system";
 import { logger } from "react-native-logs";
 import { EventRegister } from "react-native-event-listeners";
+import TrackPlayer, { Event, PlaybackActiveTrackChangedEvent } from "react-native-track-player";
 
+import User from "@backend/user";
 import Playlist from "@backend/playlist";
-import { OwnedPlaylist, User } from "@backend/types";
-import { usePlaylists } from "@backend/stores";
+import { usePlaylists, useRecents } from "@backend/stores";
+import { OwnedPlaylist, RemoteInfo, TrackInfo, User as UserType } from "@backend/types";
 
 const log = logger.createLogger();
 
@@ -34,6 +36,9 @@ async function mkdir(name: string): Promise<boolean> {
  * Should be called after the user is authenticated.
  */
 async function setup(): Promise<void> {
+    // Listen for track player events.
+    TrackPlayer.addEventListener(Event.PlaybackActiveTrackChanged, addToRecents);
+
     // Wait for the user data to finish loading.
     EventRegister.addEventListener("user:login", _setup);
 
@@ -49,16 +54,11 @@ async function setup(): Promise<void> {
 /**
  * Internal setup function.
  */
-async function _setup(_: false | User): Promise<void> {
+async function _setup(_: false | UserType): Promise<void> {
     // Resolve local playlists.
     const playlistsDir = `${FileSystem.documentDirectory}playlists`;
     const playlists = await FileSystem.readDirectoryAsync(playlistsDir);
     await loadPlaylists(playlists);
-
-    // Resolve local data.
-    const localDataDir = `${FileSystem.documentDirectory}localData`;
-    const localData = await FileSystem.readDirectoryAsync(localDataDir);
-    await loadLocalData(localData);
 }
 
 /**
@@ -95,12 +95,39 @@ async function loadPlaylists(files: string[]) {
 }
 
 /**
- * Loads local user data from the given files.
- *
- * @param files The path to the local data files.
+ * Adds the new track to the recents.
  */
-async function loadLocalData(files: string[]) {
+function addToRecents({ track }: PlaybackActiveTrackChangedEvent): void {
+    if (!track || User.isLoggedIn()) return;
 
+    // Get the track info.
+    const info = track.source as TrackInfo;
+    if (!info) return;
+
+    // Add the track to the recents.
+    const recents = Object.values(useRecents.getState());
+
+    const mostRecent = recents[0];
+    if (mostRecent?.id != info?.id) {
+        if (info.type != "remote") return;
+
+        // Add the track to the user's recently played.
+        if (recents.length >= 10) {
+            // Remove the oldest track.
+            recents.pop();
+        }
+        recents.unshift(info);
+
+        // Remove any duplicates.
+        const newList: RemoteInfo[] = [];
+        recents.forEach(track => {
+            if (!newList.find(t => t.id === track.id)) {
+                newList.push(track);
+            }
+        });
+
+        useRecents.setState(newList, true);
+    }
 }
 
 export default {

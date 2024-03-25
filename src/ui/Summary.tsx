@@ -40,11 +40,11 @@ function formPlaylists(
     showPlaylistModal: () => void
 ): PlaylistIcon[] {
     const items: PlaylistIcon[] = [];
-    if (user) {
+    if (favorites.length > 0) {
         items.push({
             type: "info",
             id: "favorites",
-            owner: user?.userId ?? "",
+            owner: user?.userId ?? "local",
             name: "Favorites",
             description: "All your liked songs!",
             icon: `${Backend.getBaseUrl()}/Favorite.png`,
