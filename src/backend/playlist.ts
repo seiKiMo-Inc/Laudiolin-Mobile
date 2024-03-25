@@ -75,10 +75,13 @@ async function _editPlaylist(playlistId: string, body: any, type: string): Promi
     if (!User.isLoggedIn()) {
         // Edit the playlist on the file system.
         const playlists = Object.values(usePlaylists.getState());
-        const playlist = playlists.find(p => p.id == playlistId);
-        if (!playlist) return [404, undefined];
+        const _playlist = playlists.find(p => p.id == playlistId);
+        if (!_playlist) return [404, undefined];
 
         // Perform the edit.
+        const playlist: OwnedPlaylist | any = {};
+        Object.assign(playlist, _playlist);
+
         switch (type) {
             case "bulk":
                 Object.assign(playlist, body);
@@ -99,10 +102,14 @@ async function _editPlaylist(playlistId: string, body: any, type: string): Promi
                 playlist.tracks = body.tracks;
                 break;
             case "add":
-                playlist.tracks.push(body);
+                const addTracks = [...playlist.tracks];
+                addTracks.push(body);
+                playlist.tracks = addTracks;
                 break;
             case "remove":
-                playlist.tracks.splice(body.index, 1);
+                const removeTracks = [...playlist.tracks];
+                removeTracks.splice(body.index, 1);
+                playlist.tracks = removeTracks;
                 break;
         }
 
