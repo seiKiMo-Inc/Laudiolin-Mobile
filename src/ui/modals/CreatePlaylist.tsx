@@ -1,12 +1,13 @@
 // noinspection RequiredAttributes
 
-import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useState } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 import { logger } from "react-native-logs";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 import OrDivider from "@components/OrDivider";
+import StyledText from "@components/StyledText";
 import StyledModal from "@components/StyledModal";
 import StyledToggle from "@components/StyledToggle";
 import StyledButton from "@components/StyledButton";
@@ -41,11 +42,12 @@ function CreatePlaylist(props: IProps) {
     const [useImport, setImport] = useState(false);
 
     const [importUrl, setImportUrl] = useState("");
+    const [importing, setImporting] = useState(false);
 
     return (
         <StyledModal
             visible={props.visible}
-            onPressOutside={props.hide}
+            onPressOutside={!importing ? props.hide : undefined}
             style={style.CreatePlaylist}
             title={"Create Playlist"}
             onLayout={() => {
@@ -55,44 +57,64 @@ function CreatePlaylist(props: IProps) {
                 setCover(null);
                 setImport(false);
                 setImportUrl("");
+                setImporting(false);
             }}
         >
             { useImport ? <>
-                <StyledTextInput
-                    default={"Playlist URL"}
-                    defaultColor={colors.gray}
-                    textStyle={style.CreatePlaylist_Text}
-                    inputStyle={{ borderBottomColor: "transparent" }}
-                    containerStyle={{
-                        ...style.CreatePlaylist_Input,
-                        backgroundColor: colors.primary
-                    }}
-                    onChange={setImportUrl}
-                />
+                { importing ? <>
+                    <StyledText
+                        style={style.CreatePlaylist_Text}
+                        text={"Your playlist is currently importing..."}
+                    />
 
-                <StyledButton
-                    text={"Import"}
-                    style={style.CreatePlaylist_Button}
-                    buttonStyle={{ backgroundColor: colors.accent }}
-                    onPress={async () => {
-                        if (importUrl == "") return;
+                    <ActivityIndicator
+                        size={"large"}
+                    />
 
-                        const [success, playlistId] = await Playlist.createPlaylist(importUrl);
-                        if (success) {
-                            props.hide();
-                            navigation.navigate("Playlist", { playlistId });
-                        }
-                    }}
-                />
+                    <StyledText
+                        text={"Please do not close the app."}
+                        bold
+                    />
+                </> : <>
+                    <StyledTextInput
+                        default={"Playlist URL"}
+                        defaultColor={colors.gray}
+                        textStyle={style.CreatePlaylist_Text}
+                        inputStyle={{ borderBottomColor: "transparent" }}
+                        containerStyle={{
+                            ...style.CreatePlaylist_Input,
+                            backgroundColor: colors.primary
+                        }}
+                        onChange={setImportUrl}
+                    />
 
-                <OrDivider />
+                    <StyledButton
+                        text={"Import"}
+                        style={style.CreatePlaylist_Button}
+                        buttonStyle={{ backgroundColor: colors.accent }}
+                        onPress={async () => {
+                            if (importUrl == "") return;
 
-                <StyledButton
-                    text={"Create a Playlist"}
-                    style={style.CreatePlaylist_Button}
-                    buttonStyle={{ backgroundColor: colors.accent }}
-                    onPress={() => setImport(false)}
-                />
+                            setImporting(true);
+                            const [success, playlistId] = await Playlist.createPlaylist(importUrl);
+                            if (success) {
+                                setImporting(false);
+
+                                props.hide();
+                                navigation.navigate("Playlist", { playlistId });
+                            }
+                        }}
+                    />
+
+                    <OrDivider />
+
+                    <StyledButton
+                        text={"Create a Playlist"}
+                        style={style.CreatePlaylist_Button}
+                        buttonStyle={{ backgroundColor: colors.accent }}
+                        onPress={() => setImport(false)}
+                    />
+                </> }
             </> : <>
                 <View style={{
                     gap: 10,
@@ -185,7 +207,7 @@ export default CreatePlaylist;
 const style = StyleSheet.create({
     CreatePlaylist: {
         gap: 15,
-        width: value.width * 0.8
+        width: value.width * 0.9
     },
     CreatePlaylist_Input: {
         borderRadius: 10
