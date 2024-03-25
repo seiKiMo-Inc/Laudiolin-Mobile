@@ -63,6 +63,7 @@ async function update({ isSeek, update }: UpdateInfo): Promise<void> {
     if (track?.url.includes("file://")) return;
 
     const trackInfo = track?.source as TrackInfo;
+    if (trackInfo.type == "download") return;
 
     const { state } = await TrackPlayer.getPlaybackState();
     const { position } = await TrackPlayer.getProgress();
