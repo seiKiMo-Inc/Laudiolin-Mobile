@@ -159,7 +159,7 @@ async function play(
         track.forEach((track) => trackList.push(track));
     } else {
         const id = track.id;
-        inQueue = queue.find(t => t.id != id) != undefined;
+        inQueue = queue.find(t => t.id == id) != undefined;
         if (!inQueue) {
             trackList.push(track);
         }
