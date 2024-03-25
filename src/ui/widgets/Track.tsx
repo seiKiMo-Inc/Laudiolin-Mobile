@@ -4,6 +4,7 @@ import { View, TouchableOpacity, StyleSheet, TextStyle, ViewStyle } from "react-
 import * as WebBrowser from "expo-web-browser";
 import FastImage from "react-native-fast-image";
 import EnIcon from "react-native-vector-icons/Entypo";
+import MaIcon from "react-native-vector-icons/MaterialIcons";
 import McIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import StyledMenu from "@components/StyledMenu";
@@ -122,6 +123,11 @@ function Track(props: IProps) {
                 opened={opened}
                 close={() => setOpened(false)}
                 options={[
+                    {
+                        text: "Add to Queue",
+                        icon: <MaIcon name={"queue"} size={24} color={colors.text} />,
+                        onPress: () => Player.play(data, { playlist })
+                    },
                     playlist?.id != "favorites" ? {
                         text: `${playlist ? "Remove from" : "Add to"} Playlist`,
                         icon: <McIcon name={"playlist-plus"} size={24} color={colors.text} />,

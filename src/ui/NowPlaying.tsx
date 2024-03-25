@@ -189,6 +189,11 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
                     close={() => setShowMenu(false)}
                     options={[
                         currentlyPlaying && {
+                            text: "Add to Queue",
+                            icon: <MdIcon name={"queue"} size={24} color={colors.text} />,
+                            onPress: () => Player.play(currentlyPlaying, { playlist: fromPlaylist })
+                        },
+                        currentlyPlaying && {
                             text: "Add to Playlist",
                             icon: <McIcon name={"playlist-plus"} size={24} color={colors.text} />,
                             onPress: () => setShowMenu(false),

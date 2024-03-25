@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import FaIcon from "react-native-vector-icons/FontAwesome";
+import MaIcon from "react-native-vector-icons/MaterialIcons";
 import Fa6Icon from "react-native-vector-icons/FontAwesome6";
 import EnIcon from "react-native-vector-icons/Entypo";
 
@@ -196,7 +197,7 @@ function Playlist(props: IProps) {
                 options={[
                     playlist.tracks.length > 0 ? {
                         text: "Add Songs to Queue",
-                        icon: <FaIcon name={"plus"} size={20} color={colors.text} />,
+                        icon: <MaIcon name={"queue"} size={24} color={colors.text} />,
                         onPress: () => Player.play(playlist.tracks, { playlist })
                     } : undefined,
                     {
