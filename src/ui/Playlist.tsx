@@ -92,7 +92,10 @@ function Playlist(props: IProps) {
                 onLongPress={() => setShowMenu(true)}
             >
                 <FastImage
-                    source={{ uri: toIconUrl(playlist.icon) }}
+                    source={{
+                        uri: toIconUrl(playlist.icon),
+                        cache: FastImage.cacheControl.web
+                    }}
                     style={style.Playlist_Cover}
                 />
 

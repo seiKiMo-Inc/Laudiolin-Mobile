@@ -19,7 +19,10 @@ function Playlist({ playlist, onPress }: IProps) {
             onPress={onPress}
         >
             <FastImage
-                source={{ uri: toIconUrl(playlist.icon) }}
+                source={{
+                    uri: toIconUrl(playlist.icon),
+                    cache: FastImage.cacheControl.web
+                }}
                 style={style.Playlist_Image}
             >
                 <StyledText
