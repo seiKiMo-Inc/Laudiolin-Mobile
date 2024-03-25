@@ -55,16 +55,17 @@ function Track(props: IProps) {
     const [opened, setOpened] = useState(false);
     const [add, setShowAdd] = useState(false);
 
+    const disabled = props.disabled ||
+        (data.url == "" && data.duration == 0 && !local);
+
     return (
         <TouchableOpacity
-            disabled={
-                props.disabled ||
-                (data.url == "" && data.duration == 0 && !local)
-            }
+            disabled={disabled}
             activeOpacity={0.7}
             style={{
                 ...style.Track,
-                ...props.style
+                ...props.style,
+                opacity: disabled ? 0.5 : 1
             }}
             onPress={() => Player.play(data, { playlist, skip: true })}
             onLongPress={() => props.onHold ?
