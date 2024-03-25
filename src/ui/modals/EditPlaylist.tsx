@@ -120,16 +120,18 @@ function EditPlaylist({ playlist, visible, hide }: IProps) {
                 }}
             />
 
-            <StyledToggle
-                title={"Private Playlist?"}
-                value={isPrivate}
-                onPress={async (val) => {
-                    if (await Playlist.editPlaylist(
-                        { id: playlist.id, isPrivate: val })) {
-                        setPrivate(val);
-                    }
-                }}
-            />
+            { playlist.owner != "local" && (
+                <StyledToggle
+                    title={"Private Playlist?"}
+                    value={isPrivate}
+                    onPress={async (val) => {
+                        if (await Playlist.editPlaylist(
+                            { id: playlist.id, isPrivate: val })) {
+                            setPrivate(val);
+                        }
+                    }}
+                />
+            ) }
 
             <StyledButton
                 text={"Delete Playlist"}
