@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, Alert as RNAlert } from "react-native";
 
 import { create } from "zustand";
 
@@ -13,9 +13,14 @@ const store = create(() => "");
  * Alert the user with a message.
  *
  * @param message The message to alert the user with.
+ * @param native Should the native alert be used instead?
  */
-export function alert(message: string) {
-    store.setState(message);
+export function alert(message: string, native: boolean = false) {
+    if (native) {
+        RNAlert.alert(message);
+    } else {
+        store.setState(message);
+    }
 }
 
 function Alert() {

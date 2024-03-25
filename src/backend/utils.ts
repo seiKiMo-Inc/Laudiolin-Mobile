@@ -142,6 +142,7 @@ export function base64Encode(input: string): string {
  */
 export function toIconUrl(icon: string | undefined): string | undefined {
     if (icon == undefined || icon == "") return undefined;
+    if (icon.startsWith("file://")) return icon; // Skip local files.
     return `${Backend.getBaseUrl()}/proxy/icon?url=${base64Encode(icon)}`;
 }
 
@@ -186,4 +187,17 @@ export async function sha256(
         CryptoDigestAlgorithm.SHA256, data
     );
     return length == -1 ? digest : digest.substring(0, length);
+}
+
+/**
+ * Generates a random string of the provided length.
+ *
+ * @param length The length of the string to generate.
+ */
+export function randomString(length: number): string {
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        result += base64Alphabet.charAt(Math.floor(Math.random() * base64Alphabet.length - 2));
+    }
+    return result;
 }

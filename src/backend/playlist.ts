@@ -1,7 +1,9 @@
 import { logger } from "react-native-logs";
+import * as FileSystem from "expo-file-system";
 
 import User from "@backend/user";
 import Backend from "@backend/backend";
+import { randomString } from "@backend/utils";
 import { usePlaylists, useUser } from "@backend/stores";
 import { OwnedPlaylist, PlaylistInfo, TrackInfo } from "@backend/types";
 
@@ -24,6 +26,12 @@ function modifyPlaylist(playlist: OwnedPlaylist): void {
         playlists.push(playlist);
         usePlaylists.setState(playlists, true);
     }
+
+    // Save the playlists if the user isn't logged in.
+    if (!User.isLoggedIn()) {
+        savePlaylists()
+            .catch(error => log.error("Unable to save playlists.", error));
+    }
 }
 
 /**
@@ -33,6 +41,12 @@ function modifyPlaylist(playlist: OwnedPlaylist): void {
  * @param id The ID of the playlist to fetch.
  */
 async function fetchPlaylist(id: string): Promise<OwnedPlaylist | null> {
+    // Check if the playlist exists in the store.
+    const playlists = Object.values(usePlaylists.getState());
+    const playlist = playlists.find(p => p.id == id);
+    if (playlist) return playlist;
+
+    // Fetch the playlist from the backend.
     const response = await fetch(`${Backend.getBaseUrl()}/playlist/${id}`, {
         cache: "no-cache", headers: { authorization: await User.getToken() }
     });
@@ -48,23 +62,6 @@ async function fetchPlaylist(id: string): Promise<OwnedPlaylist | null> {
         log.error("Failed to fetch playlist", error);
         return null;
     }
-}
-
-/**
- * Finds the playlist in the existing playlist store.
- * If it doesn't exist, it will reach out to the server.
- *
- * @param id The ID of the playlist to find.
- */
-async function findPlaylist(id: string): Promise<OwnedPlaylist | null> {
-    const playlists = Object.values(usePlaylists.getState());
-
-    let playlist = playlists.find(p => p.id == id) ?? null;
-    if (!playlist) {
-        playlist = await fetchPlaylist(id);
-    }
-
-    return playlist;
 }
 
 /**
@@ -282,6 +279,23 @@ async function deletePlaylist(playlist: OwnedPlaylist | string): Promise<boolean
  * @return A tuple containing a boolean indicating success and the playlist ID.
  */
 async function createPlaylist(playlist: PlaylistInfo | string): Promise<[boolean, string, OwnedPlaylist | undefined]> {
+    // Check if the user is logged in.
+    if (!User.isLoggedIn()) {
+        // You cannot import playlists without signing in.
+        if (typeof playlist == "string")
+            return [false, "", undefined];
+
+        // Update the playlist and save it locally.
+        const created = playlist as OwnedPlaylist;
+        created.id = randomString(24);
+        created.owner = "local";
+
+        // Add the playlist to the store.
+        modifyPlaylist(created);
+
+        return [true, created.id, created];
+    }
+
     let response: Response;
     if (typeof playlist == "string") {
         response = await fetch(`${Backend.getBaseUrl()}/playlist/import`, {
@@ -323,6 +337,7 @@ async function createPlaylist(playlist: PlaylistInfo | string): Promise<[boolean
 async function getAuthor(playlist: OwnedPlaylist | string) {
     const owner = typeof playlist == "string" ? playlist : playlist.owner;
     if (!owner) return "Unknown";
+    if (owner == "local") return "You";
 
     // Check if the playlist belongs to the current user.
     let user = useUser.getState();
@@ -341,14 +356,39 @@ async function getAuthor(playlist: OwnedPlaylist | string) {
  * @param playlist The playlist to set the icon for.
  * @param icon The icon to set, encoded in Base64.
  */
-async function setPlaylistIcon(playlist: OwnedPlaylist, icon: string): Promise<boolean> {
-    if (icon == null || icon.length == 0) return false;
+async function setPlaylistIcon(playlist: OwnedPlaylist, icon: [string, string]): Promise<boolean> {
+    if (icon == null || icon[0].length == 0) return false;
+
+    // Check if the playlist is local.
+    if (playlist.owner == "local") {
+        // Save the playlist icon locally.
+        const iconPath = `${FileSystem.documentDirectory}playlists/${playlist.id}.jpg`;
+        try {
+            // If the playlist already had a file-based icon, delete it.
+            if (playlist.icon.startsWith("file://")) {
+                await FileSystem.deleteAsync(playlist.icon);
+            }
+
+            await FileSystem.copyAsync({
+                from: icon[1], to: iconPath
+            });
+        } catch (error) {
+            log.error("Failed to save playlist icon", error);
+            return false;
+        }
+
+        // Update the playlist icon.
+        playlist.icon = iconPath;
+        modifyPlaylist(playlist);
+
+        return true;
+    }
 
     const response = await fetch(`${Backend.getBaseUrl()}/playlist/${playlist.id}/icon`, {
         method: "POST", headers: {
             "Content-Type": "text/plain", authorization: await User.getToken()
         },
-        body: icon
+        body: icon[0]
     });
 
     if (response.status != 200) {
@@ -367,14 +407,29 @@ async function setPlaylistIcon(playlist: OwnedPlaylist, icon: string): Promise<b
     return true;
 }
 
+/**
+ * Saves all existing playlists in the store to the file system.
+ */
+async function savePlaylists(): Promise<void> {
+    const playlists = Object.values(usePlaylists.getState());
+    for (const playlist of playlists) {
+        const path = `${FileSystem.documentDirectory}playlists/${playlist.id}.json`;
+        try {
+            await FileSystem.writeAsStringAsync(path, JSON.stringify(playlist));
+        } catch (error) {
+            log.error(`Failed to save playlist: ${playlist.id}`, error);
+        }
+    }
+}
+
 export default {
     fetchPlaylist,
-    findPlaylist,
     editPlaylist,
     addTrackToPlaylist,
     removeTrackFromPlaylist,
     deletePlaylist,
     createPlaylist,
     getAuthor,
-    setPlaylistIcon
+    setPlaylistIcon,
+    modifyPlaylist
 };

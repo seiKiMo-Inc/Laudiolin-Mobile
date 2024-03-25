@@ -143,8 +143,9 @@ function Section(props: SectionProps) {
 
 function Settings() {
     const user = useUser();
-    const global = useGlobal();
     const colors = useColor();
+    const global = useGlobal();
+    const settings = useSettings();
 
     const discordEnabled = user?.connections?.discord ?? undefined;
 
@@ -178,7 +179,10 @@ function Settings() {
                                 text={"Login"}
                                 style={style.Settings_Login}
                                 buttonStyle={{ backgroundColor: colors.accent }}
-                                onPress={() => global.setShowLoginPage(true)}
+                                onPress={() => {
+                                    global.setShowLoginPage(true);
+                                    settings.update("show_login", true);
+                                }}
                             />
                         </View>
                 }

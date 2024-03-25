@@ -47,6 +47,8 @@ export const useDebug = create<DebugState>((set) => ({
 }));
 
 export interface SettingsState {
+    show_login: boolean;
+
     search: {
         engine: SearchEngine
     };
@@ -66,6 +68,7 @@ export interface SettingsState {
 }
 export const useSettings = create<SettingsState>()(persist(
     (set, get): SettingsState => ({
+        show_login: true,
         search: {
             engine: "All"
         },
@@ -81,15 +84,24 @@ export const useSettings = create<SettingsState>()(persist(
         },
 
         update: (name, value) => set((state) => {
-            // Get the correct object.
-            const parts = name.split(".");
-            const key = parts.pop() as string;
-            const obj = parts.reduce((a: any, b) => a[b], state);
+            let obj: any;
+            if (name.includes(".")) {
+                // Get the correct object.
+                const parts = name.split(".");
+                const key = parts.pop() as string;
+                obj = parts.reduce((a: any, b) => a[b], state);
 
-            // Set the value.
-            if (obj) {
-                obj[key] = value;
+                // Set the value.
+                if (obj) {
+                    obj[key] = value;
+                }
+            } else {
+                obj = state;
+                if (name in obj) {
+                    obj[name] = value;
+                }
             }
+
             return obj;
         }),
         get: (name) => {
@@ -102,7 +114,7 @@ export const useSettings = create<SettingsState>()(persist(
         }
     }),
     {
-        version: 3,
+        version: 4,
         name: "settings",
         storage: createJSONStorage(() => AsyncStorage),
         migrate: (lastState, lastVersion) => {
@@ -111,6 +123,9 @@ export const useSettings = create<SettingsState>()(persist(
 
             if (lastVersion == 2) {
                 (state as SettingsState).ui.show_queue = false;
+            }
+            if (lastVersion == 3) {
+                (state as SettingsState).show_login = false;
             }
 
             return state;

@@ -10,7 +10,7 @@ import StyledText, { Size } from "@components/StyledText";
 
 import User from "@backend/user";
 import Backend from "@backend/backend";
-import { useColor, useGlobal } from "@backend/stores";
+import { useColor, useGlobal, useSettings } from "@backend/stores";
 
 import { value } from "@style/Laudiolin";
 
@@ -48,6 +48,7 @@ async function waitForLogin(onLogin: () => void) {
 }
 
 function Login() {
+    const settings = useSettings();
     const global = useGlobal();
     const colors = useColor();
 
@@ -69,7 +70,10 @@ function Login() {
                                       borderWidth: 1,
                                       borderRadius: 10
                                   }}
-                                  onPress={() => global.setShowLoginPage(false)}
+                                  onPress={() => {
+                                      global.setShowLoginPage(false);
+                                      settings.update("show_login", false);
+                                  }}
                     />
                 </View>
 

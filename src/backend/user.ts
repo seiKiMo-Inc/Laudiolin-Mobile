@@ -3,9 +3,10 @@ import * as Linking from "expo-linking";
 import * as SecureStore from "expo-secure-store";
 
 import Backend from "@backend/backend";
-import { useFavorites, useGlobal, usePlaylists, useRecents, useUser } from "@backend/stores";
+import { useFavorites, useGlobal, usePlaylists, useRecents, useSettings, useUser } from "@backend/stores";
 import { BasicUser, OwnedPlaylist, RemoteInfo, User } from "@backend/types";
 import { EmitterSubscription } from "react-native";
+import { EventRegister } from "react-native-event-listeners";
 
 const log = logger.createLogger();
 
@@ -35,6 +36,13 @@ function disableLink() {
 }
 
 /**
+ * Checks if a user is logged in.
+ */
+function isLoggedIn(): boolean {
+    return useUser.getState() != null;
+}
+
+/**
  * Stores a user's token in the secure store.
  *
  * @param token The token to store.
@@ -57,7 +65,10 @@ async function getToken(): Promise<string> {
  * @param token The user's authentication token.
  */
 async function logIn(token: string): Promise<boolean> {
-    if (token == "") return false;
+    if (token == "") {
+        EventRegister.emit("user:login", false);
+        return false;
+    }
 
     const response = await fetch(`${Backend.getBaseUrl()}/user`, {
         headers: { authorization: token }, cache: "no-cache"
@@ -65,6 +76,7 @@ async function logIn(token: string): Promise<boolean> {
 
     if (response.status != 301) {
         log.error("Failed to login", response.status);
+        EventRegister.emit("user:login", false);
         return false;
     }
 
@@ -72,7 +84,8 @@ async function logIn(token: string): Promise<boolean> {
     await storeToken(token);
 
     // Load the user data.
-    useUser.setState(await response.json());
+    const data = await response.json();
+    useUser.setState(data);
     log.info("Loaded user data!");
 
     loadRecents();
@@ -85,6 +98,7 @@ async function logIn(token: string): Promise<boolean> {
         useGlobal.setState({ showLoginPage: false });
     }
 
+    EventRegister.emit("user:login", data);
     return true;
 }
 
@@ -93,8 +107,15 @@ async function logIn(token: string): Promise<boolean> {
  */
 async function authenticate(): Promise<void> {
     const token = await getToken();
-    if (token == "" || !await logIn(token)) {
-        useGlobal.setState({ showLoginPage: true });
+    if (token == "") {
+        EventRegister.emit("user:login", false);
+        return;
+    }
+
+    if (!await logIn(token)) {
+        if (useSettings.getState().show_login) {
+            useGlobal.setState({ showLoginPage: true });
+        }
     }
 }
 
@@ -278,7 +299,6 @@ export default {
     disableLink,
     getToken,
     getUserById,
-    loadRecents,
-    loadPlaylists,
-    favoriteTrack
+    favoriteTrack,
+    isLoggedIn
 };

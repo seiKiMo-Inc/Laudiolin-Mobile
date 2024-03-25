@@ -7,6 +7,7 @@ import TrackPlayer, { Capability, IOSCategory, IOSCategoryOptions } from "react-
 import App from "./App";
 
 import User from "@backend/user";
+import Local from "@backend/local";
 import Social from "@backend/social";
 import Downloads from "@backend/downloads";
 import { PlaybackService } from "@backend/player";
@@ -18,6 +19,8 @@ TrackPlayer.registerPlaybackService(() => PlaybackService);
 
 (async() => {
     User.setup();
+    Local.setup()
+        .catch(error => log.error("Unable to set up local storage", error));
     Social.setup();
     Downloads.setup()
         .catch(error => log.error("Encountered error while setting up downloads", error));

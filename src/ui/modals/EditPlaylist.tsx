@@ -63,7 +63,7 @@ function EditPlaylist({ playlist, visible, hide }: IProps) {
                         }}
                         containerStyle={{
                             ...style.EditPlaylist_Input,
-                            borderColor: colors.text
+                            backgroundColor: colors.primary
                         }}
                         inputStyle={{ borderBottomColor: "transparent" }}
                         onChange={setNewName}
@@ -79,7 +79,7 @@ function EditPlaylist({ playlist, visible, hide }: IProps) {
                         defaultColor={colors.gray}
                         containerStyle={{
                             ...style.EditPlaylist_Input,
-                            borderColor: colors.text
+                            backgroundColor: colors.primary
                         }}
                         inputStyle={{ height: 100, borderBottomColor: "transparent" }}
                         onChange={setNewDescription}
@@ -111,7 +111,7 @@ function EditPlaylist({ playlist, visible, hide }: IProps) {
                             return;
                         }
 
-                        if (!await Playlist.setPlaylistIcon(playlist, base64)) {
+                        if (!await Playlist.setPlaylistIcon(playlist, [base64, asset.uri])) {
                             alert("Failed to set playlist icon.");
                         } else {
                             alert("Playlist icon updated.");
@@ -166,10 +166,7 @@ const style = StyleSheet.create({
         gap: 10
     },
     EditPlaylist_Input: {
-        borderBottomWidth: 2,
-        borderWidth: 2,
         borderRadius: 10,
-        paddingLeft: 10,
-        paddingRight: 10
+        paddingHorizontal: 10
     }
 });

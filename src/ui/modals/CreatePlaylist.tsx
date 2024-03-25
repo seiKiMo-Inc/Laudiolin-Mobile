@@ -12,10 +12,12 @@ import StyledToggle from "@components/StyledToggle";
 import StyledButton from "@components/StyledButton";
 import StyledTextInput from "@components/StyledTextInput";
 
+import { alert } from "@widgets/Alert";
+
 import Backend from "@backend/backend";
 import Playlist from "@backend/playlist";
 import { pickIcon } from "@backend/utils";
-import { useColor } from "@backend/stores";
+import { useColor, useUser } from "@backend/stores";
 
 import { value } from "@style/Laudiolin";
 
@@ -29,11 +31,12 @@ interface IProps {
 function CreatePlaylist(props: IProps) {
     const navigation: NavigationProp<any> = useNavigation();
 
+    const user = useUser();
     const colors = useColor();
 
     const [name, setName] = useState("");
     const [isPrivate, setPrivate] = useState(true);
-    const [cover, setCover] = useState<string | null>(null); // This is a Base64 image string.
+    const [cover, setCover] = useState<null | [string, string]>(null); // This is a Base64 image string.
 
     const [useImport, setImport] = useState(false);
 
@@ -102,7 +105,10 @@ function CreatePlaylist(props: IProps) {
                         defaultColor={colors.gray}
                         textStyle={style.CreatePlaylist_Text}
                         inputStyle={{ borderBottomColor: "transparent" }}
-                        containerStyle={style.CreatePlaylist_Input}
+                        containerStyle={{
+                            ...style.CreatePlaylist_Input,
+                            backgroundColor: colors.primary
+                        }}
                         onChange={setName}
                     />
 
@@ -113,16 +119,21 @@ function CreatePlaylist(props: IProps) {
                         onPress={async () => {
                             const result = await pickIcon();
                             if (!result.canceled) {
-                                setCover(result.assets[0].base64 ?? "");
+                                setCover([
+                                    result.assets[0].base64 ?? "",
+                                    result.assets[0].uri
+                                ]);
                             }
                         }}
                     />
 
-                    <StyledToggle
-                        value={isPrivate}
-                        onPress={setPrivate}
-                        title={"Private Playlist?"}
-                    />
+                    { user != null && (
+                        <StyledToggle
+                            value={isPrivate}
+                            onPress={setPrivate}
+                            title={"Private Playlist?"}
+                        />
+                    ) }
                 </View>
 
                 <StyledButton
@@ -131,6 +142,11 @@ function CreatePlaylist(props: IProps) {
                     buttonStyle={{ backgroundColor: colors.accent }}
                     onPress={async () => {
                         if (name == "") return;
+
+                        if (user == null && cover == null) {
+                            alert("Please select a cover image for your playlist.", true);
+                            return;
+                        }
 
                         const [success, playlistId, playlist] = await Playlist.createPlaylist({
                             name, isPrivate,
@@ -149,14 +165,16 @@ function CreatePlaylist(props: IProps) {
                     }}
                 />
 
-                <OrDivider />
+                { user != null && <>
+                    <OrDivider />
 
-                <StyledButton
-                    text={"Import a Playlist"}
-                    style={style.CreatePlaylist_Button}
-                    buttonStyle={{ backgroundColor: colors.accent }}
-                    onPress={() => setImport(true)}
-                />
+                    <StyledButton
+                        text={"Import a Playlist"}
+                        style={style.CreatePlaylist_Button}
+                        buttonStyle={{ backgroundColor: colors.accent }}
+                        onPress={() => setImport(true)}
+                    />
+                </> }
             </> }
         </StyledModal>
     );
