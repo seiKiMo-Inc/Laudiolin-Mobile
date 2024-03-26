@@ -1,3 +1,4 @@
+import * as Linking from "expo-linking";
 import TrackPlayer, { Event, State } from "react-native-track-player";
 
 import User from "@backend/user";
@@ -14,6 +15,11 @@ function setup(): void {
         if (state == State.Paused || state == State.Playing) {
             await updatePresence();
         }
+    });
+
+    // Listen for deep links.
+    Linking.addEventListener("url", async ({ url }) => {
+        const parsed = Linking.parse(url);
     });
 }
 
