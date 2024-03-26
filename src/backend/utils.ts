@@ -69,7 +69,7 @@ export function first<T>(array: T[], many: number): T[] {
  *
  * @param icon The provided track icon URL.
  */
-export function resolveIcon(icon: string): string {
+export function resolveIcon(icon?: string): string {
     if (icon == undefined || icon == "") return ""; // No icon or ID, so no icon.
     if (icon.includes("file://")) return icon; // Skip local files.
     if (icon.includes(Backend.getBaseUrl())) return icon; // The icon is already proxied.

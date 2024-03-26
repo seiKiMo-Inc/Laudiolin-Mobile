@@ -8,7 +8,6 @@ import IoIcon from "react-native-vector-icons/Ionicons";
 import MdIcon from "react-native-vector-icons/MaterialIcons";
 import McIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import * as WebBrowser from "expo-web-browser";
 import FastImage from "react-native-fast-image";
 import TrackPlayer, {
     RepeatMode,
@@ -20,21 +19,18 @@ import TrackPlayer, {
 import { NavigationContainerRef } from "@react-navigation/core";
 import { GestureDetector, Gesture, Directions } from "react-native-gesture-handler";
 
+import TrackMenu from "@menus/TrackMenu";
 import ProgressBar from "@widgets/ProgressBar";
 import SelectAPlaylist from "@modals/SelectAPlaylist";
 
-import StyledMenu from "@components/StyledMenu";
 import StyledModal from "@components/StyledModal";
 import StyledText, { Size } from "@components/StyledText";
 
-import User from "@backend/user";
 import Playlist from "@backend/playlist";
 import Player, { usePlayer } from "@backend/player";
-import { Colors, useColor, useDownloads, useFavorites, useGlobal } from "@backend/stores";
+import { Colors, useColor, useGlobal } from "@backend/stores";
 
 import { value } from "@style/Laudiolin";
-import Downloads from "@backend/downloads";
-import { DownloadInfo, RemoteInfo } from "@backend/types";
 
 function RepeatIcon({ loop, colors }: { loop: RepeatMode, colors: Colors }) {
     switch (loop) {
@@ -51,20 +47,11 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
     const global = useGlobal();
     const colors = useColor();
 
-    let favorites = useFavorites();
-    favorites = Object.values(favorites);
-
-    const downloadData = useDownloads();
-    const downloads = downloadData.downloaded;
-
     const { track: currentlyPlaying } = usePlayer();
 
     const track = useActiveTrack();
     const { state } = usePlaybackState();
     const progress = useProgress(500);
-
-    const isFavorite = favorites.find(t => t.id == track?.id);
-    const local = downloads.find(t => t.id == track?.id);
 
     const [repeatMode, setRepeatMode] = useState(RepeatMode.Off);
 
@@ -170,7 +157,9 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
 
                 <StyledModal
                     visible={showSelect}
+                    style={{ gap: 10 }}
                     onPressOutside={() => setShowSelect(false)}
+                    title={"Add Track to Playlist"}
                 >
                     <SelectAPlaylist
                         onSelect={playlist => {
@@ -183,44 +172,13 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
                     />
                 </StyledModal>
 
-                <StyledMenu
-                    closeOnPress
+                <TrackMenu
+                    track={currentlyPlaying}
                     opened={showMenu}
                     close={() => setShowMenu(false)}
-                    options={[
-                        currentlyPlaying && {
-                            text: "Add to Queue",
-                            icon: <MdIcon name={"queue"} size={24} color={colors.text} />,
-                            onPress: () => Player.play(currentlyPlaying, { playlist: fromPlaylist })
-                        },
-                        currentlyPlaying && {
-                            text: "Add to Playlist",
-                            icon: <McIcon name={"playlist-plus"} size={24} color={colors.text} />,
-                            onPress: () => setShowMenu(false),
-                        },
-                        currentlyPlaying && currentlyPlaying.url.length > 0 ? {
-                            text: "Open Track Source",
-                            icon: <McIcon name={"web"} size={24} color={colors.text} />,
-                            onPress: () => WebBrowser.openBrowserAsync(currentlyPlaying!.url)
-                        } : undefined,
-                        currentlyPlaying ? {
-                            text: `${isFavorite ? "Remove from" : "Add to"} Favorites`,
-                            icon: <McIcon name={"heart"} size={24} color={colors.text} />,
-                            onPress: () => {
-                                if (currentlyPlaying?.type == "remote") {
-                                    User.favoriteTrack(currentlyPlaying, !isFavorite)
-                                        .catch(() => null);
-                                }
-                            }
-                        } : undefined,
-                        currentlyPlaying && {
-                            text: `${local ? "Delete" : "Download"} Track`,
-                            icon: <McIcon name={local ? "delete" : "download"} size={24} color={colors.text} />,
-                            onPress: () => local ?
-                                Downloads.remove(currentlyPlaying as DownloadInfo) :
-                                Downloads.download(currentlyPlaying as RemoteInfo)
-                        }
-                    ]}
+                    onNavigate={() => global.setShowTrackPage(false)}
+                    showAdd={() => setShowSelect(true)}
+                    navigation={navigation}
                     style={{ top: 10, right: 10 }}
                 />
             </View>

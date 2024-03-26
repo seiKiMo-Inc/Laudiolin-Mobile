@@ -1,35 +1,29 @@
 import { useState } from "react";
 import { View, TouchableOpacity, StyleSheet, TextStyle, ViewStyle } from "react-native";
 
-import * as WebBrowser from "expo-web-browser";
-
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-
 import FastImage from "react-native-fast-image";
 import EnIcon from "react-native-vector-icons/Entypo";
-import MaIcon from "react-native-vector-icons/MaterialIcons";
-import McIcon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import StyledMenu from "@components/StyledMenu";
 import StyledModal from "@components/StyledModal";
 import StyledText, { Size } from "@components/StyledText";
 
+import TrackMenu from "@menus/TrackMenu";
 import SelectAPlaylist from "@modals/SelectAPlaylist";
 
-import User from "@backend/user";
 import Player from "@backend/player";
 import Playlist from "@backend/playlist";
-import Downloads from "@backend/downloads";
 import { artist } from "@backend/search";
 import { resolveIcon } from "@backend/utils";
-import { useColor, useDownloads, useFavorites } from "@backend/stores";
-import { DownloadInfo, OwnedPlaylist, RemoteInfo, TrackInfo } from "@backend/types";
+import { useColor, useDownloads } from "@backend/stores";
+import { OwnedPlaylist, TrackInfo } from "@backend/types";
 
 import { value } from "@style/Laudiolin";
 
 interface IProps {
     data: TrackInfo;
     playlist?: OwnedPlaylist;
+
+    queue?: boolean;
 
     style?: ViewStyle | any;
 
@@ -46,14 +40,9 @@ function Track(props: IProps) {
     const { data, playlist } = props;
 
     const colors = useColor();
-    const navigation: NavigationProp<any> = useNavigation();
-
-    let favorites = useFavorites();
-    favorites = Object.values(favorites);
 
     const { isLocal } = useDownloads();
 
-    const isFavorite = favorites.find(t => t.id == data.id);
     const local = isLocal(data.id);
 
     const [opened, setOpened] = useState(false);
@@ -124,52 +113,12 @@ function Track(props: IProps) {
                 />
             </StyledModal>
 
-            <StyledMenu
-                closeOnPress
+            <TrackMenu
                 opened={opened}
                 close={() => setOpened(false)}
-                options={[
-                    {
-                        text: "Show Details",
-                        icon: <MaIcon name={"info"} size={24} color={colors.text} />,
-                        onPress: () => navigation.navigate("Track", { track: data })
-                    },
-                    {
-                        text: "Add to Queue",
-                        icon: <MaIcon name={"queue"} size={24} color={colors.text} />,
-                        onPress: () => Player.play(data, { playlist })
-                    },
-                    playlist?.id != "favorites" ? {
-                        text: `${playlist ? "Remove from" : "Add to"} Playlist`,
-                        icon: <McIcon name={"playlist-plus"} size={24} color={colors.text} />,
-                        onPress: () => {
-                            if (playlist) {
-                                Playlist.removeTrackFromPlaylist(playlist, data)
-                                    .catch(() => null);
-                            } else {
-                                setShowAdd(true);
-                            }
-                        }
-                    } : undefined,
-                    data.url.length > 0 ? {
-                        text: "Open Track Source",
-                        icon: <McIcon name={"web"} size={24} color={colors.text} />,
-                        onPress: () => WebBrowser.openBrowserAsync(data.url)
-                    } : undefined,
-                    data.type == "remote" ? {
-                        text: `${isFavorite ? "Remove from" : "Add to"} Favorites`,
-                        icon: <McIcon name={"heart"} size={24} color={colors.text} />,
-                        onPress: () => User.favoriteTrack(data, !isFavorite)
-                    } : undefined,
-                    {
-                        text: `${local ? "Delete" : "Download"} Track`,
-                        icon: <McIcon name={local ? "delete" : "download"} size={24} color={colors.text} />,
-                        onPress: () => local ?
-                            Downloads.remove(data as DownloadInfo) :
-                            Downloads.download(data as RemoteInfo)
-                    }
-                ]}
-                optionsStyle={{ width: 230 }}
+                showAdd={() => setShowAdd(true)}
+                track={data}
+                hideAddQueue={props.queue}
             />
         </TouchableOpacity>
     );

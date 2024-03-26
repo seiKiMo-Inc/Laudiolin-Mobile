@@ -69,7 +69,7 @@ function Queue({ navigation }: IProps) {
                             ]
                         }}
                         textStyle={{ color: item.selected ? colors.accent : colors.text }}
-                        data={item} key={index}
+                        data={item} key={index} queue
                     />
                 )}
             />

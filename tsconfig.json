@@ -8,6 +8,7 @@
       "@ui/*": ["src/ui/*"],
       "@style/*": ["src/ui/style/*"],
       "@hooks/*": ["src/ui/hooks/*"],
+      "@menus/*": ["src/ui/menus/*"],
       "@widgets/*": ["src/ui/widgets/*"],
       "@modals/*": ["src/ui/modals/*"],
       "@components/*": ["src/ui/components/*"],
