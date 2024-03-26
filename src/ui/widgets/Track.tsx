@@ -2,6 +2,9 @@ import { useState } from "react";
 import { View, TouchableOpacity, StyleSheet, TextStyle, ViewStyle } from "react-native";
 
 import * as WebBrowser from "expo-web-browser";
+
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+
 import FastImage from "react-native-fast-image";
 import EnIcon from "react-native-vector-icons/Entypo";
 import MaIcon from "react-native-vector-icons/MaterialIcons";
@@ -43,6 +46,7 @@ function Track(props: IProps) {
     const { data, playlist } = props;
 
     const colors = useColor();
+    const navigation: NavigationProp<any> = useNavigation();
 
     let favorites = useFavorites();
     favorites = Object.values(favorites);
@@ -67,6 +71,7 @@ function Track(props: IProps) {
                 ...props.style,
                 opacity: disabled ? 0.5 : 1
             }}
+            delayLongPress={250}
             onPress={() => Player.play(data, { playlist, skip: true })}
             onLongPress={() => props.onHold ?
                 props.onHold() : setOpened(true)}
@@ -124,6 +129,11 @@ function Track(props: IProps) {
                 opened={opened}
                 close={() => setOpened(false)}
                 options={[
+                    {
+                        text: "Show Details",
+                        icon: <MaIcon name={"info"} size={24} color={colors.text} />,
+                        onPress: () => navigation.navigate("Track", { track: data })
+                    },
                     {
                         text: "Add to Queue",
                         icon: <MaIcon name={"queue"} size={24} color={colors.text} />,

@@ -4,6 +4,7 @@ import NamedList from "@components/NamedList";
 
 import Debug from "@ui/Debug";
 import Queue from "@ui/Queue";
+import Track from "@ui/Track";
 import Summary from "@ui/Summary";
 import Playlist from "@ui/Playlist";
 import TextPlayground from "@ui/TextPlayground";
@@ -30,6 +31,7 @@ function Home() {
             <Stack.Screen name={"Named List"} component={NamedList} />
             <Stack.Screen name={"Debug"} component={Debug} />
             <Stack.Screen name={"Queue"} component={Queue} />
+            <Stack.Screen name={"Track"} component={Track} />
             <Stack.Screen name={"Summary"} component={Summary} />
             <Stack.Screen name={"Playlist"} component={Playlist} />
             <Stack.Screen name={"Text Playground"} component={TextPlayground} />
