@@ -252,7 +252,11 @@ async function sync({ track, progress, paused, seek }: SyncMessage): Promise<voi
  * @param message The message data.
  */
 async function recents({ recents }: RecentsMessage): Promise<void> {
-    useRecents.setState(recents, true);
+    useRecents.setState(recents
+        .map(t => {
+            t.type = "remote";
+            return t;
+        }), true);
 }
 
 /**
