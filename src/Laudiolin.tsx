@@ -21,6 +21,7 @@ import Settings from "@ui/Settings";
 import NowPlaying from "@ui/NowPlaying";
 
 import User from "@backend/user";
+import Social from "@backend/social";
 import Gateway from "@backend/gateway";
 import { useColor, useGlobal, useSettings } from "@backend/stores";
 
@@ -72,7 +73,10 @@ function Laudiolin(props: IProps) {
 
             <SafeAreaView
                 style={{ height: "100%", backgroundColor: colors.primary }}
-                onLayout={props.onLoad}
+                onLayout={() => {
+                    props.onLoad?.();
+                    Social.setup(navigator);
+                }}
             >
                 <Alert />
 

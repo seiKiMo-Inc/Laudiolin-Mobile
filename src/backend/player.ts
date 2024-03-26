@@ -4,6 +4,7 @@ import { logger } from "react-native-logs";
 import { EventRegister } from "react-native-event-listeners";
 import TrackPlayer, { AddTrack, Event, RepeatMode, State } from "react-native-track-player";
 
+import Social from "@backend/social";
 import Backend from "@backend/backend";
 import { resolveIcon } from "@backend/utils";
 import { useDebug } from "@backend/stores";
@@ -47,6 +48,12 @@ export const PlaybackService = async () => {
 
         const trackInfo = track.source as TrackInfo;
         usePlayer.getState().setTrack(trackInfo);
+    });
+
+    TrackPlayer.addEventListener(Event.PlaybackState, async ({ state }) => {
+        if (state == State.Paused || state == State.Playing) {
+            await Social.updatePresence();
+        }
     });
 };
 
