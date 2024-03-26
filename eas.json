@@ -15,7 +15,10 @@
     "preview": {
       "channel": "preview",
       "distribution": "store",
-      "autoIncrement": true
+      "autoIncrement": true,
+      "android": {
+        "buildType": "apk"
+      }
     },
     "production": {
       "channel": "production",
