@@ -46,34 +46,6 @@ function setup(navigation: RefObject<NavigationContainerRef<any>>): void {
     });
 }
 
-/**
- * Updates the Discord presence of the connected account.
- */
-async function updatePresence(): Promise<void> {
-    const user = useUser.getState();
-    if (user == null || !user.connections?.discord) return;
-
-    const { system } = useSettings.getState();
-    if (system.presence == "None") return;
-
-    // Read the player data.
-    const { track, started, isPaused } = usePlayer.getState();
-    const { duration, position } = await TrackPlayer.getProgress();
-
-    // Update the presence.
-    await fetch(`${Backend.getBaseUrl()}/social/presence`, {
-        method: "POST", headers: { Authorization: await User.getToken() },
-        body: JSON.stringify({
-            track,
-            remove: track === undefined || await isPaused(),
-            broadcast: system.presence,
-            started: Math.round(started + position),
-            shouldEnd: Math.round(started + duration)
-        })
-    });
-}
-
 export default {
-    setup,
-    updatePresence
+    setup
 };

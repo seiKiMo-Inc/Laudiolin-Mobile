@@ -4,10 +4,10 @@ import { logger } from "react-native-logs";
 import { EventRegister } from "react-native-event-listeners";
 import TrackPlayer, { AddTrack, Event, RepeatMode, State } from "react-native-track-player";
 
-import Social from "@backend/social";
+import User from "@backend/user";
 import Backend from "@backend/backend";
 import { resolveIcon } from "@backend/utils";
-import { useDebug } from "@backend/stores";
+import { useDebug, useSettings, useUser } from "@backend/stores";
 import { PlaylistInfo, TrackInfo } from "@backend/types";
 
 const log = logger.createLogger();
@@ -52,7 +52,7 @@ export const PlaybackService = async () => {
 
     TrackPlayer.addEventListener(Event.PlaybackState, async ({ state }) => {
         if (state == State.Paused || state == State.Playing) {
-            await Social.updatePresence();
+            await updatePresence();
         }
     });
 };
@@ -284,6 +284,33 @@ async function sync(
     } else {
         await TrackPlayer.play();
     }
+}
+
+/**
+ * Updates the Discord presence of the connected account.
+ */
+async function updatePresence(): Promise<void> {
+    const user = useUser.getState();
+    if (user == null || !user.connections?.discord) return;
+
+    const { system } = useSettings.getState();
+    if (system.presence == "None") return;
+
+    // Read the player data.
+    const { track, started, isPaused } = usePlayer.getState();
+    const { duration, position } = await TrackPlayer.getProgress();
+
+    // Update the presence.
+    await fetch(`${Backend.getBaseUrl()}/social/presence`, {
+        method: "POST", headers: { Authorization: await User.getToken() },
+        body: JSON.stringify({
+            track,
+            remove: track === undefined || await isPaused(),
+            broadcast: system.presence,
+            started: Math.round(started + position),
+            shouldEnd: Math.round(started + duration)
+        })
+    });
 }
 
 export default {
