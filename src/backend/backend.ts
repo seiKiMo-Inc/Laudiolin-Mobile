@@ -13,8 +13,8 @@ const getLoginUrl = () => `${getBaseUrl()}/login`;
  */
 async function fetchTrack(id: string): Promise<TrackInfo> {
     const response = await fetch(`${getBaseUrl()}/fetch/${id}`);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch track: ${response.statusText}`);
+    if (response.status != 301) {
+        throw new Error(`Failed to fetch track: ${response.status}`);
     }
 
     return response.json();

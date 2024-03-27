@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, TouchableOpacity, Share } from "react-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity, Share, ActivityIndicator } from "react-native";
 
 import EnIcon from "react-native-vector-icons/Entypo";
 import FeIcon from "react-native-vector-icons/Feather";
@@ -45,7 +45,6 @@ function Track({ navigation, route }: IProps) {
 
     const colors = useColor();
 
-
     const [track, setTrack] = useState<TrackInfo | undefined>(_track);
     const [menuOpened, setMenuOpened] = useState(false);
     const [playMenuOpened, setPlayMenuOpened] = useState(false);
@@ -55,126 +54,134 @@ function Track({ navigation, route }: IProps) {
 
     useEffect(() => {
         if (!track && id) {
-            Backend.fetchTrack(id).then(setTrack);
+            Backend.fetchTrack(id)
+                .then(setTrack)
+                .catch(() => null);
         }
     }, [route]);
 
-    return track && (
+    return (
         <View style={style.Track}>
             <BackButton navigation={navigation} />
 
-            <TouchableOpacity
-                activeOpacity={0.7}
-                style={style.Track_Info}
-                onLongPress={() => setMenuOpened(true)}
-            >
-                <FastImage
-                    source={{ uri: resolveIcon(track?.icon) }}
-                    style={style.Track_Cover}
-                />
-
-                <View style={style.Track_Details}>
-                    <StyledText text={track?.title ?? "No Title"}
-                                bold size={Size.Subheader} lines={3}
-                    />
-                    <StyledText text={track?.artist ?? "Unknown"} ticker />
-                </View>
-            </TouchableOpacity>
-
-            <View style={style.Track_Actions}>
-                <StyledMenu
-                    closeOnPress
-                    opened={playMenuOpened}
-                    close={() => setPlayMenuOpened(false)}
-                    options={[
-                        {
-                            text: "Add to Queue",
-                            icon: <MaIcon name={"queue"} size={24} color={colors.text} />,
-                            onPress: () => Player.play(track)
-                        },
-                        {
-                            text: "Play Now",
-                            icon: <EnIcon name={"controller-play"} size={24} color={colors.text} />,
-                            onPress: () => Player.play(track, { skip: true })
-                        }
-                    ]}
-                />
-
-                <View style={style.Track_Pair}>
-                    <StyledButton
-                        text={"Play"}
-                        icon={<EnIcon
-                            name={"controller-play"} size={20} color={colors.text}
-                            style={{ marginRight: 5 }}
-                        />}
-                        style={style.Track_Button}
-                        buttonStyle={{
-                            backgroundColor: colors.contrast
-                        }}
-                        onPress={() => Player.play(track, { skip: true })}
-                        onHold={() => setPlayMenuOpened(true)}
+            { track ? <>
+                <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={style.Track_Info}
+                    onLongPress={() => setMenuOpened(true)}
+                >
+                    <FastImage
+                        source={{ uri: resolveIcon(track?.icon) }}
+                        style={style.Track_Cover}
                     />
 
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        onPress={() => Share.share({
-                            url: `${Backend.getBaseUrl()}/track/${track.id}`
-                        })}
-                    >
-                        <FeIcon name={"share"} size={28} color={colors.text} />
-                    </TouchableOpacity>
+                    <View style={style.Track_Details}>
+                        <StyledText text={track?.title ?? "No Title"}
+                                    bold size={Size.Subheader} lines={3}
+                        />
+                        <StyledText text={track?.artist ?? "Unknown"} ticker />
+                    </View>
+                </TouchableOpacity>
 
-                    { track.type == "remote" && (
+                <View style={style.Track_Actions}>
+                    <StyledMenu
+                        closeOnPress
+                        opened={playMenuOpened}
+                        close={() => setPlayMenuOpened(false)}
+                        options={[
+                            {
+                                text: "Add to Queue",
+                                icon: <MaIcon name={"queue"} size={24} color={colors.text} />,
+                                onPress: () => Player.play(track)
+                            },
+                            {
+                                text: "Play Now",
+                                icon: <EnIcon name={"controller-play"} size={24} color={colors.text} />,
+                                onPress: () => Player.play(track, { skip: true })
+                            }
+                        ]}
+                    />
+
+                    <View style={style.Track_Pair}>
+                        <StyledButton
+                            text={"Play"}
+                            icon={<EnIcon
+                                name={"controller-play"} size={20} color={colors.text}
+                                style={{ marginRight: 5 }}
+                            />}
+                            style={style.Track_Button}
+                            buttonStyle={{
+                                backgroundColor: colors.contrast
+                            }}
+                            onPress={() => Player.play(track, { skip: true })}
+                            onHold={() => setPlayMenuOpened(true)}
+                        />
+
                         <TouchableOpacity
-                            onPress={() => User.favoriteTrack(track, !isFavorite)}
+                            activeOpacity={0.7}
+                            onPress={() => Share.share({
+                                url: `${Backend.getBaseUrl()}/track/${track.id}`
+                            })}
                         >
-                            <McIcon name={"heart"} size={32}
-                                    color={isFavorite ? colors.red : colors.text}
-                            />
+                            <FeIcon name={"share"} size={28} color={colors.text} />
                         </TouchableOpacity>
-                    ) }
+
+                        { track.type == "remote" && (
+                            <TouchableOpacity
+                                onPress={() => User.favoriteTrack(track, !isFavorite)}
+                            >
+                                <McIcon name={"heart"} size={32}
+                                        color={isFavorite ? colors.red : colors.text}
+                                />
+                            </TouchableOpacity>
+                        ) }
+                    </View>
+
+                    <View style={style.Track_Pair}>
+                        <StyledButton
+                            text={"Add to Playlist"}
+                            style={style.Track_Button}
+                            onPress={() => setAddToPlaylist(true)}
+                        />
+                    </View>
                 </View>
 
-                <View style={style.Track_Pair}>
-                    <StyledButton
-                        text={"Add to Playlist"}
-                        style={style.Track_Button}
-                        onPress={() => setAddToPlaylist(true)}
-                    />
-                </View>
-            </View>
+                <ScrollView
+                    style={style.Track_Lyrics}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <StyledText text={"No lyrics found!"} />
+                </ScrollView>
 
-            <ScrollView
-                style={style.Track_Lyrics}
-                showsVerticalScrollIndicator={false}
-            >
-                <StyledText text={"No lyrics found!"} />
-            </ScrollView>
-
-            <TrackMenu
-                opened={menuOpened}
-                close={() => setMenuOpened(false)}
-                track={track}
-                style={{ top: 10, right: 10 }}
-                hideShowDetails
-            />
-
-            <StyledModal
-                visible={addToPlaylist}
-                style={{ gap: 10 }}
-                onPressOutside={() => setAddToPlaylist(false)}
-                title={"Add Track to Playlist"}
-            >
-                <SelectAPlaylist
-                    onSelect={playlist => {
-                        if (!track) return;
-
-                        Playlist.addTrackToPlaylist(playlist, track)
-                            .catch(() => null);
-                        setAddToPlaylist(false);
-                    }}
+                <TrackMenu
+                    opened={menuOpened}
+                    close={() => setMenuOpened(false)}
+                    track={track}
+                    style={{ top: 10, right: 10 }}
+                    hideShowDetails
                 />
-            </StyledModal>
+
+                <StyledModal
+                    visible={addToPlaylist}
+                    style={{ gap: 10 }}
+                    onPressOutside={() => setAddToPlaylist(false)}
+                    title={"Add Track to Playlist"}
+                >
+                    <SelectAPlaylist
+                        onSelect={playlist => {
+                            if (!track) return;
+
+                            Playlist.addTrackToPlaylist(playlist, track)
+                                .catch(() => null);
+                            setAddToPlaylist(false);
+                        }}
+                    />
+                </StyledModal>
+            </> : (
+                <ActivityIndicator
+                    size={"large"}
+                />
+            ) }
         </View>
     );
 }

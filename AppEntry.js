@@ -21,7 +21,6 @@ TrackPlayer.registerPlaybackService(() => PlaybackService);
     User.setup();
     Local.setup()
         .catch(error => log.error("Unable to set up local storage", error));
-    Social.setup();
     Downloads.setup()
         .catch(error => log.error("Encountered error while setting up downloads", error));
 
