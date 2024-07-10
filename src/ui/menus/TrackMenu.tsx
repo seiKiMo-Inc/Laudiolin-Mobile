@@ -69,7 +69,9 @@ function TrackMenu(props: IProps) {
                 } : undefined,
                 playlist?.id != "favorites" ? {
                     text: `${playlist ? "Remove from" : "Add to"} Playlist`,
-                    icon: <McIcon name={"playlist-plus"} size={24} color={colors.text} />,
+                    icon: playlist ?
+                        <McIcon name={"playlist-minus"} size={24} color={colors.text} /> :
+                        <McIcon name={"playlist-plus"} size={24} color={colors.text} />,
                     onPress: () => {
                         if (track && playlist) {
                             Playlist.removeTrackFromPlaylist(playlist, track)

@@ -118,6 +118,7 @@ function Track(props: IProps) {
                 close={() => setOpened(false)}
                 showAdd={() => setShowAdd(true)}
                 track={data}
+                playlist={playlist}
                 hideAddQueue={props.queue}
             />
         </TouchableOpacity>
