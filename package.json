@@ -3,10 +3,8 @@
   "version": "2.0.0",
   "main": "AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "dev": "expo start",
+    "eas:build": "eas build --profile development"
   },
   "dependencies": {
     "@expo-google-fonts/poppins": "^0.2.3",
