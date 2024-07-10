@@ -35,6 +35,15 @@ function modifyPlaylist(playlist: OwnedPlaylist): void {
 }
 
 /**
+ * Checks if a playlist is local.
+ *
+ * @param playlist The playlist to check.
+ */
+function isLocal(playlist: OwnedPlaylist): boolean {
+    return playlist.owner == "local";
+}
+
+/**
  * Fetches a playlist using its ID.
  * Can return null if the playlist is private.
  *
@@ -220,10 +229,10 @@ async function editPlaylist(playlist: {
  * @param track The track to add to the playlist.
  */
 async function addTrackToPlaylist(
-    playlist: OwnedPlaylist | string, track: TrackInfo
+    playlist: OwnedPlaylist, track: TrackInfo
 ): Promise<boolean> {
     // Resolve local tracks.
-    if (track.type == "download") {
+    if (!isLocal(playlist) && track.type == "download") {
         // Fetch the track's data.
         const response = await fetch(`${Backend.getBaseUrl()}/fetch/${track.id}`);
         if (response.status != 301) {
@@ -237,14 +246,12 @@ async function addTrackToPlaylist(
     }
 
     // Check if the playlist contains the track already.
-    if (typeof playlist != "string" &&
-        (playlist as PlaylistInfo).tracks.includes(track)) {
+    if (playlist.tracks.includes(track)) {
         log.warn("Track already exists in playlist");
         return false;
     }
 
-    const playlistId = typeof playlist == "string" ? playlist : playlist.id;
-    const [status, updated] = await _editPlaylist(playlistId, track, "add");
+    const [status, updated] = await _editPlaylist(playlist.id, track, "add");
 
     if (status != 200) {
         log.error("Failed to add track to playlist", status);
