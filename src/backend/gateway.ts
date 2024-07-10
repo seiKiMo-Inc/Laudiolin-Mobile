@@ -60,6 +60,7 @@ type UpdateInfo = {
  */
 async function update({ isSeek, update }: UpdateInfo): Promise<void> {
     const track = await TrackPlayer.getActiveTrack();
+    if (track == undefined) return;
     if (track?.url.includes("file://")) return;
 
     const trackInfo = track?.source as TrackInfo;
