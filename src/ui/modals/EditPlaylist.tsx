@@ -45,7 +45,7 @@ function EditPlaylist({ playlist, visible, hide }: IProps) {
             title={"Edit Playlist"}
         >
             <StyledButton
-                text={"Show Details"}
+                text={`${showFields ? "Hide" : "Show"} Details`}
                 style={style.EditPlaylist_Button}
                 buttonStyle={{ backgroundColor: colors.accent }}
                 onPress={() => setShowFields(!showFields)}
