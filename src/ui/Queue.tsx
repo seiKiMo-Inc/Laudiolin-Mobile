@@ -66,7 +66,7 @@ function Queue({ navigation }: IProps) {
                 data={queue}
                 estimatedItemSize={100}
                 keyExtractor={(_, index) => index.toString()}
-                renderItem={({ item, index }) => (
+                renderItem={({ item }) => (
                     <Track
                         style={{
                             paddingBottom: 10,
@@ -75,7 +75,7 @@ function Queue({ navigation }: IProps) {
                             ]
                         }}
                         textStyle={{ color: item.selected ? colors.accent : colors.text }}
-                        data={item} key={index} queue
+                        data={item} key={item.id} queue
                     />
                 )}
             />
