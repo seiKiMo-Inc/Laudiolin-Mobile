@@ -15,9 +15,10 @@ import CreatePlaylist from "@modals/CreatePlaylist";
 
 import Backend from "@backend/backend";
 import { first, welcomeText } from "@backend/utils";
-import { useDownloads, useFavorites, usePlaylists, useRecents, useUser } from "@backend/stores";
+import { useColor, useDownloads, useFavorites, usePlaylists, useRecents, useUser } from "@backend/stores";
 import { OwnedPlaylist, TrackInfo, User } from "@backend/types";
 import { value } from "@style/Laudiolin";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type PlaylistIcon = OwnedPlaylist | {
     type: "button";
@@ -104,6 +105,8 @@ interface IProps {
 }
 
 function Summary({ navigation }: IProps) {
+    const safeArea = useSafeAreaInsets();
+
     let recents = useRecents();
     recents = Object.values(recents);
 
@@ -112,6 +115,8 @@ function Summary({ navigation }: IProps) {
 
     const downloadData = useDownloads();
     const downloads = downloadData.downloaded;
+
+    const colors = useColor();
 
     const user = useUser();
     const favorites = useFavorites();
@@ -131,11 +136,12 @@ function Summary({ navigation }: IProps) {
             bounces={false}
         >
             <LinearGradient
-                colors={["#354ab2", "transparent"]}
+                colors={[colors.header, "transparent"]}
                 style={{
+                    overflow: "visible",
                     position: "absolute",
                     top: 0,
-                    height: 120,
+                    height: 120 + safeArea.top,
                     zIndex: 0,
                     width: Dimensions.get("screen").width,
                 }}
@@ -143,7 +149,10 @@ function Summary({ navigation }: IProps) {
 
             <StyledText
                 text={welcomeText()} size={Size.Subheader}
-                style={{ color: "white" }}
+                style={{
+                    color: colors.text,
+                    paddingTop: safeArea.top,
+                }}
             />
 
             <View style={style.Summary_Block}>

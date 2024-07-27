@@ -13,6 +13,7 @@ import { useColor, useGlobal, useSettings, useUser } from "@backend/stores";
 import { toIconUrl, validateAddress, validateSocket } from "@backend/utils";
 
 import { DarkTheme, LightTheme, value } from "@style/Laudiolin";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface SettingProps {
     title: string;
@@ -142,6 +143,8 @@ function Section(props: SectionProps) {
 }
 
 function Settings() {
+    const safeArea = useSafeAreaInsets();
+
     const user = useUser();
     const colors = useColor();
     const global = useGlobal();
@@ -150,7 +153,10 @@ function Settings() {
     const discordEnabled = user?.connections?.discord ?? undefined;
 
     return (
-        <View style={style.Settings}>
+        <View style={{
+            paddingTop: value.padding + safeArea.top,
+            ...style.Settings
+        }}>
             <StyledText text={"Settings"} size={Size.Subtitle} bold />
 
             <View style={style.Settings_Account}>

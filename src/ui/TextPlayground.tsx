@@ -7,12 +7,15 @@ import StyledText, { Size } from "@components/StyledText";
 import StyledButton from "@components/StyledButton";
 
 import { useColor } from "@backend/stores";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface IProps {
     navigation: NavigationProp<any>;
 }
 
 function TextPlayground({ navigation }: IProps) {
+    const safeArea = useSafeAreaInsets();
+
     const colors = useColor();
     const [text, setText] = useState("Hello World!");
 
@@ -20,6 +23,7 @@ function TextPlayground({ navigation }: IProps) {
         <View style={{
             height: "100%",
             padding: 10,
+            paddingTop: safeArea.top + 10,
             gap: 15
         }}>
             <StyledButton

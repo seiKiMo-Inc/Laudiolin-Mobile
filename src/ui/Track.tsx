@@ -29,6 +29,7 @@ import { useColor } from "@backend/stores";
 import { TrackInfo } from "@backend/types";
 
 import { value } from "@style/Laudiolin";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface RouteParams {
     id?: string;
@@ -41,6 +42,7 @@ interface IProps {
 }
 
 function Track({ navigation, route }: IProps) {
+    const safeArea = useSafeAreaInsets();
     const { id, track: _track } = route.params as RouteParams;
 
     const colors = useColor();
@@ -61,7 +63,10 @@ function Track({ navigation, route }: IProps) {
     }, [route]);
 
     return (
-        <View style={style.Track}>
+        <View style={{
+            paddingTop: value.padding + safeArea.top,
+            ...style.Track
+        }}>
             <BackButton navigation={navigation} />
 
             { track ? <>

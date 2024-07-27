@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { SafeAreaView, StatusBar, useColorScheme, View } from "react-native";
+import { StatusBar, useColorScheme, View } from "react-native";
 
 import EnIcon from "react-native-vector-icons/Entypo";
 import FaIcon from "react-native-vector-icons/FontAwesome";
@@ -26,6 +26,7 @@ import Gateway from "@backend/gateway";
 import { useColor, useGlobal, useSettings } from "@backend/stores";
 
 import { DarkTheme, LightTheme } from "@style/Laudiolin";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 interface IProps {
     onLoad?: () => void;
@@ -71,7 +72,7 @@ function Laudiolin(props: IProps) {
         <>
             <StatusBar barStyle={barTheme} />
 
-            <SafeAreaView
+            <SafeAreaProvider
                 style={{ height: "100%", backgroundColor: colors.primary }}
                 onLayout={() => {
                     props.onLoad?.();
@@ -123,7 +124,7 @@ function Laudiolin(props: IProps) {
                         </View>
                     </GestureHandlerRootView>
                 </MenuProvider>
-            </SafeAreaView>
+            </SafeAreaProvider>
         </>
     );
 }

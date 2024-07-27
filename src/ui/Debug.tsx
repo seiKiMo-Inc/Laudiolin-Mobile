@@ -14,9 +14,10 @@ import StyledButton from "@components/StyledButton";
 
 import Gateway from "@backend/gateway";
 import { Colors, useColor, useDebug } from "@backend/stores";
-import Player, { usePlayer } from "@backend/player";
+import Player from "@backend/player";
 
 import { value } from "@style/Laudiolin";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const log = logger.createLogger();
 
@@ -25,6 +26,8 @@ function color(enabled: boolean, colors: Colors): StyleProp<ViewStyle> {
 }
 
 function Debug() {
+    const safeArea = useSafeAreaInsets();
+
     const debug = useDebug();
     const colors = useColor();
 
@@ -43,7 +46,10 @@ function Debug() {
 
     return (
         <ScrollView
-            style={{ padding: value.padding }}
+            style={{
+                padding: value.padding,
+                paddingTop: value.padding + safeArea.top,
+            }}
             contentContainerStyle={{ gap: 15 }}
         >
             <StyledButton

@@ -15,12 +15,15 @@ import useTrackIndex from "@hooks/useTrackIndex";
 import { useColor } from "@backend/stores";
 
 import { value } from "@style/Laudiolin";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface IProps {
     navigation: NavigationProp<any>;
 }
 
 function Queue({ navigation }: IProps) {
+    const safeArea = useSafeAreaInsets();
+
     const colors = useColor();
 
     const _queue = useQueue();
@@ -48,7 +51,10 @@ function Queue({ navigation }: IProps) {
 
     return (
         <View
-            style={style.Queue}
+            style={{
+                paddingTop: value.padding + safeArea.top,
+                ...style.Queue
+            }}
         >
             <View style={style.Queue_Header}>
                 <BackButton navigation={navigation} />

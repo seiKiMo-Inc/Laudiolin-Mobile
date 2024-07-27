@@ -25,6 +25,7 @@ import { toIconUrl } from "@backend/utils";
 import { OwnedPlaylist, TrackInfo } from "@backend/types";
 
 import { value } from "@style/Laudiolin";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface RouteParams {
     playlist: OwnedPlaylist;
@@ -37,6 +38,8 @@ interface IProps {
 }
 
 function Playlist(props: IProps) {
+    const safeArea = useSafeAreaInsets();
+
     const { route, navigation } = props;
     const { playlist: data, playlistId } = route.params as RouteParams;
 
@@ -77,7 +80,10 @@ function Playlist(props: IProps) {
     );
 
     return playlist ? (
-        <View style={style.Playlist}>
+        <View style={{
+            paddingTop: value.padding + safeArea.top,
+            ...style.Playlist
+        }}>
             <View style={style.Playlist_Header}>
                 <BackButton navigation={navigation} />
 

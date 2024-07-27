@@ -13,6 +13,7 @@ import PlaylistStripe from "@widgets/PlaylistStripe";
 import { TrackInfo } from "@backend/types";
 
 import { value } from "@style/Laudiolin";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const renderers: { [key: string]: (data: any, index: number) => ReactElement } = {
     tracks: (track: TrackInfo, index: number) => <Track style={{ marginBottom: 10 }} key={index} data={track} />,
@@ -32,6 +33,8 @@ interface IProps {
 }
 
 function NamedList<T>(props: IProps) {
+    const safeArea = useSafeAreaInsets();
+
     const { route, navigation } = props;
     const {
         title, render, items
@@ -40,7 +43,10 @@ function NamedList<T>(props: IProps) {
     const renderer = renderers[render] as (item: T, index: number) => ReactElement;
 
     return (
-        <View style={style.NamedList}>
+        <View style={{
+            paddingTop: value.padding + safeArea.top,
+            ...style.NamedList
+        }}>
             <View style={style.NamedList_Header}>
                 <BackButton navigation={navigation} />
                 <StyledText text={title} size={Size.Subheader} bold />

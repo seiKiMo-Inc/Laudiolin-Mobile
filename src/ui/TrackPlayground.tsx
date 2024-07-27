@@ -12,6 +12,7 @@ import { TrackInfo } from "@backend/types";
 import { first } from "@backend/utils";
 
 import { useColor } from "@backend/stores";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const renderItem = ({ item, drag, isActive }: RenderItemParams<TrackInfo>) => (
     <ScaleDecorator>
@@ -24,13 +25,18 @@ interface IProps {
 }
 
 function TrackPlayground({ navigation }: IProps) {
+    const safeArea = useSafeAreaInsets();
+
     const colors = useColor();
     const [query, setQuery] = useState("hikaru nara");
 
     const [data, setData] = useState<TrackInfo[]>([]);
 
     return (
-        <View style={{ gap: 35, padding: 15 }}>
+        <View style={{
+            gap: 35, padding: 15,
+            paddingTop: safeArea.top + 15
+        }}>
             <StyledButton
                 text={"Go Back"}
                 onPress={() => navigation.goBack()}

@@ -139,6 +139,7 @@ export type Colors = {
     text: string;
     accent: string;
     contrast: string;
+    header: string;
     red: string;
     gray: string;
 }
@@ -152,6 +153,7 @@ export const useColor = create<ColorState>()(persist(
         text: "#ffffff",
         accent: "#4e7abe",
         contrast: "#6d90ca",
+        header: "#354ab2",
         red: "#d21d4f",
         gray: "#888787",
         change: (colors) => set(colors)

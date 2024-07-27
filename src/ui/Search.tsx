@@ -11,10 +11,13 @@ import { SearchResult } from "@backend/types";
 
 import { useColor } from "@backend/stores";
 import { value } from "@style/Laudiolin";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 let searchTimeout: NodeJS.Timeout | null = null;
 
 function Search() {
+    const safeArea = useSafeAreaInsets();
+
     const listRef = useRef<FlatList>(null);
     const colors = useColor();
 
@@ -35,7 +38,12 @@ function Search() {
     }, [query]);
 
     return (
-        <View style={style.Search}>
+        <View
+            style={{
+                paddingTop: value.padding + safeArea.top,
+                ...style.Search
+            }}
+        >
             <StyledTextInput
                 default={"Search"}
                 defaultColor={colors.text}
