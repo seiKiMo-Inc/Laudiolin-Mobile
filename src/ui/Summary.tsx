@@ -151,7 +151,8 @@ function Summary({ navigation }: IProps) {
                 text={welcomeText()} size={Size.Subheader}
                 style={{
                     color: colors.text,
-                    paddingTop: safeArea.top,
+                    paddingLeft: 6,
+                    paddingTop: safeArea.top / 1.5,
                 }}
             />
 
