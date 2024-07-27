@@ -16,8 +16,8 @@ import { value } from "@style/Laudiolin";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const renderers: { [key: string]: (data: any, index: number) => ReactElement } = {
-    tracks: (track: TrackInfo, index: number) => <Track style={{ marginBottom: 10 }} key={index} data={track} />,
-    playlists: (playlist: any, index: number) => <PlaylistStripe style={{ marginBottom: 10 }} key={index} playlist={playlist} />
+    tracks: (track: TrackInfo) => <Track style={{ marginBottom: 10 }} key={track.id} data={track} />,
+    playlists: (playlist: any) => <PlaylistStripe style={{ marginBottom: 10 }} key={playlist.id} playlist={playlist} />
 };
 
 interface RouteParams<T> {

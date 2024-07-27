@@ -62,7 +62,7 @@ function Search() {
                 initialNumToRender={10}
                 contentContainerStyle={style.Search_Results}
                 data={searchRes ? tracks(searchRes) : []}
-                renderItem={({ item, index }) => item && <Track key={index} data={item} />}
+                renderItem={({ item }) => item && <Track key={item.id} data={item} />}
             />
         </View>
     );

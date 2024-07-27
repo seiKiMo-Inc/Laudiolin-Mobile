@@ -52,9 +52,9 @@ function StyledMenu(props: IProps) {
                 }
             }}>
                 {
-                    props.options.map((option, index) => option && (
+                    props.options.map((option) => option && (
                         <MenuOption
-                            key={index} onSelect={() => {
+                            key={option.text} onSelect={() => {
                                 option.onPress?.();
                                 if (props.closeOnPress ?? option.closeOnPress) {
                                     props.close?.();
