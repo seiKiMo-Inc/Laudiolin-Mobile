@@ -131,9 +131,8 @@ function Summary({ navigation }: IProps) {
     );
 
     return (
-        <ScrollView
-            contentContainerStyle={style.Summary}
-            bounces={false}
+        <View
+            style={style.Summary}
         >
             <LinearGradient
                 colors={[colors.header, "transparent"]}
@@ -156,68 +155,55 @@ function Summary({ navigation }: IProps) {
                 }}
             />
 
-            <View style={style.Summary_Block}>
-                <Header
-                    navigation={navigation}
-                    data={{ title: "Playlists", items: playlists,
-                        render: "playlists", more: 5 }}
-                >
-                    Playlists
-                </Header>
-
-                <FlatList
-                    data={playlistItems}
-                    renderItem={({ item }) => (
-                        <Playlist
-                            key={item.id}
-                            playlist={item}
-                            onPress={() => {
-                                if (item.type == "button") {
-                                    item.onPress?.();
-                                } else {
-                                    navigation.navigate("Playlist", { playlist: item });
-                                }
-                            }}
-                        />
-                    )}
-                    contentContainerStyle={style.Summary_Playlist}
-                    horizontal showsHorizontalScrollIndicator={false}
-                />
-            </View>
-
-            <View style={style.Summary_Block}>
-                <Header
-                    navigation={navigation}
-                    data={{ title: "Downloads", items: downloads,
-                        render: "tracks", more: 3 }}
-                >
-                    Downloads
-                </Header>
-
-                <View style={style.Summary_TrackList}>
-                    <ImportButton onPress={() => setShowImport(true)} />
-
-                    {first(downloads, 3).map((track) => (
-                        <Track
-                            key={track.id}
-                            data={track}
-                        />
-                    ))}
-                </View>
-            </View>
-
-            { recents.length > 0 && (
+            <ScrollView
+                contentContainerStyle={{
+                    ...style.Summary,
+                    padding: 0
+                }}
+                showsVerticalScrollIndicator={false}
+            >
                 <View style={style.Summary_Block}>
                     <Header
                         navigation={navigation}
-                        data={{ title: "Recents", items: recents,
+                        data={{ title: "Playlists", items: playlists,
+                            render: "playlists", more: 5 }}
+                    >
+                        Playlists
+                    </Header>
+
+                    <FlatList
+                        data={playlistItems}
+                        renderItem={({ item }) => (
+                            <Playlist
+                                key={item.id}
+                                playlist={item}
+                                onPress={() => {
+                                    if (item.type == "button") {
+                                        item.onPress?.();
+                                    } else {
+                                        navigation.navigate("Playlist", { playlist: item });
+                                    }
+                                }}
+                            />
+                        )}
+                        contentContainerStyle={style.Summary_Playlist}
+                        horizontal showsHorizontalScrollIndicator={false}
+                    />
+                </View>
+
+                <View style={style.Summary_Block}>
+                    <Header
+                        navigation={navigation}
+                        data={{ title: "Downloads", items: downloads,
                             render: "tracks", more: 3 }}
                     >
-                        Recents
+                        Downloads
                     </Header>
 
                     <View style={style.Summary_TrackList}>
-                        {first(recents, 3).map((track) => (
+                        <ImportButton onPress={() => setShowImport(true)} />
+
+                        {first(downloads, 3).map((track) => (
                             <Track
                                 key={track.id}
                                 data={track}
@@ -225,30 +211,51 @@ function Summary({ navigation }: IProps) {
                         ))}
                     </View>
                 </View>
-            ) }
 
-            {
-                (__DEV__ || user?.isDeveloper) && <>
-                    <StyledButton
-                        text={"Text Playground"}
-                        onPress={() => navigation.navigate("Text Playground")}
-                    />
+                { recents.length > 0 && (
+                    <View style={style.Summary_Block}>
+                        <Header
+                            navigation={navigation}
+                            data={{ title: "Recents", items: recents,
+                                render: "tracks", more: 3 }}
+                        >
+                            Recents
+                        </Header>
 
-                    <StyledButton
-                        text={"Track Playground"}
-                        onPress={() => navigation.navigate("Track Playground")}
-                    />
+                        <View style={style.Summary_TrackList}>
+                            {first(recents, 3).map((track) => (
+                                <Track
+                                    key={track.id}
+                                    data={track}
+                                />
+                            ))}
+                        </View>
+                    </View>
+                ) }
 
-                    <StyledButton
-                        text={"Debug"}
-                        onPress={() => navigation.navigate("Debug")}
-                    />
-                </>
-            }
+                {
+                    (__DEV__ || user?.isDeveloper) && <>
+                        <StyledButton
+                            text={"Text Playground"}
+                            onPress={() => navigation.navigate("Text Playground")}
+                        />
 
-            <ImportTrack opened={showImport} close={() => setShowImport(false)} />
-            <CreatePlaylist visible={makePlaylist} hide={() => setMakePlaylist(false)} />
-        </ScrollView>
+                        <StyledButton
+                            text={"Track Playground"}
+                            onPress={() => navigation.navigate("Track Playground")}
+                        />
+
+                        <StyledButton
+                            text={"Debug"}
+                            onPress={() => navigation.navigate("Debug")}
+                        />
+                    </>
+                }
+
+                <ImportTrack opened={showImport} close={() => setShowImport(false)} />
+                <CreatePlaylist visible={makePlaylist} hide={() => setMakePlaylist(false)} />
+            </ScrollView>
+        </View>
     );
 }
 
