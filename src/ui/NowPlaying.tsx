@@ -17,6 +17,7 @@ import TrackPlayer, {
     useProgress,
 } from "react-native-track-player";
 import { NavigationContainerRef } from "@react-navigation/core";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GestureDetector, Gesture, Directions } from "react-native-gesture-handler";
 
 import TrackMenu from "@menus/TrackMenu";
@@ -44,6 +45,8 @@ function RepeatIcon({ loop, colors }: { loop: RepeatMode, colors: Colors }) {
 }
 
 function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> }) {
+    const safeArea = useSafeAreaInsets();
+
     const global = useGlobal();
     const colors = useColor();
 
@@ -80,6 +83,8 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
         <GestureDetector gesture={Gesture.Exclusive(queueGesture, backGesture)}>
             <View style={{
                 ...style.NowPlaying,
+                paddingTop: safeArea.top,
+                paddingBottom: safeArea.bottom,
                 backgroundColor: colors.primary
             }}>
                 <View style={style.NowPlaying_Header}>
@@ -207,7 +212,7 @@ const style = StyleSheet.create({
         alignItems: "center"
     },
     NowPlaying_Cover: {
-        width: "80%",
+        width: "100%",
         height: "50%",
         alignSelf: "center",
         marginTop: 10,
@@ -215,6 +220,10 @@ const style = StyleSheet.create({
         resizeMode: "cover",
         aspectRatio: 1,
         borderRadius: 15,
+        transform: [
+            { scaleX: 0.85 },
+            { scaleY: 0.85 }
+        ]
     },
     NowPlaying_Info: {
         flexDirection: "column",
