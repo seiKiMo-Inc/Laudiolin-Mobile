@@ -38,7 +38,10 @@ export async function search(query: string): Promise<SearchResult> {
  *
  * @param result The search result to parse.
  */
-export function tracks({ results, top }: SearchResult): RemoteInfo[] {
+export function tracks(result: SearchResult): RemoteInfo[] {
+    // Create a copy of the object.
+    const { top, results } = Object.assign({}, result);
+
     if (!top) return [];
 
     const tracks: { [key: string]: RemoteInfo } = {};
