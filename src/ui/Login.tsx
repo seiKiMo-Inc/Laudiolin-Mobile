@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { StyleSheet, View, Image } from "react-native";
 
 import * as Linking from "expo-linking";
@@ -52,34 +53,38 @@ function Login() {
     const global = useGlobal();
     const colors = useColor();
 
+    const [show, setShow] = useState(false);
+
     return (
         <View style={style.Login}>
-            <View style={{ ...style.Login, zIndex: 1 }}>
-                <View style={style.Login_Actions}>
-                    <StyledButton text={"Login with seiKiMo!"}
-                                  style={style.Login_Button}
-                                  buttonStyle={{ backgroundColor: colors.accent }}
-                                  onPress={() => waitForLogin(() => global.setShowLoginPage(false))}
-                    />
-                    <OrDivider />
-                    <StyledButton text={"Continue as a Guest"}
-                                  style={style.Login_Button}
-                                  buttonStyle={{
-                                      backgroundColor: "transparent",
-                                      borderColor: colors.contrast,
-                                      borderWidth: 1,
-                                      borderRadius: 10
-                                  }}
-                                  onPress={() => {
-                                      global.setShowLoginPage(false);
-                                      settings.update("show_login", false);
-                                  }}
-                    />
-                </View>
+            { show && (
+                <View style={{ ...style.Login, zIndex: 1 }}>
+                    <View style={style.Login_Actions}>
+                        <StyledButton text={"Login with seiKiMo!"}
+                                      style={style.Login_Button}
+                                      buttonStyle={{ backgroundColor: colors.accent }}
+                                      onPress={() => waitForLogin(() => global.setShowLoginPage(false))}
+                        />
+                        <OrDivider />
+                        <StyledButton text={"Continue as a Guest"}
+                                      style={style.Login_Button}
+                                      buttonStyle={{
+                                          backgroundColor: "transparent",
+                                          borderColor: colors.contrast,
+                                          borderWidth: 1,
+                                          borderRadius: 10
+                                      }}
+                                      onPress={() => {
+                                          global.setShowLoginPage(false);
+                                          settings.update("show_login", false);
+                                      }}
+                        />
+                    </View>
 
-                <StyledText text={prompt} lines={3} size={Size.Footnote}
-                            style={{ textAlign: "center" }} />
-            </View>
+                    <StyledText text={prompt} lines={3} size={Size.Footnote}
+                                style={{ textAlign: "center" }} />
+                </View>
+            ) }
 
             <Image
                 style={{
@@ -88,6 +93,7 @@ function Login() {
                     bottom: 0,
                     zIndex: 0
                 }}
+                onLoad={() => setShow(true)}
                 source={require("@assets/background.png")}
             />
         </View>
