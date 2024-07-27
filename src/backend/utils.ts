@@ -81,7 +81,7 @@ export function resolveIcon(icon?: string): string {
     let url = `${Backend.getBaseUrl()}/proxy/{ico}?from={src}`;
     let split = icon.split("/");
 
-    if (icon.includes("i.ytimg.com")) {
+    if (icon.includes("ytimg.com")) {
         return url.replace("{ico}", split[4]).replace("{src}", "yt");
     }
     if (icon.includes("i.scdn.co")) {
