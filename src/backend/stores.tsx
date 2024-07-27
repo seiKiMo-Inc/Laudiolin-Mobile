@@ -217,7 +217,7 @@ export const useRecents = create<RemoteInfo[]>()(persist(
 export const useFavorites = create<RemoteInfo[]>()(persist(
     (): RemoteInfo[] => [],
     {
-        name: "recents",
+        name: "favorites",
         version: 1,
         storage: createJSONStorage(() => AsyncStorage),
         migrate: (oldState, _) => {
