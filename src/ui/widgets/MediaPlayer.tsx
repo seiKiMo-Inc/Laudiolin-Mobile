@@ -75,8 +75,9 @@ export default MediaPlayer;
 const style = StyleSheet.create({
     MediaPlayer: {
         padding: 5,
-        width: "100%",
+        width: "98%",
         height: 65,
+        alignSelf: "center",
         overflow: "hidden",
         borderRadius: 20,
         marginBottom: 5
