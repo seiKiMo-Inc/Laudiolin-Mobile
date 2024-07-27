@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "laudiolin",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -16,6 +16,7 @@
       "**/*"
     ],
     "ios": {
+      "userInterfaceStyle": "automatic",
       "infoPlist": {
         "UIBackgroundModes": [
           "audio"
@@ -32,6 +33,7 @@
       ]
     },
     "android": {
+      "userInterfaceStyle": "automatic",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
