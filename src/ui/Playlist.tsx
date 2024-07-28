@@ -80,8 +80,8 @@ function Playlist(props: IProps) {
         <ScaleDecorator>
             <Track
                 style={{ marginBottom: 10 }}
-                disabled={isActive} onHold={drag}
-                data={item} playlist={playlist!}
+                disabled={isActive} onHold={canEditPlaylist ? drag : undefined}
+                data={item} playlist={canEditPlaylist ? playlist! : undefined}
             />
         </ScaleDecorator>
     );
