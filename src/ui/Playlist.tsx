@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Share, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import FaIcon from "react-native-vector-icons/FontAwesome";
 import MaIcon from "react-native-vector-icons/MaterialIcons";
@@ -19,6 +19,7 @@ import StyledButton from "@components/StyledButton";
 import StyledText, { Size } from "@components/StyledText";
 
 import Player from "@backend/player";
+import Backend from "@backend/backend";
 import Playlists from "@backend/playlist";
 import { useColor, useUser } from "@backend/stores";
 import { toIconUrl } from "@backend/utils";
@@ -216,7 +217,14 @@ function Playlist(props: IProps) {
                         text: `${showDesc ? "Hide" : "Show"} Description`,
                         icon: <EnIcon name={"info"} size={20} color={colors.text} />,
                         onPress: () => setShowDescription(!showDesc)
-                    }
+                    },
+                    playlist.owner != "local" ? {
+                        text: "Share Playlist",
+                        icon: <MaIcon name={"share"} size={24} color={colors.text} />,
+                        onPress: () => Share.share({
+                            url: `${Backend.getBaseUrl()}/playlist/${playlist.id}`
+                        })
+                    } : undefined,
                 ]}
                 optionsStyle={{ width: 210 }}
             />
