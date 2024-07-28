@@ -3,6 +3,7 @@ import * as FileSystem from "expo-file-system";
 
 import User from "@backend/user";
 import Backend from "@backend/backend";
+import Downloads from "@backend/downloads";
 import { randomString } from "@backend/utils";
 import { usePlaylists, useUser } from "@backend/stores";
 import { OwnedPlaylist, PlaylistInfo, TrackInfo } from "@backend/types";
@@ -490,6 +491,24 @@ async function savePlaylists(): Promise<void> {
     }
 }
 
+/**
+ * Downloads a playlist to the file system.
+ *
+ * @param playlist The playlist to download.
+ */
+async function downloadPlaylist(playlist: OwnedPlaylist): Promise<boolean> {
+    // TODO: Download playlist metadata.
+
+    const downloads = [];
+    for (const track of playlist.tracks) {
+        if (track.type == "download") continue;
+        downloads.push(Downloads.download(track));
+    }
+    await Promise.all(downloads);
+
+    return true;
+}
+
 export default {
     fetchPlaylist,
     editPlaylist,
@@ -499,5 +518,6 @@ export default {
     createPlaylist,
     getAuthor,
     setPlaylistIcon,
-    modifyPlaylist
+    modifyPlaylist,
+    downloadPlaylist
 };

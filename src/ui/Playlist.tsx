@@ -225,6 +225,11 @@ function Playlist(props: IProps) {
                             url: `${Backend.getBaseUrl()}/playlist/${playlist.id}`
                         })
                     } : undefined,
+                    playlist.tracks.length > 0 ? {
+                        text: "Download Playlist",
+                        icon: <MaIcon name={"download"} size={24} color={colors.text} />,
+                        onPress: () => Playlists.downloadPlaylist(playlist)
+                    } : undefined
                 ]}
                 optionsStyle={{ width: 210 }}
             />
