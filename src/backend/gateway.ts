@@ -1,10 +1,11 @@
+import { EventSubscription } from "react-native";
 import { logger } from "react-native-logs";
 import TrackPlayer, { Event, State } from "react-native-track-player";
 
 import { useDebug, useRecents, useSettings } from "@backend/stores";
 
 import User from "@backend/user";
-import Player, { usePlayer } from "@backend/player";
+import Player from "@backend/player";
 import { RemoteInfo, Synchronize, TrackInfo } from "@backend/types";
 
 import { alert } from "@widgets/Alert";
@@ -12,6 +13,7 @@ import { alert } from "@widgets/Alert";
 const log = logger.createLogger();
 
 let gateway: WebSocket | undefined = undefined;
+let events: EventSubscription[] = [];
 
 const messageQueue: BaseGatewayMessage[] = [];
 const gatewayUrl = () => useSettings.getState().system.gateway;
@@ -24,27 +26,23 @@ const updateStates = [
 
 /**
  * Sets up the gateway connection.
- *
- * @param first Is this the first setup?
  */
-async function setup(first: boolean = true): Promise<void> {
+async function setup(): Promise<void> {
     if (!gateway) {
         await handshake();
     }
 
-    // Initialize the gateway.
-    await initialize();
+    // Un-register existing event listeners.
+    events.forEach(e => e.remove());
 
-    if (first) {
-        // Register event listeners.
-        TrackPlayer.addEventListener(Event.PlaybackState, ({ state }) => {
-            if (updateStates.includes(state)) {
-                update({ update: true });
-            }
-        });
+    // Register event listeners.
+    events.push(TrackPlayer.addEventListener(Event.PlaybackState, ({ state }) => {
+        if (updateStates.includes(state)) {
+            update({ update: true });
+        }
+    }));
 
-        log.debug("Registered event listeners for gateway.");
-    }
+    log.debug("Registered event listeners for gateway.");
 }
 
 type UpdateInfo = {
@@ -60,11 +58,17 @@ type UpdateInfo = {
  */
 async function update({ isSeek, update }: UpdateInfo): Promise<void> {
     const track = await TrackPlayer.getActiveTrack();
-    if (track == undefined) return;
-    if (track?.url.includes("file://")) return;
+    if (track == undefined) {
+        return;
+    }
+    if (track?.url.includes("file://")) {
+        return;
+    }
 
     const trackInfo = track?.source as TrackInfo;
-    if (trackInfo.type == "download") return;
+    if (trackInfo.type == "download") {
+        return;
+    }
 
     const { state } = await TrackPlayer.getPlaybackState();
     const { position } = await TrackPlayer.getProgress();
@@ -133,6 +137,9 @@ async function handshake(): Promise<void> {
         log.debug("Connected to gateway!");
 
         gateway.onclose = () => setTimeout(timeoutListener, 5e3);
+        gateway.onerror = (error) => {
+            log.error("Gateway error:", error);
+        };
         gateway.onmessage = onGatewayMessage;
 
         // Send queued messages.
@@ -192,7 +199,7 @@ async function initialize(): Promise<void> {
 
 type Handler<T extends BaseGatewayMessage> = (message: T) => void;
 const handlers: { [key: string]: Handler<any> } = {
-    latency, sync, recents, synchronize
+    initialize, latency, sync, recents, synchronize
 };
 
 /**

@@ -32,7 +32,6 @@ interface IProps {
     onLoad?: () => void;
 }
 
-let firstLoad = true;
 const Tab = createBottomTabNavigator();
 
 function Laudiolin(props: IProps) {
@@ -56,11 +55,13 @@ function Laudiolin(props: IProps) {
             .catch(error => alert(`Failed to load user data: ${error}`));
 
         // Connect to the gateway.
-        Gateway.setup(firstLoad)
+        Gateway.setup()
             .catch(error => alert(`Failed to connect to the gateway: ${error}`));
 
         // Only run this once.
-        if (firstLoad) firstLoad = false;
+        if (global.firstLoad) {
+            global.firstLoad = false;
+        }
 
         return () => {
             // Disconnect when the app dismounts.

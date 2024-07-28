@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User, SearchEngine, DownloadInfo, RemoteInfo, OwnedPlaylist } from "@backend/types";
 
 export interface GlobalState {
+    firstLoad: boolean;
     showTrackPage: boolean;
     showLoginPage: boolean;
     fromPlaylist: string | null;
@@ -17,6 +18,7 @@ export interface GlobalState {
     incrementTries: () => void;
 }
 export const useGlobal = create<GlobalState>((set, get) => ({
+    firstLoad: true,
     showTrackPage: false,
     showLoginPage: false,
     fromPlaylist: null,
