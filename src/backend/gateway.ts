@@ -1,6 +1,8 @@
 import { EventSubscription } from "react-native";
+
 import { logger } from "react-native-logs";
 import TrackPlayer, { Event, State } from "react-native-track-player";
+import { EventRegister } from "react-native-event-listeners";
 
 import { useDebug, useRecents, useSettings } from "@backend/stores";
 
@@ -13,7 +15,9 @@ import { alert } from "@widgets/Alert";
 const log = logger.createLogger();
 
 let gateway: WebSocket | undefined = undefined;
-let events: EventSubscription[] = [];
+
+let loginEvent: string | undefined = undefined;
+let playbackEvent: EventSubscription | undefined = undefined;
 
 const messageQueue: BaseGatewayMessage[] = [];
 const gatewayUrl = () => useSettings.getState().system.gateway;
@@ -32,15 +36,20 @@ async function setup(): Promise<void> {
         await handshake();
     }
 
-    // Un-register existing event listeners.
-    events.forEach(e => e.remove());
+    // Un-register event listeners.
+    playbackEvent?.remove();
+    loginEvent && EventRegister.removeEventListener(loginEvent);
 
     // Register event listeners.
-    events.push(TrackPlayer.addEventListener(Event.PlaybackState, ({ state }) => {
+    playbackEvent = TrackPlayer.addEventListener(Event.PlaybackState, ({ state }) => {
         if (updateStates.includes(state)) {
             update({ update: true });
         }
-    }));
+    });
+
+    loginEvent = EventRegister.addEventListener("user:login", () => {
+        initialize();
+    }) as string;
 
     log.debug("Registered event listeners for gateway.");
 }
@@ -184,12 +193,17 @@ function send(message: BaseGatewayMessage): void {
  * Sends the message to initialize with the gateway.
  */
 async function initialize(): Promise<void> {
+    const token = await User.getToken();
+    if (token == "") {
+        return;
+    }
+
     const settings = useSettings.getState();
 
     gateway?.send(JSON.stringify({
         type: "initialize",
         timestamp: Date.now(),
-        token: await User.getToken(),
+        token,
         broadcast: settings.system.broadcast_listening,
         presence: settings.system.presence
     } as InitializeMessage));
