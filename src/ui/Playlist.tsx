@@ -20,7 +20,7 @@ import StyledText, { Size } from "@components/StyledText";
 
 import Player from "@backend/player";
 import Playlists from "@backend/playlist";
-import { useColor } from "@backend/stores";
+import { useColor, useUser } from "@backend/stores";
 import { toIconUrl } from "@backend/utils";
 import { OwnedPlaylist, TrackInfo } from "@backend/types";
 
@@ -43,6 +43,7 @@ function Playlist(props: IProps) {
     const { route, navigation } = props;
     const { playlist: data, playlistId } = route.params as RouteParams;
 
+    const user = useUser();
     const colors = useColor();
 
     const [playlist, setPlaylist] = useState<OwnedPlaylist | null | undefined>(data);
@@ -53,6 +54,11 @@ function Playlist(props: IProps) {
     const [showEdit, setShowEdit] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [showDesc, setShowDescription] = useState(false);
+
+    const canEditPlaylist = !playlist ? false :
+        playlist.id != "favorites" && (
+            playlist.owner == user?.userId ||
+            playlist.owner == "local");
 
     useEffect(() => {
         if (playlistId && !playlist) {
@@ -118,7 +124,7 @@ function Playlist(props: IProps) {
 
             <View style={style.Playlist_Actions}>
                 <View style={style.Playlist_ActionBar}>
-                    { playlist.id != "favorites" && (
+                    { canEditPlaylist && (
                         <StyledButton
                             text={"Edit"}
                             style={style.Playlist_Button}
