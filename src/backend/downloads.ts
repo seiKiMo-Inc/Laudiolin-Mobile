@@ -190,10 +190,29 @@ async function downloadInfo(): Promise<DownloadStats> {
     return [downloads.length, size];
 }
 
+/**
+ * Deletes all known downloads.
+ */
+async function deleteAll(): Promise<void> {
+    const baseDir = `${FileSystem.documentDirectory}downloads`;
+    const info = await FileSystem.getInfoAsync(baseDir);
+    if (!info.exists) {
+        return;
+    }
+
+    const allFiles = await FileSystem.readDirectoryAsync(baseDir);
+    for (const file of allFiles) {
+        await FileSystem.deleteAsync(`${baseDir}/${file}`, { idempotent: true });
+    }
+
+    useDownloads.setState({ downloaded: [] });
+}
+
 export default {
     setup,
     download,
     remove,
     downloadInfo,
-    import: $import
+    import: $import,
+    deleteAll
 };

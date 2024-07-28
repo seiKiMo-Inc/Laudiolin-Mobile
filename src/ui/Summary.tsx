@@ -76,6 +76,7 @@ interface IHeaderProps {
         items: any[];
         render: string;
         more: number;
+        action?: string;
     };
 }
 
@@ -195,8 +196,10 @@ function Summary({ navigation }: IProps) {
                 <View style={style.Summary_Block}>
                     <Header
                         navigation={navigation}
-                        data={{ title: "Downloads", items: downloads,
-                            render: "tracks", more: 3 }}
+                        data={{
+                            title: "Downloads", items: downloads,
+                            render: "tracks", more: 3, action: "downloads"
+                        }}
                     >
                         Downloads
                     </Header>
