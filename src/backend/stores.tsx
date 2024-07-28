@@ -32,18 +32,20 @@ export const useGlobal = create<GlobalState>((set, get) => ({
 }));
 
 export interface DebugState {
+    showDevMenu: boolean;
     playbackState: boolean;
     trackInfo: boolean;
     gatewayMessages: boolean;
 
-    update(object: any): void;
+    update(object: Partial<DebugState>): void;
 }
 export const useDebug = create<DebugState>((set) => ({
+    showDevMenu: __DEV__,
     playbackState: false,
     trackInfo: false,
     gatewayMessages: false,
 
-    update: (object: any) => set(object)
+    update: (object: Partial<DebugState>) => set(object)
 }));
 
 export interface SettingsState {

@@ -3,7 +3,7 @@ import * as Linking from "expo-linking";
 import * as SecureStore from "expo-secure-store";
 
 import Backend from "@backend/backend";
-import { useFavorites, useGlobal, usePlaylists, useRecents, useSettings, useUser } from "@backend/stores";
+import { useDebug, useFavorites, useGlobal, usePlaylists, useRecents, useSettings, useUser } from "@backend/stores";
 import { BasicUser, OwnedPlaylist, RemoteInfo, User } from "@backend/types";
 import { EmitterSubscription } from "react-native";
 import { EventRegister } from "react-native-event-listeners";
@@ -84,7 +84,7 @@ async function logIn(token: string): Promise<boolean> {
     await storeToken(token);
 
     // Load the user data.
-    const data = await response.json();
+    const data = await response.json() as User;
     useUser.setState(data);
     log.info("Loaded user data!");
 
@@ -99,6 +99,12 @@ async function logIn(token: string): Promise<boolean> {
     }
 
     EventRegister.emit("user:login", data);
+
+    // Enable debug mode if required.
+    if (data.isDeveloper) {
+        useDebug.setState({ showDevMenu: true });
+    }
+
     return true;
 }
 

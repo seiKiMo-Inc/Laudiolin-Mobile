@@ -63,6 +63,14 @@ function Debug() {
             />
 
             <StyledButton
+                text={"Disable Dev Menu"}
+                onPress={() => {
+                    debug.update({ showDevMenu: false });
+                    navigation.goBack();
+                }}
+            />
+
+            <StyledButton
                 text={"Check for Updates"}
                 onPress={async () => {
                     try {

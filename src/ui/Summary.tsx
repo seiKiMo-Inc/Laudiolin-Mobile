@@ -15,7 +15,7 @@ import CreatePlaylist from "@modals/CreatePlaylist";
 
 import Backend from "@backend/backend";
 import { first, welcomeText } from "@backend/utils";
-import { useColor, useDownloads, useFavorites, usePlaylists, useRecents, useUser } from "@backend/stores";
+import { useColor, useDebug, useDownloads, useFavorites, usePlaylists, useRecents, useUser } from "@backend/stores";
 import { OwnedPlaylist, TrackInfo, User } from "@backend/types";
 import { value } from "@style/Laudiolin";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -117,6 +117,7 @@ function Summary({ navigation }: IProps) {
     const downloads = downloadData.downloaded;
 
     const colors = useColor();
+    const debug = useDebug();
 
     const user = useUser();
     const favorites = useFavorites();
@@ -234,7 +235,7 @@ function Summary({ navigation }: IProps) {
                 ) }
 
                 {
-                    (__DEV__ || user?.isDeveloper) && <>
+                    debug.showDevMenu && <>
                         <StyledButton
                             text={"Text Playground"}
                             onPress={() => navigation.navigate("Text Playground")}
