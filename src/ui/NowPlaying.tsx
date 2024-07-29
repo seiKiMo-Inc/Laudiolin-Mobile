@@ -83,8 +83,8 @@ function NowPlaying({ navigation }: { navigation: NavigationContainerRef<any> })
         <GestureDetector gesture={Gesture.Exclusive(queueGesture, backGesture)}>
             <View style={{
                 ...style.NowPlaying,
-                paddingTop: safeArea.top,
-                paddingBottom: safeArea.bottom,
+                paddingTop: value.padding + safeArea.top,
+                paddingBottom: value.padding + safeArea.bottom,
                 backgroundColor: colors.primary
             }}>
                 <View style={style.NowPlaying_Header}>
