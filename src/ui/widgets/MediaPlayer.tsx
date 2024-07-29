@@ -22,7 +22,10 @@ function MediaPlayer() {
     const track = useActiveTrack();
     const { state } = usePlaybackState();
 
-    const clearQueue = () => TrackPlayer.stop();
+    const clearQueue = async () => {
+        await TrackPlayer.stop();
+        await TrackPlayer.setQueue([]);
+    };
     const openQueue = () => navigation.navigate("Queue");
     const queueGesture = Gesture.Fling()
         .direction(Directions.UP)
