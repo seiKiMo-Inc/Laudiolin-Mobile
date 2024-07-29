@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, StyleProp, View, ViewStyle } from "react-native";
+import { ScrollView, StyleProp, TextInput, View, ViewStyle } from "react-native";
 
 import * as Updates from "expo-updates";
 import { logger } from "react-native-logs";
@@ -18,6 +18,8 @@ import Player from "@backend/player";
 
 import { value } from "@style/Laudiolin";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import StyledTextInput from "@components/StyledTextInput";
+import User from "@backend/user";
 
 const log = logger.createLogger();
 
@@ -44,6 +46,8 @@ function Debug() {
     const [repeatMode, setRepeatMode] = useState(RepeatMode.Off);
     const [songIndex, setSongIndex] = useState<number | undefined>(0);
 
+    const [token, setToken] = useState("");
+
     return (
         <ScrollView
             style={{
@@ -67,6 +71,16 @@ function Debug() {
                 onPress={() => {
                     debug.update({ showDevMenu: false });
                     navigation.goBack();
+                }}
+            />
+
+            <StyledTextInput
+                default={"Token"}
+                value={token}
+                onChange={setToken}
+                onFinish={async () => {
+                    await User.login(token);
+                    setToken("");
                 }}
             />
 
