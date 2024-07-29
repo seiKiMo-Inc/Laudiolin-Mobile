@@ -98,13 +98,13 @@ function TrackMenu(props: IProps) {
                     icon: <McIcon name={"heart"} size={24} color={colors.text} />,
                     onPress: () => User.favoriteTrack(track, !isFavorite)
                 } : undefined,
-                track && {
+                track ? {
                     text: `${local ? "Delete" : "Download"} Track`,
                     icon: <McIcon name={local ? "delete" : "download"} size={24} color={colors.text} />,
                     onPress: () => local ?
                         Downloads.remove(track as DownloadInfo) :
                         Downloads.download(track as RemoteInfo)
-                }
+                } : undefined
             ]}
             style={props.style}
             optionsStyle={{ width: 230 }}
