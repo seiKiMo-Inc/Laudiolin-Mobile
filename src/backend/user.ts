@@ -47,9 +47,13 @@ function isLoggedIn(): boolean {
  *
  * @param token The token to store.
  */
-async function storeToken(token: string) {
-    lastToken = token;
-    await SecureStore.setItemAsync("userToken", token);
+async function storeToken(token: string | undefined) {
+    if (token == undefined) {
+        await SecureStore.deleteItemAsync("userToken");
+    } else {
+        lastToken = token;
+        await SecureStore.setItemAsync("userToken", token);
+    }
 }
 
 /**
@@ -77,6 +81,10 @@ async function logIn(token: string): Promise<boolean> {
     if (response.status != 301) {
         log.error("Failed to login", response.status);
         EventRegister.emit("user:login", false);
+
+        // Clear the user's login token.
+        await storeToken(undefined);
+
         return false;
     }
 
