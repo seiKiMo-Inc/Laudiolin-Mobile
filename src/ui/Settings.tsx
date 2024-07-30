@@ -123,7 +123,7 @@ function Setting(props: SettingProps) {
     );
 }
 
-type Element = ReactElement | undefined;
+type Element = ReactElement | undefined | null;
 interface SectionProps {
     title: string;
     children: Element | Element[];
@@ -247,7 +247,7 @@ function Settings() {
                     />
                 </Section>
 
-                <Section title={"Legal"}>
+                <Section title={"Links"}>
                     <TouchableOpacity onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_TOS_URL ?? "")}>
                         <StyledText text={"Terms of Service"} underlined size={Size.Footnote} />
                     </TouchableOpacity>
@@ -255,15 +255,13 @@ function Settings() {
                     <TouchableOpacity onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_PRIVACY_URL ?? "")}>
                         <StyledText text={"Privacy Policy"} underlined size={Size.Footnote} />
                     </TouchableOpacity>
-                </Section>
 
-                { user && (
-                    <Section title={"Account"}>
+                    { user && (
                         <TouchableOpacity onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_DELETE_ACCOUNT ?? "")}>
                             <StyledText text={"Delete Account"} underlined size={Size.Footnote} style={{ color: colors.red }} />
                         </TouchableOpacity>
-                    </Section>
-                ) }
+                    ) }
+                </Section>
             </ScrollView>
         </View>
     );
