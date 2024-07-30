@@ -1,5 +1,5 @@
 import { ReactElement, useState } from "react";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import FastImage from "react-native-fast-image";
 
@@ -246,6 +246,24 @@ function Settings() {
                              validate={validateSocket}
                     />
                 </Section>
+
+                <Section title={"Legal"}>
+                    <TouchableOpacity onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_TOS_URL ?? "")}>
+                        <StyledText text={"Terms of Service"} underlined size={Size.Footnote} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_PRIVACY_URL ?? "")}>
+                        <StyledText text={"Privacy Policy"} underlined size={Size.Footnote} />
+                    </TouchableOpacity>
+                </Section>
+
+                { user && (
+                    <Section title={"Account"}>
+                        <TouchableOpacity onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_DELETE_ACCOUNT ?? "")}>
+                            <StyledText text={"Delete Account"} underlined size={Size.Footnote} style={{ color: colors.red }} />
+                        </TouchableOpacity>
+                    </Section>
+                ) }
             </ScrollView>
         </View>
     );
