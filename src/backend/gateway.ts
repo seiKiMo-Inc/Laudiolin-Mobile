@@ -193,8 +193,14 @@ function send(message: BaseGatewayMessage): void {
  * Sends the message to initialize with the gateway.
  */
 async function initialize(): Promise<void> {
+    // Validate the user's token.
     const token = await User.getToken();
     if (token == "") {
+        return;
+    }
+
+    // Validate the user's login.
+    if (!User.isLoggedIn()) {
         return;
     }
 
