@@ -14,6 +14,7 @@ import { toIconUrl, validateAddress, validateSocket } from "@backend/utils";
 
 import { DarkTheme, LightTheme, value } from "@style/Laudiolin";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Backend from "@backend/backend";
 
 interface SettingProps {
     title: string;
@@ -248,16 +249,16 @@ function Settings() {
                 </Section>
 
                 <Section title={"Links"}>
-                    <TouchableOpacity onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_TOS_URL ?? "")}>
+                    <TouchableOpacity onPress={() => Linking.openURL(`${Backend.getBaseUrl()}/tos`)}>
                         <StyledText text={"Terms of Service"} underlined size={Size.Footnote} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_PRIVACY_URL ?? "")}>
+                    <TouchableOpacity onPress={() => Linking.openURL(`${Backend.getBaseUrl()}/privacy`)}>
                         <StyledText text={"Privacy Policy"} underlined size={Size.Footnote} />
                     </TouchableOpacity>
 
                     { user && (
-                        <TouchableOpacity onPress={() => Linking.openURL(process.env.EXPO_PUBLIC_DELETE_ACCOUNT ?? "")}>
+                        <TouchableOpacity onPress={() => Linking.openURL(`${Backend.getBaseUrl()}/delete`)}>
                             <StyledText text={"Delete Account"} underlined size={Size.Footnote} style={{ color: colors.red }} />
                         </TouchableOpacity>
                     ) }
