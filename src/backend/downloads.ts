@@ -5,7 +5,7 @@ import { DocumentPickerAsset } from "expo-document-picker";
 
 import Backend from "@backend/backend";
 import { resolveIcon } from "@backend/utils";
-import { useDownloads } from "@backend/stores";
+import { useDebug, useDownloads } from "@backend/stores";
 import { DownloadInfo, RemoteInfo } from "@backend/types";
 
 import { alert } from "@widgets/Alert";
@@ -104,18 +104,17 @@ async function download(info: RemoteInfo): Promise<boolean> {
  */
 async function $import(
     file: DocumentPickerAsset, metadata: DownloadInfo
-): Promise<boolean> {
+): Promise<string | undefined> {
     // Create the track directory.
     const baseDir = `${FileSystem.documentDirectory}downloads`;
     const path = `${baseDir}/${metadata.id}`;
 
     const info = await FileSystem.getInfoAsync(path);
     if (info.exists) {
-        if (__DEV__) {
+        if (__DEV__ && useDebug.getState().deleteExisting) {
             await FileSystem.deleteAsync(path, { idempotent: true });
         }
-
-        return false;
+        return `Track ${metadata.id} already exists.`;
     }
 
     await FileSystem.makeDirectoryAsync(path);
@@ -129,7 +128,7 @@ async function $import(
         metadata.title = Base64.encode(metadata.title);
     } catch (error) {
         log.error("Unable to import track.", error);
-        return false;
+        return `Unable to import track. Base64 error?`;
     }
 
     // Copy the track to the track directory.
@@ -146,7 +145,7 @@ async function $import(
     // Add the track to the downloaded list.
     useDownloads.getState().add(metadata);
 
-    return true;
+    return undefined;
 }
 
 /**

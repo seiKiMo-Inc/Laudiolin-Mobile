@@ -38,6 +38,7 @@ export interface DebugState {
     playbackState: boolean;
     trackInfo: boolean;
     gatewayMessages: boolean;
+    deleteExisting: boolean;
 
     update(object: Partial<DebugState>): void;
 }
@@ -46,6 +47,7 @@ export const useDebug = create<DebugState>((set) => ({
     playbackState: false,
     trackInfo: false,
     gatewayMessages: false,
+    deleteExisting: false,
 
     update: (object: Partial<DebugState>) => set(object)
 }));

@@ -32,15 +32,20 @@ function ImportTrack(props: IProps) {
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [artist, setArtist] = useState<string | undefined>(undefined);
 
+    const clear = () => {
+        setFile(null);
+        setIcon(undefined);
+        setTitle(undefined);
+        setArtist(undefined);
+    };
+
     return (
         <StyledModal
             visible={props.opened}
+            onLayout={clear}
             onPressOutside={() => {
                 props.close();
-                setFile(null);
-                setIcon(undefined);
-                setTitle(undefined);
-                setArtist(undefined);
+                clear();
             }}
             style={style.ImportTrack_Modal}
             title={"Import a Track"}
@@ -126,7 +131,7 @@ function ImportTrack(props: IProps) {
                     text={"Import"}
                     style={{ borderRadius: 10 }}
                     onPress={async () => {
-                        if (!await Downloads.import(file, {
+                        const result = await Downloads.import(file, {
                             type: "download",
                             encoded: true,
                             filePath: "",
@@ -136,8 +141,9 @@ function ImportTrack(props: IProps) {
                             id: await sha256(file?.name, 16),
                             title: title ?? "",
                             url: ""
-                        })) {
-                            alert("Error importing track");
+                        });
+                        if (result != undefined) {
+                            alert(result);
                         }
 
                         props.close();

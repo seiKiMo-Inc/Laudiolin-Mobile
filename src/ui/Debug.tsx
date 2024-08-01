@@ -103,6 +103,12 @@ function Debug() {
             />
 
             <StyledButton
+                text={"Delete Existing Tracks"}
+                buttonStyle={color(debug.deleteExisting, colors)}
+                onPress={() => debug.update({ deleteExisting: !debug.deleteExisting })}
+            />
+
+            <StyledButton
                 text={"Log Playback State"}
                 buttonStyle={color(debug.playbackState, colors)}
                 onPress={() => debug.update({ playbackState: !debug.playbackState })}
