@@ -160,7 +160,7 @@ async function logOut(toLogin: boolean = true): Promise<void> {
  */
 function loadRecents(tracks: RemoteInfo[] | null = null): void {
     if (tracks) {
-        useRecents.setState(tracks);
+        useRecents.setState(tracks, true);
     } else {
         const user = useUser.getState() as User;
         if (!user) {
@@ -178,7 +178,7 @@ function loadRecents(tracks: RemoteInfo[] | null = null): void {
             return track;
         });
 
-        useRecents.setState(recents);
+        useRecents.setState(recents, true);
         log.info(`Loaded ${user.recentlyPlayed.length} recent tracks!`);
     }
 }
