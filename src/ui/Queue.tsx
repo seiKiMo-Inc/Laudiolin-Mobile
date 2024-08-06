@@ -64,6 +64,7 @@ function Queue({ navigation }: IProps) {
             <FlashList
                 ref={listRef}
                 data={queue}
+                showsVerticalScrollIndicator={false}
                 estimatedItemSize={100}
                 keyExtractor={(_, index) => index.toString()}
                 renderItem={({ item }) => (
