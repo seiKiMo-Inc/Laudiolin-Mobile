@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { logger } from "react-native-logs";
@@ -39,6 +39,12 @@ function ImportTrack(props: IProps) {
         setArtist(undefined);
     };
 
+    useEffect(() => {
+        if (props.opened) {
+            clear();
+        }
+    }, [props.opened]);
+
     return (
         <StyledModal
             visible={props.opened}
@@ -50,7 +56,7 @@ function ImportTrack(props: IProps) {
             style={style.ImportTrack_Modal}
             title={"Import a Track"}
         >
-            { !file ? <>
+            { file == null ? <>
                 <StyledButton
                     text={"Select a Song"}
                     onPress={async () => {
